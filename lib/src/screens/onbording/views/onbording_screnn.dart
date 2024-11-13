@@ -77,7 +77,7 @@ class _OnBordingScreenState extends State<OnBordingScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, logInScreenRoute);
+                    Navigator.pushNamed(context, homeScreenRoute);
                   },
                   child: Text(
                     "Skip",

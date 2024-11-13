@@ -1,9 +1,12 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppContants {
   AppContants._internal();
   static final _instance = AppContants._internal();
   factory AppContants() => _instance;
 
-  final String appName = 'Cryptala';
+  String get appName => dotenv.env['APP_NAME'] ?? "Witcommerce";
 
-  final String apiBaseUrl = "http://witcommerce-cp.test/api/v3";
+  String get apiBaseUrl =>
+      dotenv.env['API_URL'] ?? "http://witcommerce-cp.test/api/v3";
 }
