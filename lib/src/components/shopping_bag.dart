@@ -36,7 +36,6 @@ class ShoppingBag extends StatelessWidget {
               child: Text(
                 numOfItem!.toString(),
                 style: TextStyle(
-                  fontFamily: grandisExtendedFont,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).brightness == Brightness.dark

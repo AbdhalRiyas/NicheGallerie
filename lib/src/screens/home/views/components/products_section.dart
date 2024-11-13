@@ -14,9 +14,11 @@ class ProductsSection extends StatefulWidget {
     super.key,
     required this.title,
     this.dataApiEndPoint = '',
+    this.viewAllVisibility = true,
   });
 
   final String title, dataApiEndPoint;
+  final bool viewAllVisibility;
 
   @override
   State<ProductsSection> createState() => _ProductsSectionState();
@@ -54,20 +56,21 @@ class _ProductsSectionState extends State<ProductsSection> {
                 widget.title,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              GestureDetector(
-                onTap: () {},
-                child: Row(
-                  children: [
-                    const Text("View all"),
-                    const SizedBox(width: 8),
-                    SvgPicture.asset(
-                      "assets/icons/Arrow - Right.svg",
-                      colorFilter:
-                          const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                    )
-                  ],
+              if (widget.viewAllVisibility)
+                GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      const Text("View all"),
+                      const SizedBox(width: 8),
+                      SvgPicture.asset(
+                        "assets/icons/Arrow - Right.svg",
+                        colorFilter: const ColorFilter.mode(
+                            Colors.black, BlendMode.srcIn),
+                      )
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -92,10 +95,9 @@ class _ProductsSectionState extends State<ProductsSection> {
                       ),
                       child: ProductCard(
                         image: snapshot.data![index]!.images.first,
-                        brandName: "ASD",
                         title: snapshot.data![index]!.name,
                         price: snapshot.data![index]!.regularPrice,
-                        priceAfetDiscount: snapshot.data![index]!.salePrice,
+                        priceAfterDiscount: snapshot.data![index]!.salePrice,
                         dicountpercent: 10,
                         press: () {
                           Navigator.pushNamed(

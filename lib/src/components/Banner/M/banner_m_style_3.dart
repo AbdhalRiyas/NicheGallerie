@@ -53,7 +53,6 @@ class BannerMStyle3 extends StatelessWidget {
                     Text(
                       title.toUpperCase(),
                       style: const TextStyle(
-                        fontFamily: grandisExtendedFont,
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,

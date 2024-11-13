@@ -40,11 +40,10 @@ class BestSellers extends StatelessWidget {
               ),
               child: ProductCard(
                 image: demoBestSellersProducts[index].image,
-                brandName: demoBestSellersProducts[index].brandName,
                 title: demoBestSellersProducts[index].title,
                 price: demoBestSellersProducts[index].price,
-                priceAfetDiscount:
-                    demoBestSellersProducts[index].priceAfetDiscount,
+                priceAfterDiscount:
+                    demoBestSellersProducts[index].priceAfterDiscount,
                 dicountpercent: demoBestSellersProducts[index].dicountpercent,
                 press: () {
                   Navigator.pushNamed(context, productDetailsScreenRoute,

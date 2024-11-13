@@ -24,7 +24,7 @@ class NotifyMeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isNotify ? primaryColor : Colors.transparent,
             borderRadius: const BorderRadius.all(
-              Radius.circular(defaultBorderRadious),
+              Radius.circular(defaultBorderRadius),
             ),
             border: Border.all(
               color: isNotify

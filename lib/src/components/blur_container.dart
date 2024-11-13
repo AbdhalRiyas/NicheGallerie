@@ -20,20 +20,20 @@ class BlurContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.all(
-        Radius.circular(defaultBorderRadious / 2),
+        Radius.circular(defaultBorderRadius / 2),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           height: height,
           width: height,
-          color: Colors.white12,
+          color: Colors.white,
           child: Center(
             child: Text(
               text,
               style: TextStyle(
                 fontSize: fontSize,
-                color: Colors.white,
+                color: errorColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
