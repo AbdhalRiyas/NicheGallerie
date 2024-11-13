@@ -40,10 +40,10 @@ class PopularProducts extends StatelessWidget {
               ),
               child: ProductCard(
                 image: demoPopularProducts[index].image,
-                brandName: demoPopularProducts[index].brandName,
                 title: demoPopularProducts[index].title,
                 price: demoPopularProducts[index].price,
-                priceAfetDiscount: demoPopularProducts[index].priceAfetDiscount,
+                priceAfterDiscount:
+                    demoPopularProducts[index].priceAfterDiscount,
                 dicountpercent: demoPopularProducts[index].dicountpercent,
                 press: () {
                   Navigator.pushNamed(context, productDetailsScreenRoute,

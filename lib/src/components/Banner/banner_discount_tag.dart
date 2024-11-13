@@ -33,7 +33,6 @@ class BannerDiscountTag extends StatelessWidget {
             "$percentage%\noff",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: grandisExtendedFont,
               color: Colors.black54,
               fontSize: percentageFontSize,
               fontWeight: FontWeight.bold,

@@ -161,9 +161,8 @@ class ProductDetailsScreen extends StatelessWidget {
                     child: ProductCard(
                       image: productDemoImg2,
                       title: "Sleeveless Tiered Dobby Swing Dress",
-                      brandName: "LIPSY LONDON",
                       price: 24.65,
-                      priceAfetDiscount: index.isEven ? 20.99 : null,
+                      priceAfterDiscount: index.isEven ? 20.99 : null,
                       dicountpercent: index.isEven ? 25 : null,
                       press: () {},
                     ),

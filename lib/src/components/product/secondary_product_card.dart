@@ -10,14 +10,14 @@ class SecondaryProductCard extends StatelessWidget {
     required this.brandName,
     required this.title,
     required this.price,
-    this.priceAfetDiscount,
+    this.priceAfterDiscount,
     this.dicountpercent,
     this.press,
     this.style,
   });
   final String image, brandName, title;
   final double price;
-  final double? priceAfetDiscount;
+  final double? priceAfterDiscount;
   final int? dicountpercent;
   final VoidCallback? press;
 
@@ -38,7 +38,7 @@ class SecondaryProductCard extends StatelessWidget {
             aspectRatio: 1.15,
             child: Stack(
               children: [
-                NetworkImageWithLoader(image, radius: defaultBorderRadious),
+                NetworkImageWithLoader(image, radius: defaultBorderRadius),
                 if (dicountpercent != null)
                   Positioned(
                     right: defaultPadding / 2,
@@ -50,7 +50,7 @@ class SecondaryProductCard extends StatelessWidget {
                       decoration: const BoxDecoration(
                         color: errorColor,
                         borderRadius: BorderRadius.all(
-                            Radius.circular(defaultBorderRadious)),
+                            Radius.circular(defaultBorderRadius)),
                       ),
                       child: Text(
                         "$dicountpercent% off",
@@ -89,11 +89,11 @@ class SecondaryProductCard extends StatelessWidget {
                         .copyWith(fontSize: 12),
                   ),
                   const Spacer(),
-                  priceAfetDiscount != null
+                  priceAfterDiscount != null
                       ? Row(
                           children: [
                             Text(
-                              "\$$priceAfetDiscount",
+                              "\$$priceAfterDiscount",
                               style: const TextStyle(
                                 color: Color(0xFF31B0D8),
                                 fontWeight: FontWeight.w500,

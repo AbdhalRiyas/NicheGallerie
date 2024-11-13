@@ -20,9 +20,9 @@ class HomeScreen extends StatelessWidget {
             SliverToBoxAdapter(
                 child: ProductsSection(
               title: "Featured",
+              viewAllVisibility: false,
               dataApiEndPoint: "${ApiContants().products}?category=791",
             )),
-            // const SliverToBoxAdapter(child: PopularProducts()),
 
             SliverPadding(
               padding: EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
@@ -46,8 +46,15 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-                child: ProductsSection(title: "New Arrivals")),
+            SliverPadding(
+              padding: EdgeInsets.only(bottom: defaultPadding * 1.5),
+              sliver: SliverToBoxAdapter(
+                child: ProductsSection(
+                  title: "New Arrivals",
+                  dataApiEndPoint: "${ApiContants().products}?category=791",
+                ),
+              ),
+            ),
             // const SliverPadding(
             //   padding: EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
             //   sliver: SliverToBoxAdapter(child: FlashSale()),
@@ -71,29 +78,36 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SliverToBoxAdapter(
-                child: ProductsSection(title: "Best Sellers")),
-            // const SliverToBoxAdapter(child: MostPopular()),
             SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SizedBox(height: defaultPadding * 1.5),
-
-                  const SizedBox(height: defaultPadding / 4),
-                  // While loading use 👇
-                  // const BannerSSkelton(),
-                  BannerSStyle1(
-                    title: "Unisex",
-                    subtitle: "Limitless Scents Beyond Genders",
-                    image:
-                        "https://nichegallerie.com/wp-content/uploads/2023/02/nichegallerie.com-niche-gallerie-niche-gallery-uae-best-online-fragrance-perfume-buy-store.jpg",
-                    press: () {
-                      Navigator.pushNamed(context, onSaleScreenRoute);
-                    },
-                  ),
-                  const SizedBox(height: defaultPadding / 4),
-                ],
+              child: ProductsSection(
+                title: "Best Sellers",
+                dataApiEndPoint: "${ApiContants().products}?category=791",
               ),
+            ),
+            // const SliverToBoxAdapter(child: MostPopular()),
+            SliverPadding(
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    const SizedBox(height: defaultPadding * 1.5),
+
+                    const SizedBox(height: defaultPadding / 4),
+                    // While loading use 👇
+                    // const BannerSSkelton(),
+                    BannerSStyle1(
+                      title: "Unisex",
+                      subtitle: "Limitless Scents Beyond Genders",
+                      image:
+                          "https://nichegallerie.com/wp-content/uploads/2023/02/nichegallerie.com-niche-gallerie-niche-gallery-uae-best-online-fragrance-perfume-buy-store.jpg",
+                      press: () {
+                        Navigator.pushNamed(context, onSaleScreenRoute);
+                      },
+                    ),
+                    const SizedBox(height: defaultPadding / 4),
+                  ],
+                ),
+              ),
+              padding: EdgeInsets.only(bottom: defaultPadding * 1.5),
             ),
             // const SliverToBoxAdapter(child: BestSellers()),
           ],

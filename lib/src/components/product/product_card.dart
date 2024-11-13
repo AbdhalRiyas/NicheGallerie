@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop/src/config/app_contants.dart';
 
 import '../../constants.dart';
 import '../network_image_with_loader.dart';
@@ -7,16 +8,15 @@ class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
     required this.image,
-    required this.brandName,
     required this.title,
     required this.price,
-    this.priceAfetDiscount,
+    this.priceAfterDiscount,
     this.dicountpercent,
     required this.press,
   });
-  final String image, brandName, title;
+  final String image, title;
   final double price;
-  final double? priceAfetDiscount;
+  final double? priceAfterDiscount;
   final int? dicountpercent;
   final VoidCallback press;
 
@@ -34,7 +34,7 @@ class ProductCard extends StatelessWidget {
             aspectRatio: 1.15,
             child: Stack(
               children: [
-                NetworkImageWithLoader(image, radius: defaultBorderRadious),
+                NetworkImageWithLoader(image, radius: defaultBorderRadius),
                 if (dicountpercent != null)
                   Positioned(
                     right: defaultPadding / 2,
@@ -46,7 +46,7 @@ class ProductCard extends StatelessWidget {
                       decoration: const BoxDecoration(
                         color: errorColor,
                         borderRadius: BorderRadius.all(
-                            Radius.circular(defaultBorderRadious)),
+                            Radius.circular(defaultBorderRadius)),
                       ),
                       child: Text(
                         "$dicountpercent% off",
@@ -68,17 +68,10 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    brandName.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontSize: 10),
-                  ),
-                  const SizedBox(height: defaultPadding / 2),
-                  Text(
                     title,
-                    maxLines: 2,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
                         .titleSmall!
@@ -86,25 +79,26 @@ class ProductCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        priceAfetDiscount != null
-                            ? "\$$priceAfetDiscount"
-                            : "\$$price",
+                        priceAfterDiscount != null
+                            ? "${AppContants().currency}${priceAfterDiscount?.toStringAsFixed(priceAfterDiscount!.remainder(1) > 0 ? 2 : 0)}"
+                            : "${AppContants().currency}${price.toStringAsFixed(price.remainder(1) > 0 ? 2 : 0)}",
                         style: const TextStyle(
                           color: Color(0xFF2E3033),
                           fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
-                      if (priceAfetDiscount != null) ...[
+                      if (priceAfterDiscount != null) ...[
                         const SizedBox(width: defaultPadding / 4),
                         Text(
-                          "\$$price",
+                          "${AppContants().currency}${price.toStringAsFixed(price.remainder(1) > 0 ? 2 : 0)}",
                           style: TextStyle(
                             color:
                                 Theme.of(context).textTheme.bodyMedium!.color,
-                            fontSize: 10,
+                            fontSize: 8,
                             decoration: TextDecoration.lineThrough,
                           ),
                         ),

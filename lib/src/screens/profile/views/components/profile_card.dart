@@ -49,12 +49,11 @@ class ProfileCard extends StatelessWidget {
               decoration: const BoxDecoration(
                 color: primaryColor,
                 borderRadius:
-                    BorderRadius.all(Radius.circular(defaultBorderRadious)),
+                    BorderRadius.all(Radius.circular(defaultBorderRadius)),
               ),
               child: Text(
                 proLableText,
                 style: const TextStyle(
-                  fontFamily: grandisExtendedFont,
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,

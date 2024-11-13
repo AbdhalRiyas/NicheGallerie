@@ -20,7 +20,7 @@ class CartButton extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: defaultPadding, vertical: defaultBorderRadious / 2),
+            horizontal: defaultPadding, vertical: defaultBorderRadius / 2),
         child: SizedBox(
           height: 64,
           child: Material(
@@ -28,7 +28,7 @@ class CartButton extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(defaultBorderRadious),
+                Radius.circular(defaultBorderRadius),
               ),
             ),
             child: InkWell(

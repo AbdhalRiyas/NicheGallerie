@@ -5,6 +5,7 @@ import 'package:shop/src/components/Banner/M/banner_m_style_1.dart';
 import 'package:shop/src/components/Banner/M/banner_m_style_2.dart';
 import 'package:shop/src/components/Banner/M/banner_m_style_3.dart';
 import 'package:shop/src/components/Banner/M/banner_m_style_4.dart';
+import 'package:shop/src/components/Banner/M/banner_m_with_counter.dart';
 import 'package:shop/src/components/dot_indicators.dart';
 
 import '../../../../constants.dart';
@@ -26,33 +27,22 @@ class _OffersCarouselState extends State<OffersCarousel> {
   // Offers List
   List offers = [
     BannerMStyle1(
-      text: "New items with \nFree shipping",
+      ctaText: "COLDPLAY GIVEAWAY",
       press: () {},
     ),
-    // BannerMStyle2(
-    //   title: "Black \nfriday",
-    //   subtitle: "Collection",
-    //   discountParcent: 50,
-    //   press: () {},
-    // ),
-    // BannerMStyle3(
-    //   title: "Grab \nyours now",
-    //   discountParcent: 50,
-    //   press: () {},
-    // ),
-    // BannerMStyle4(
-    //   // image: , user your image
-    //   title: "SUMMER \nSALE",
-    //   subtitle: "SPECIAL OFFER",
-    //   discountParcent: 80,
-    //   press: () {},
-    // ),
+    BannerMWithCounter(
+      duration: const Duration(hours: 8),
+      title: "PRE BLACK FRIDAY SALE",
+      subtitle: "Hurry Up! Sales Ends In",
+      ctaText: "VIEW SALE ITEMS",
+      press: () {},
+    ),
   ];
 
   @override
   void initState() {
     _pageController = PageController(initialPage: 0);
-    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       if (_selectedIndex < offers.length - 1) {
         _selectedIndex++;
       } else {

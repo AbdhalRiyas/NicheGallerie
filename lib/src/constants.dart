@@ -63,10 +63,10 @@ const Color sandDuneColor = Color(0xFFBCA169);
 const Color purpleColor = Color(0xFF7B61FF);
 const Color successColor = Color(0xFF2ED573);
 const Color warningColor = Color(0xFFFFBE21);
-const Color errorColor = Color(0xFFEA5B5B);
+const Color errorColor = Color(0xFFFF5544);
 
 const double defaultPadding = 16.0;
-const double defaultBorderRadious = 12.0;
+const double defaultBorderRadius = 1.0;
 const Duration defaultDuration = Duration(milliseconds: 300);
 
 final passwordValidator = MultiValidator([

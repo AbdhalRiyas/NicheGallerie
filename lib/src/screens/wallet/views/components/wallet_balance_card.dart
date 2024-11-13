@@ -25,8 +25,8 @@ class WalletBalanceCard extends StatelessWidget {
               decoration: const BoxDecoration(
                 color: primaryColor,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(defaultBorderRadious),
-                  topRight: Radius.circular(defaultBorderRadious),
+                  topLeft: Radius.circular(defaultBorderRadius),
+                  topRight: Radius.circular(defaultBorderRadius),
                 ),
               ),
               child: Column(
@@ -57,8 +57,8 @@ class WalletBalanceCard extends StatelessWidget {
               backgroundColor: const Color(0xFF9581FF),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(defaultBorderRadious),
-                  bottomRight: Radius.circular(defaultBorderRadious),
+                  bottomLeft: Radius.circular(defaultBorderRadius),
+                  bottomRight: Radius.circular(defaultBorderRadius),
                 ),
               ),
             ),
