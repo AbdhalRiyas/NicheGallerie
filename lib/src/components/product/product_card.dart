@@ -69,7 +69,7 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    maxLines: 3,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
@@ -108,6 +108,23 @@ class ProductCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(
+                  vertical: 4,
+                  horizontal: 16), // Adjust vertical padding for height
+              minimumSize: Size(
+                  0, 0), // Removes default minimum width and height constraints
+              tapTargetSize: MaterialTapTargetSize
+                  .shrinkWrap, // Reduces the button's tap area to fit its content
+            ),
+            child: FittedBox(
+                child: Text(
+              "Add to Cart".toUpperCase(),
+              style: TextStyle(fontSize: 10),
+            )),
           ),
         ],
       ),
