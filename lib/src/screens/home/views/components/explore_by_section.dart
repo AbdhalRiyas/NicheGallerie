@@ -131,52 +131,72 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: _tabs
-                    .map((tab) => TextButton(
-                          onPressed: _activeTab == tab['id']
-                              ? null
-                              : () {
-                                  setState(() {
-                                    _activeTab = tab['id'];
-                                  });
-                                },
-                          child: Text(tab['name']),
+                    .map((tab) => Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: defaultPadding / 6),
+                          child: InkWell(
+                            onTap: _activeTab == tab['id']
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _activeTab = tab['id'];
+                                    });
+                                  },
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(30)),
+                            child: Container(
+                              height: 26,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: defaultPadding),
+                              decoration: BoxDecoration(
+                                color: _activeTab == tab['id']
+                                    ? primaryColor
+                                    : Colors.transparent,
+                                border: Border.all(
+                                    color: _activeTab == tab['id']
+                                        ? Colors.transparent
+                                        : Theme.of(context).dividerColor),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(30)),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  tab['name'],
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ))
                     .toList(),
               ),
             ],
           ),
         ),
+        SizedBox(height: defaultPadding),
         SizedBox(
           height: 50,
-          child: ShaderMask(
-            shaderCallback: (Rect bounds) {
-              return LinearGradient(
-                begin: Alignment.centerRight,
-                end: Alignment.centerLeft,
-                colors: [Colors.transparent, Colors.black],
-                stops: [0.1, 1.0],
-              ).createShader(bounds);
+          child: ListView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            itemCount:
+                null, // The list will scroll infinitely, so no fixed count
+            itemBuilder: (BuildContext context, int index) {
+              // Loop through the list using modulus to create an infinite scroll effect
+              num itemIndex = index % _tabs[_activeTab]['items'].length;
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: defaultPadding,
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: _tabs[_activeTab]['items'][itemIndex],
+                ),
+              );
             },
-            blendMode: BlendMode.dstIn,
-            child: ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount:
-                  null, // The list will scroll infinitely, so no fixed count
-              itemBuilder: (BuildContext context, int index) {
-                // Loop through the list using modulus to create an infinite scroll effect
-                num itemIndex = index % _tabs[_activeTab]['items'].length;
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: defaultPadding,
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: _tabs[_activeTab]['items'][itemIndex],
-                  ),
-                );
-              },
-            ),
           ),
         ),
       ],

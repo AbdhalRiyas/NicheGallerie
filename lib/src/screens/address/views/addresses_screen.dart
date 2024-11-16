@@ -5,9 +5,15 @@ class AddressesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
-    // return const BuyFullKit(
-    //   images: ["assets/screens/Addresses.png"],
-    // );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Address'),
+      ),
+      body: Image.asset(
+        "assets/screens/Addresses.png",
+        width: double.maxFinite,
+        height: double.maxFinite,
+      ),
+    );
   }
 }
