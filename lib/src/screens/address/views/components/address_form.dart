@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop/src/constants.dart';
 
 class AddressForm extends StatefulWidget {
@@ -12,66 +13,132 @@ class _AddressFormState extends State<AddressForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(defaultBorderRadius),
-      ),
-      title: const Text('Billing Address'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Form(
-            key: _formKey,
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: AlertDialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: defaultPadding),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+        ),
+        title: const Text('Billing Address'),
+        content: SizedBox(
+          width: double.maxFinite, // Set full width
+          child: SingleChildScrollView(
             child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        onSaved: (emal) {
+                          // Email
+                        },
+                        validator: emaildValidator.call,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        inputFormatters: [],
                         decoration: InputDecoration(
-                          labelText: 'First Name',
+                          hintText: "Email address",
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: defaultPadding * 0.75),
+                            child: SvgPicture.asset(
+                              "assets/icons/Message.svg",
+                              height: 24,
+                              width: 24,
+                              colorFilter: ColorFilter.mode(
+                                  Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .color!
+                                      .withOpacity(0.3),
+                                  BlendMode.srcIn),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: TextFormField(
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'First Name',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Last Name',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextFormField(
                         decoration: InputDecoration(
-                          labelText: 'Last Name',
+                          labelText: 'Company Name',
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Company Name',
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Company Name',
+                        ),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Company Name',
+                        ),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Company Name',
+                        ),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Company Name',
+                        ),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Company Name',
+                        ),
+                      ),
+                    ],
                   ),
                 )
-                
               ],
             ),
-          )
+          ),
+        ),
+        actions: <Widget>[
+          Row(
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Save'),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
-      actions: <Widget>[
-        Row(
-          children: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {},
-                child: const Text('Save'),
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

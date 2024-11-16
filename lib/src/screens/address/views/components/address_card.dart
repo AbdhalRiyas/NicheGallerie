@@ -25,8 +25,9 @@ class AddressCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: isDefault ? purpleColor : greyColor,
+          color: isDefault ? primaryColor : greyColor,
         ),
+        borderRadius: BorderRadius.circular(defaultBorderRadius),
       ),
       child: Stack(
         children: [
@@ -102,7 +103,7 @@ class AddressCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: purpleColor,
+                  color: primaryColor,
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(defaultBorderRadius),
                     bottomLeft: Radius.circular(defaultBorderRadius),
