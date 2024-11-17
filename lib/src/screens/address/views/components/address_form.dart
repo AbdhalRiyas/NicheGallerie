@@ -1,5 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/country_state_picker.dart';
@@ -138,6 +139,7 @@ class _AddressFormState extends State<AddressForm> {
                       ),
                       const SizedBox(height: defaultPadding),
                       CountryStatePicker(),
+                      const SizedBox(height: defaultPadding),
                       TextFormField(
                         onSaved: (companyName) {
                           // Company Name
@@ -258,88 +260,96 @@ class _AddressFormState extends State<AddressForm> {
                         ),
                       ),
                       const SizedBox(height: defaultPadding),
-                      Row(
-                        children: [
-                          Container(
-                            color: lightGreyColor,
-                            child: CountryCodePicker(
-                              boxDecoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(defaultBorderRadius),
-                                color: lightGreyColor,
-                              ),
-                              backgroundColor: blackColor,
-                              dialogSize: Size.fromHeight(400),
-                              onChanged: print,
-                              showCountryOnly: false,
-                              showOnlyCountryWhenClosed: false,
-                              alignLeft: false,
-                            ),
-                          ),
-                          SizedBox(width: defaultPadding),
-                          Expanded(
-                            child: TextFormField(
-                              onSaved: (companyName) {
-                                // Company Name
-                              },
-                              keyboardType: TextInputType.phone,
-                              textInputAction: TextInputAction.next,
-                              inputFormatters: [],
-                              decoration: InputDecoration(
-                                hintText: "Phone",
-                                prefixIcon: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: defaultPadding * 0.75,
-                                  ),
-                                  child: SvgPicture.asset(
-                                    "assets/icons/Phone.svg",
-                                    height: 24,
-                                    width: 24,
-                                    colorFilter: ColorFilter.mode(
-                                      Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge!
-                                          .color!
-                                          .withOpacity(0.3),
-                                      BlendMode.srcIn,
-                                    ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Phone number is required';
+                          }
+                        },
+                        keyboardType: TextInputType.phone,
+                        textInputAction: TextInputAction.next,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: InputDecoration(
+                          hintText: "Phone",
+                          prefixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: defaultPadding,
+                                  vertical: defaultPadding * 0.75,
+                                ),
+                                child: SvgPicture.asset(
+                                  "assets/icons/Phone.svg",
+                                  height: 24,
+                                  width: 24,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .color!
+                                        .withOpacity(0.3),
+                                    BlendMode.srcIn,
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: defaultPadding),
-                      TextFormField(
-                        onSaved: (companyName) {
-                          // Company Name
-                        },
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.done,
-                        inputFormatters: [],
-                        decoration: InputDecoration(
-                          hintText: "Email address",
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding * 0.75,
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/Email.svg",
-                              height: 24,
-                              width: 24,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .color!
-                                    .withOpacity(0.3),
-                                BlendMode.srcIn,
+                              Container(
+                                color: lightGreyColor,
+                                child: CountryCodePicker(
+                                  showFlag: false,
+                                  boxDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        defaultBorderRadius),
+                                    color: lightGreyColor,
+                                  ),
+                                  backgroundColor: blackColor,
+                                  dialogSize: Size.fromHeight(400),
+                                  onChanged: print,
+                                  showCountryOnly: false,
+                                  showOnlyCountryWhenClosed: false,
+                                  alignLeft: false,
+                                  initialSelection: '+971',
+                                  searchDecoration: InputDecoration(
+                                    hintText: 'Search country',
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
+                      const SizedBox(height: defaultPadding),
+                      // TextFormField(
+                      //   onSaved: (companyName) {
+                      //     // Company Name
+                      //   },
+                      //   keyboardType: TextInputType.emailAddress,
+                      //   textInputAction: TextInputAction.done,
+                      //   inputFormatters: [],
+                      //   decoration: InputDecoration(
+                      //     hintText: "Email address",
+                      //     prefixIcon: Padding(
+                      //       padding: const EdgeInsets.symmetric(
+                      //         vertical: defaultPadding * 0.75,
+                      //       ),
+                      //       child: SvgPicture.asset(
+                      //         "assets/icons/Email.svg",
+                      //         height: 24,
+                      //         width: 24,
+                      //         colorFilter: ColorFilter.mode(
+                      //           Theme.of(context)
+                      //               .textTheme
+                      //               .bodyLarge!
+                      //               .color!
+                      //               .withOpacity(0.3),
+                      //           BlendMode.srcIn,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 )
