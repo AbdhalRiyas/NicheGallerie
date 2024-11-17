@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
-import 'package:shop/src/screens/search/views/components/search_form.dart';
 
 class AddressesScreen extends StatefulWidget {
   const AddressesScreen({super.key});
@@ -21,7 +21,6 @@ class _AddressesScreenState extends State<AddressesScreen> {
       'phone': '+79 123 456',
       'countryCode': '789',
       'isDefault': true,
-      'iconColor': Colors.purple,
     },
     {
       'title': 'Office',
@@ -30,7 +29,6 @@ class _AddressesScreenState extends State<AddressesScreen> {
       'phone': '+79 123 456',
       'countryCode': '789',
       'isDefault': false,
-      'iconColor': Colors.green,
     },
     {
       'title': "Grandmother's home",
@@ -39,7 +37,6 @@ class _AddressesScreenState extends State<AddressesScreen> {
       'phone': '+79 123 456',
       'countryCode': '789',
       'isDefault': false,
-      'iconColor': Colors.green,
     },
   ];
 
@@ -63,30 +60,35 @@ class _AddressesScreenState extends State<AddressesScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                left: defaultPadding,
-                right: defaultPadding,
+              padding: EdgeInsets.all(
+                defaultPadding,
               ),
               child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: greyColor),
-                  borderRadius: BorderRadius.circular(defaultBorderRadius),
-                ),
-                child: ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        "assets/icons/Location.svg",
-                        height: 24,
-                        width: 24,
-                      ),
-                      const SizedBox(width: 8),
-                      const Text('Add new address'),
-                    ],
+                decoration: const BoxDecoration(
+                  border: DashedBorder.fromBorderSide(
+                    dashLength: 5,
+                    side: BorderSide(color: whileColor80, width: 2),
                   ),
-                  onTap: _addNewAddress,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(defaultBorderRadius),
+                  ),
+                ),
+                child: Center(
+                  child: ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/Location.svg",
+                          height: 24,
+                          width: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Add new address'),
+                      ],
+                    ),
+                    onTap: _addNewAddress,
+                  ),
                 ),
               ),
             ),
@@ -121,60 +123,4 @@ class _AddressesScreenState extends State<AddressesScreen> {
       ),
     );
   }
-}
-
-class DashedBorderPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    const dashWidth = 5.0;
-    const dashSpace = 3.0;
-    double startX = 0;
-
-    while (startX < size.width) {
-      canvas.drawLine(
-        Offset(startX, 0),
-        Offset(startX + dashWidth, 0),
-        paint,
-      );
-      startX += dashWidth + dashSpace;
-    }
-
-    double startY = 0;
-    while (startY < size.height) {
-      canvas.drawLine(
-        Offset(size.width, startY),
-        Offset(size.width, startY + dashWidth),
-        paint,
-      );
-      startY += dashWidth + dashSpace;
-    }
-
-    startX = size.width;
-    while (startX > 0) {
-      canvas.drawLine(
-        Offset(startX, size.height),
-        Offset(startX - dashWidth, size.height),
-        paint,
-      );
-      startX -= dashWidth + dashSpace;
-    }
-
-    startY = size.height;
-    while (startY > 0) {
-      canvas.drawLine(
-        Offset(0, startY),
-        Offset(0, startY - dashWidth),
-        paint,
-      );
-      startY -= dashWidth + dashSpace;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

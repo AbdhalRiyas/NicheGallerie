@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:shop/src/constants.dart';
 
 class AddressCard extends StatelessWidget {
@@ -25,6 +26,7 @@ class AddressCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
+          width: 2,
           color: isDefault ? primaryColor : greyColor,
         ),
         borderRadius: BorderRadius.circular(defaultBorderRadius),
@@ -32,7 +34,7 @@ class AddressCard extends StatelessWidget {
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(defaultPadding),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -99,8 +101,8 @@ class AddressCard extends StatelessWidget {
               right: 0,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
+                  horizontal: defaultPadding / 2,
+                  vertical: defaultPadding / 3,
                 ),
                 decoration: BoxDecoration(
                   color: primaryColor,
