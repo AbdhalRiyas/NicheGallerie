@@ -27,7 +27,7 @@ class _AddressFormState extends State<AddressForm> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
         ),
-        title: const Text('Add Address'),
+        title: const Text('Add new address'),
         content: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
@@ -260,18 +260,23 @@ class _AddressFormState extends State<AddressForm> {
                       const SizedBox(height: defaultPadding),
                       Row(
                         children: [
-                          CountryCodePicker(
-                            boxDecoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(defaultBorderRadius),
-                              color: lightGreyColor,
+                          Container(
+                            color: lightGreyColor,
+                            child: CountryCodePicker(
+                              boxDecoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(defaultBorderRadius),
+                                color: lightGreyColor,
+                              ),
+                              backgroundColor: blackColor,
+                              dialogSize: Size.fromHeight(400),
+                              onChanged: print,
+                              showCountryOnly: false,
+                              showOnlyCountryWhenClosed: false,
+                              alignLeft: false,
                             ),
-                            dialogSize: Size.fromHeight(400),
-                            onChanged: print,
-                            showCountryOnly: false,
-                            showOnlyCountryWhenClosed: false,
-                            alignLeft: false,
                           ),
+                          SizedBox(width: defaultPadding),
                           Expanded(
                             child: TextFormField(
                               onSaved: (companyName) {
