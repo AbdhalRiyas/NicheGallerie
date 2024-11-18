@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
 
 class AddressCard extends StatelessWidget {
   final String title;
