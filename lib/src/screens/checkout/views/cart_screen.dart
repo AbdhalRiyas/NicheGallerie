@@ -5,17 +5,19 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    // return Placeholder();
 
-    // return const BuyFullKit(
-    //   images: [
-    //     "assets/screens/Cart_1.png",
-    //     "assets/screens/Cart_2.png",
-    //     "assets/screens/Cart_3.png",
-    //     "assets/screens/Cart_4.png",
-    //     "assets/screens/Cart_5.png",
-    //     "assets/screens/Cart_6.png",
-    //   ],
-    // );
+    return Scaffold(
+      body: ListView(
+        children: [
+          Image.asset("assets/screens/Cart_1.png"),
+          // Image.asset("assets/screens/Cart_2.png"),
+          // Image.asset("assets/screens/Cart_3.png"),
+          // Image.asset("assets/screens/Cart_4.png"),
+          // Image.asset("assets/screens/Cart_5.png"),
+          // Image.asset("assets/screens/Cart_6.png"),
+        ],
+      ),
+    );
   }
 }
