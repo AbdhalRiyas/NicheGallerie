@@ -10,18 +10,19 @@ class AddressModel {
   final String email;
   final String phone;
 
-  AddressModel(
-      {required this.firstName,
-      required this.lastName,
-      this.company,
-      required this.address1,
-      this.address2,
-      required this.city,
-      required this.state,
-      required this.postcode,
-      required this.country,
-      required this.email,
-      required this.phone});
+  AddressModel({
+    required this.firstName,
+    required this.lastName,
+    this.company,
+    required this.address1,
+    this.address2,
+    required this.city,
+    required this.state,
+    required this.postcode,
+    required this.country,
+    required this.email,
+    required this.phone,
+  });
 
   factory AddressModel.fromJson(Map<String, dynamic> json) => AddressModel(
       firstName: json['first_name'],
@@ -57,3 +58,32 @@ class AddressModel {
         'phone': phone,
       };
 }
+
+List<AddressModel> dummyData = [
+  AddressModel(
+    firstName: 'John',
+    lastName: 'Doe',
+    company: 'Acme Corp',
+    address1: '123 Main St',
+    address2: 'Apt 4B',
+    city: 'Anytown',
+    state: 'Anystate',
+    postcode: '12345',
+    country: 'USA',
+    email: 'john.doe@example.com',
+    phone: '555-1234',
+  ),
+  AddressModel(
+    firstName: 'Jane',
+    lastName: 'Smith',
+    company: 'Widgets Inc',
+    address1: '456 Elm St',
+    address2: null,
+    city: 'Othertown',
+    state: 'Otherstate',
+    postcode: '67890',
+    country: 'USA',
+    email: 'jane.smith@example.com',
+    phone: '555-5678',
+  ),
+];

@@ -1,7 +1,7 @@
 import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
 
 class CountryStatePicker extends StatefulWidget {
   const CountryStatePicker({super.key});
@@ -16,26 +16,12 @@ class _CountryStatePickerState extends State<CountryStatePicker> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(defaultBorderRadius),
-        color: const Color.fromRGBO(248, 248, 249, 1),
-      ),
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+          color: lightGreyColor),
       child: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: defaultPadding * 0.75,
-            ),
-            child: SvgPicture.asset(
-              "assets/icons/Country.svg",
-              height: 24,
-              width: 24,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.3),
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
-          SizedBox(width: 8),
+          FormFieldSvgIcon(iconPath: 'assets/icons/Country.svg'),
+          SizedBox(width: defaultPadding),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(top: 8),
@@ -51,14 +37,18 @@ class _CountryStatePickerState extends State<CountryStatePicker> {
 
                 ///Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER]
                 dropdownDecoration: BoxDecoration(
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(defaultBorderRadius)),
+                  // border: Border.all(color: greyColor, width: 1),
                   color: lightGreyColor,
                 ),
 
                 ///Disabled Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER]  (USE with disabled dropdownDecoration)
                 disabledDropdownDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Colors.grey.shade300,
-                  border: Border.all(color: Colors.grey.shade300, width: 1),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(defaultBorderRadius)),
+                  color: lightGreyColor,
+                  // border: Border.all(color: greyColor, width: 1),
                 ),
 
                 ///placeholders for dropdown search field

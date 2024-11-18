@@ -1,9 +1,9 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/country_state_picker.dart';
+import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
 
 class AddressForm extends StatefulWidget {
   const AddressForm({super.key});
@@ -14,6 +14,54 @@ class AddressForm extends StatefulWidget {
 
 class _AddressFormState extends State<AddressForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _companyNameController = TextEditingController();
+  TextEditingController _address1Controller = TextEditingController();
+  TextEditingController _address2Controller = TextEditingController();
+  TextEditingController _cityController = TextEditingController();
+  TextEditingController _postcodeController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+
+  nameValidator(String? value) {
+    if (value == null ||
+        value.isEmpty ||
+        value.length < 3 ||
+        value.length > 20) {
+      return 'Enter valid name';
+    }
+    return null;
+  }
+
+  address1Validator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Address is required';
+    }
+    return null;
+  }
+
+  cityValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'City is required';
+    }
+    return null;
+  }
+
+  postCodeValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Postcode is required';
+    }
+    return null;
+  }
+
+  phoneValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Phone number is required';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -43,65 +91,40 @@ class _AddressFormState extends State<AddressForm> {
                         children: [
                           Expanded(
                             child: TextFormField(
-                              onSaved: (fName) {
-                                // First Name
-                              },
-                              // validator: ,
+                              controller: _firstNameController,
+                              onSaved: (fName) {},
+                              validator: (value) => nameValidator(value),
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.text,
-                              inputFormatters: [],
-                              decoration: InputDecoration(
-                                hintText: "First name",
-                                prefixIcon: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: defaultPadding * 0.75,
-                                  ),
-                                  child: SvgPicture.asset(
-                                    "assets/icons/Profile.svg",
-                                    height: 24,
-                                    width: 24,
-                                    colorFilter: ColorFilter.mode(
-                                      Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge!
-                                          .color!
-                                          .withOpacity(0.3),
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Z]'),
                                 ),
-                              ),
+                              ],
+                              decoration: InputDecoration(
+                                  hintText: "First name",
+                                  prefixIcon: FormFieldSvgIcon(
+                                    iconPath: "assets/icons/Profile.svg",
+                                  )),
                             ),
                           ),
                           const SizedBox(width: defaultPadding),
                           Expanded(
                             child: TextFormField(
+                              controller: _lastNameController,
                               onSaved: (lName) {
                                 // Last Name
                               },
+                              validator: (value) => nameValidator(value),
                               keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
-                              inputFormatters: [],
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Z]'),
+                                ),
+                              ],
                               decoration: InputDecoration(
                                 hintText: "Last name",
-                                // prefixIcon: Padding(
-                                //   padding: const EdgeInsets.symmetric(
-                                //     vertical: defaultPadding * 0.75,
-                                //   ),
-                                //   child: SvgPicture.asset(
-                                //     "assets/icons/Profile.svg",
-                                //     height: 24,
-                                //     width: 24,
-                                //     colorFilter: ColorFilter.mode(
-                                //       Theme.of(context)
-                                //           .textTheme
-                                //           .bodyLarge!
-                                //           .color!
-                                //           .withOpacity(0.3),
-                                //       BlendMode.srcIn,
-                                //     ),
-                                //   ),
-                                // ),
                               ),
                             ),
                           ),
@@ -109,6 +132,7 @@ class _AddressFormState extends State<AddressForm> {
                       ),
                       const SizedBox(height: defaultPadding),
                       TextFormField(
+                        controller: _companyNameController,
                         onSaved: (companyName) {
                           // Company Name
                         },
@@ -117,23 +141,8 @@ class _AddressFormState extends State<AddressForm> {
                         inputFormatters: [],
                         decoration: InputDecoration(
                           hintText: "Company name (optional)",
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding * 0.75,
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/Company.svg",
-                              height: 24,
-                              width: 24,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .color!
-                                    .withOpacity(0.3),
-                                BlendMode.srcIn,
-                              ),
-                            ),
+                          prefixIcon: FormFieldSvgIcon(
+                            iconPath: "assets/icons/Company.svg",
                           ),
                         ),
                       ),
@@ -141,131 +150,77 @@ class _AddressFormState extends State<AddressForm> {
                       CountryStatePicker(),
                       const SizedBox(height: defaultPadding),
                       TextFormField(
-                        onSaved: (companyName) {
-                          // Company Name
+                        controller: _address1Controller,
+                        onSaved: (address1) {
+                          // House number and street name
                         },
+                        validator: (value) => address1Validator(value),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [],
                         decoration: InputDecoration(
                           hintText: "House number and street name",
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding * 0.75,
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/House.svg",
-                              height: 24,
-                              width: 24,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .color!
-                                    .withOpacity(0.3),
-                                BlendMode.srcIn,
-                              ),
-                            ),
+                          prefixIcon: FormFieldSvgIcon(
+                            iconPath: "assets/icons/House.svg",
                           ),
                         ),
                       ),
                       const SizedBox(height: defaultPadding),
                       TextFormField(
-                        onSaved: (companyName) {
-                          // Company Name
+                        controller: _address2Controller,
+                        onSaved: (apartment) {
+                          // Apartment, suite, unit, etc.
                         },
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [],
                         decoration: InputDecoration(
                           hintText: "Apatment, suite, unit, etc. (optional)",
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding * 0.75,
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/CityApartment.svg",
-                              height: 24,
-                              width: 24,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .color!
-                                    .withOpacity(0.3),
-                                BlendMode.srcIn,
-                              ),
-                            ),
+                          prefixIcon: FormFieldSvgIcon(
+                            iconPath: "assets/icons/CityApartment.svg",
                           ),
                         ),
                       ),
                       const SizedBox(height: defaultPadding),
                       TextFormField(
-                        onSaved: (companyName) {
-                          // Company Name
+                        controller: _cityController,
+                        onSaved: (city) {
+                          // Town/ City
                         },
+                        validator: (value) => cityValidator(value),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [],
                         decoration: InputDecoration(
                           hintText: "Town/ City",
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding * 0.75,
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/Location.svg",
-                              height: 24,
-                              width: 24,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .color!
-                                    .withOpacity(0.3),
-                                BlendMode.srcIn,
-                              ),
-                            ),
+                          prefixIcon: FormFieldSvgIcon(
+                            iconPath: "assets/icons/Location.svg",
                           ),
                         ),
                       ),
                       const SizedBox(height: defaultPadding),
                       TextFormField(
-                        onSaved: (companyName) {
-                          // Company Name
+                        controller: _postcodeController,
+                        onSaved: (value) {
+                          // Postcode/ ZIP
                         },
+                        validator: (value) => postCodeValidator(value),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
-                        inputFormatters: [],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         decoration: InputDecoration(
                           hintText: "Postcode/ ZIP",
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding * 0.75,
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/PostCard.svg",
-                              height: 24,
-                              width: 24,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .color!
-                                    .withOpacity(0.3),
-                                BlendMode.srcIn,
-                              ),
-                            ),
+                          prefixIcon: FormFieldSvgIcon(
+                            iconPath: "assets/icons/PostCard.svg",
                           ),
                         ),
                       ),
                       const SizedBox(height: defaultPadding),
                       TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Phone number is required';
-                          }
-                        },
+                        controller: _phoneController,
+                        validator: (value) => phoneValidator(value),
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [
@@ -278,42 +233,34 @@ class _AddressFormState extends State<AddressForm> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: defaultPadding,
-                                  vertical: defaultPadding * 0.75,
-                                ),
-                                child: SvgPicture.asset(
-                                  "assets/icons/Phone.svg",
-                                  height: 24,
-                                  width: 24,
-                                  colorFilter: ColorFilter.mode(
-                                    Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .color!
-                                        .withOpacity(0.3),
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
+                                    horizontal: defaultPadding),
+                                child: FormFieldSvgIcon(
+                                    iconPath: "assets/icons/Phone.svg"),
                               ),
-                              Container(
-                                color: lightGreyColor,
-                                child: CountryCodePicker(
-                                  showFlag: false,
-                                  boxDecoration: BoxDecoration(
+                              CountryCodePicker(
+                                padding: EdgeInsets.zero,
+                                showFlag: false,
+                                boxDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    defaultBorderRadius,
+                                  ),
+                                  color: whiteColor,
+                                ),
+                                dialogSize: Size.fromHeight(400),
+                                showDropDownButton: true,
+                                onChanged: print,
+                                showCountryOnly: false,
+                                showOnlyCountryWhenClosed: false,
+                                alignLeft: false,
+                                initialSelection: '+971',
+                                searchDecoration: InputDecoration(
+                                  fillColor: lightGreyColor,
+                                  border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(
-                                        defaultBorderRadius),
-                                    color: lightGreyColor,
+                                      defaultBorderRadius,
+                                    ),
                                   ),
-                                  backgroundColor: blackColor,
-                                  dialogSize: Size.fromHeight(400),
-                                  onChanged: print,
-                                  showCountryOnly: false,
-                                  showOnlyCountryWhenClosed: false,
-                                  alignLeft: false,
-                                  initialSelection: '+971',
-                                  searchDecoration: InputDecoration(
-                                    hintText: 'Search country',
-                                  ),
+                                  hintText: 'Search country',
                                 ),
                               ),
                             ],
@@ -364,6 +311,15 @@ class _AddressFormState extends State<AddressForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+                    print('Saved');
+                    print(_firstNameController.text);
+                    print(_lastNameController.text);
+                    print(_companyNameController.text);
+                    print(_address1Controller.text);
+                    print(_address2Controller.text);
+                    print(_cityController.text);
+                    print(_postcodeController.text);
+                    print(_phoneController.text);
                   }
                 },
                 child: const Text('Save'),

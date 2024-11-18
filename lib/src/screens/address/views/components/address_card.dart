@@ -86,13 +86,40 @@ class AddressCard extends StatelessWidget {
           Positioned(
             bottom: 0,
             right: 0,
-            child: IconButton(
+            child: PopupMenuButton<String>(
+              color: whiteColor,
               icon: SvgPicture.asset(
                 "assets/icons/DotsV.svg",
                 height: 24,
                 width: 24,
               ),
-              onPressed: () {},
+              onSelected: (String result) {
+                if (result == 'edit') {
+                  // Handle edit address
+                } else if (result == 'delete') {
+                  // Handle delete address
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit),
+                      Text('Edit Address'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete),
+                      Text('Delete Address'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
           if (isDefault)
