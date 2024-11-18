@@ -4,6 +4,7 @@ import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
+import 'package:shop/src/screens/address/views/components/addresses_skelton.dart';
 
 class AddressesScreen extends StatefulWidget {
   const AddressesScreen({super.key});
@@ -97,26 +98,34 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   ? Center(
                       child: Text('No addresses'),
                     )
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(defaultPadding),
-                      itemCount: addresses.length,
-                      itemBuilder: (context, index) {
-                        final address = addresses[index];
-                        return Column(
-                          children: [
-                            AddressCard(
-                              title: address['title'],
-                              name: address['name'],
-                              address: address['address'],
-                              phone: address['phone'],
-                              countryCode: address['countryCode'],
-                              isDefault: address['isDefault'],
-                            ),
-                            const SizedBox(height: 16),
-                          ],
-                        );
-                      },
-                    ),
+                  : FutureBuilder(
+                      future: Future.delayed(Duration(milliseconds: 500)),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return ListView.builder(
+                            padding: const EdgeInsets.all(defaultPadding),
+                            itemCount: addresses.length,
+                            itemBuilder: (context, index) {
+                              final address = addresses[index];
+                              return Column(
+                                children: [
+                                  AddressCard(
+                                    title: address['title'],
+                                    name: address['name'],
+                                    address: address['address'],
+                                    phone: address['phone'],
+                                    countryCode: address['countryCode'],
+                                    isDefault: address['isDefault'],
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          return AddressesSkelton();
+                        }
+                      }),
             ),
           ],
         ),
