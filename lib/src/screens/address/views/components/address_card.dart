@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
 
 class AddressCard extends StatelessWidget {
   final String title;
@@ -102,10 +103,19 @@ class AddressCard extends StatelessWidget {
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 const PopupMenuItem<String>(
+                  value: 'default',
+                  child: Row(
+                    children: [
+                      FormFieldSvgIcon(iconPath: 'assets/icons/Edit-Bold.svg'),
+                      Text('Set as Default Address'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(Icons.edit),
+                      FormFieldSvgIcon(iconPath: 'assets/icons/Edit-Bold.svg'),
                       Text('Edit Address'),
                     ],
                   ),
@@ -114,7 +124,7 @@ class AddressCard extends StatelessWidget {
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(Icons.delete),
+                      FormFieldSvgIcon(iconPath: 'assets/icons/Delete.svg'),
                       Text('Delete Address'),
                     ],
                   ),
