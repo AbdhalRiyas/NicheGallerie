@@ -15,14 +15,16 @@ class AddressForm extends StatefulWidget {
 class _AddressFormState extends State<AddressForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _companyNameController = TextEditingController();
-  TextEditingController _address1Controller = TextEditingController();
-  TextEditingController _address2Controller = TextEditingController();
-  TextEditingController _cityController = TextEditingController();
-  TextEditingController _postcodeController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _companyNameController = TextEditingController();
+  final TextEditingController _address1Controller = TextEditingController();
+  final TextEditingController _address2Controller = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _postcodeController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _stateController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
 
   nameValidator(String? value) {
     if (value == null ||
@@ -147,7 +149,10 @@ class _AddressFormState extends State<AddressForm> {
                         ),
                       ),
                       const SizedBox(height: defaultPadding),
-                      CountryStatePicker(),
+                      CountryStatePicker(
+                        stateController: _stateController,
+                        countryController: _countryController,
+                      ),
                       const SizedBox(height: defaultPadding),
                       TextFormField(
                         controller: _address1Controller,
