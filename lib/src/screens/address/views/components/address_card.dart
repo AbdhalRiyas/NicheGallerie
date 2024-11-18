@@ -102,29 +102,83 @@ class AddressCard extends StatelessWidget {
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'default',
                   child: Row(
                     children: [
-                      FormFieldSvgIcon(iconPath: 'assets/icons/Edit-Bold.svg'),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: defaultPadding * 0.5,
+                          horizontal: defaultPadding / 2,
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/icons/Star.svg',
+                          height: 24,
+                          width: 24,
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .color!
+                                .withOpacity(0.3),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
                       Text('Set as Default Address'),
                     ],
                   ),
                 ),
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'edit',
                   child: Row(
                     children: [
-                      FormFieldSvgIcon(iconPath: 'assets/icons/Edit-Bold.svg'),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: defaultPadding * 0.5,
+                          horizontal: defaultPadding / 2,
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/icons/Edit Square.svg',
+                          height: 24,
+                          width: 24,
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .color!
+                                .withOpacity(0.3),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
                       Text('Edit Address'),
                     ],
                   ),
                 ),
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'delete',
                   child: Row(
                     children: [
-                      FormFieldSvgIcon(iconPath: 'assets/icons/Delete.svg'),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: defaultPadding * 0.5,
+                          horizontal: defaultPadding / 2,
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/icons/Delete.svg',
+                          height: 24,
+                          width: 24,
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .color!
+                                .withOpacity(0.3),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
                       Text('Delete Address'),
                     ],
                   ),

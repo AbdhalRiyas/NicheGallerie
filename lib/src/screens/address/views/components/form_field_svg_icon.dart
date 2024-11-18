@@ -15,7 +15,6 @@ class FormFieldSvgIcon extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: defaultPadding * 0.75,
-        horizontal: defaultPadding * 0.5,
       ),
       child: SvgPicture.asset(
         iconPath,

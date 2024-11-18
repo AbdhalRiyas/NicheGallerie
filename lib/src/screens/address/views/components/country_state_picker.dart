@@ -117,7 +117,7 @@ class CountryStatePicker extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
                   field.errorText ?? '',
-                  style: TextStyle(color: errorColor, fontSize: 12),
+                  style: TextStyle(color: Colors.red[700], fontSize: 12),
                 ),
               ),
           ],
