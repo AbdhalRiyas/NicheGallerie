@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
+import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
 
 import 'components/cart_product.dart';
 
@@ -97,6 +99,15 @@ class _CartScreenState extends State<CartScreen> {
     )
   ];
 
+  void _onCouponCodePressed() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CouponPopup(couponController: _couponController);
+      },
+    );
+  }
+
   double calculateSubtotal() {
     return products.fold(0, (sum, product) => sum + product.price);
   }
@@ -167,36 +178,7 @@ class _CartScreenState extends State<CartScreen> {
                     padding:
                         const EdgeInsets.symmetric(vertical: defaultPadding),
                     child: InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text('Coupon Code'),
-                              content: TextField(
-                                controller: _couponController,
-                                decoration: InputDecoration(
-                                  hintText: 'Enter your coupon code',
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Apply'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+                      onTap: _onCouponCodePressed,
                       child: Container(
                         padding: EdgeInsets.all(defaultPadding),
                         decoration: BoxDecoration(
