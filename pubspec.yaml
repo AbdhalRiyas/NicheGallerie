@@ -22,6 +22,9 @@ dependencies:
   url_launcher: ^6.3.1
   http: ^1.2.2
   flutter_dotenv: ^5.2.1
+  mobkit_dashed_border: ^0.0.7
+  country_code_picker: ^3.1.0
+  csc_picker: ^0.2.7
 
 dev_dependencies:
   flutter_test:
