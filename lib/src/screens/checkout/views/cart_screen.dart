@@ -160,11 +160,15 @@ class _CartScreenState extends State<CartScreen> {
                                       decoration: TextDecoration.lineThrough,
                                     ),
                                   ),
-                                // ProductQuantity(
-                                //   numOfItem: 0,
-                                //   onIncrement: () {},
-                                //   onDecrement: () {},
-                                // )
+                                Transform.scale(
+                                  scale: 0.7,
+                                  child: ProductQuantity(
+                                    showLabel: false,
+                                    numOfItem: 0,
+                                    onIncrement: () {},
+                                    onDecrement: () {},
+                                  ),
+                                )
                               ],
                             ),
                           ],
