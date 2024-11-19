@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/screens/product/views/components/product_quantity.dart';
+import 'package:shop/src/models/product.dart';
 
-import '../../../models/product.dart';
+import 'components/cart_product.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -14,6 +13,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  TextEditingController _couponController = TextEditingController();
   final List<Product> products = [
     Product(
       id: 1,
@@ -112,7 +112,30 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return products.isEmpty
-        ? Text("No Items")
+        ? Center(
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                "assets/icons/Empty-Cart.svg",
+                height: 100,
+                width: 100,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .color!
+                      .withOpacity(0.3),
+                  BlendMode.srcIn,
+                ),
+              ),
+              SizedBox(height: defaultPadding),
+              Text(
+                "Uh oh! Your cart is empty",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          ))
         : SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(defaultPadding),
@@ -124,118 +147,84 @@ class _CartScreenState extends State<CartScreen> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   SizedBox(height: defaultPadding / 2),
-                  ...List.generate(products.length, (index) {
-                    final product = products[index];
-                    return Dismissible(
-                      key: Key(product.id.toString()),
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: defaultPadding),
-                        child: Icon(Icons.delete, color: Colors.white),
-                      ),
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {
+                  ...List.generate(
+                    products.length,
+                    (index) => CartProduct(
+                      product: products[index],
+                      onDismissed: () {
                         setState(() {
                           products.removeAt(index);
                         });
                       },
-                      child: ListTile(
-                        leading: ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(defaultBorderRadius),
-                          child: CachedNetworkImage(
-                            imageUrl: product.images[0],
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                            errorWidget: (context, url, error) => Container(
-                              width: 60,
-                              height: 60,
-                              color: Colors.grey[200],
-                              child: Icon(Icons.image, color: Colors.grey),
-                            ),
-                          ),
-                        ),
-                        title: Text(
-                          product.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Text(
-                            //   product.shortDescription,
-                            //   maxLines: 1,
-                            //   overflow: TextOverflow.ellipsis,
-                            // ),
-                            // SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Text(
-                                  '\$${product.price.toStringAsFixed(2)}',
-                                ),
-                                SizedBox(width: 8),
-                                if (product.onSale)
-                                  Text(
-                                    '\$${product.regularPrice.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                  ),
-                                Transform.scale(
-                                  scale: 0.7,
-                                  child: ProductQuantity(
-                                    showLabel: false,
-                                    numOfItem: 0,
-                                    onIncrement: () {},
-                                    onDecrement: () {},
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
+                    ),
+                  ),
                   SizedBox(height: defaultPadding / 2),
                   Text(
-                    'Your coupon code',
+                    'Your Coupon Code',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: defaultPadding / 2),
-                    child: Container(
-                      padding: EdgeInsets.all(defaultPadding),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius:
-                            BorderRadius.circular(defaultBorderRadius),
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            "assets/icons/Tag.svg",
-                            height: 24,
-                            width: 24,
-                            colorFilter: ColorFilter.mode(
-                              Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .color!
-                                  .withOpacity(0.3),
-                              BlendMode.srcIn,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: defaultPadding),
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Coupon Code'),
+                              content: TextField(
+                                controller: _couponController,
+                                decoration: InputDecoration(
+                                  hintText: 'Enter your coupon code',
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Apply'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(defaultPadding),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius:
+                              BorderRadius.circular(defaultBorderRadius),
+                        ),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/Tag.svg",
+                              height: 24,
+                              width: 24,
+                              colorFilter: ColorFilter.mode(
+                                Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .color!
+                                    .withOpacity(0.3),
+                                BlendMode.srcIn,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Type coupon code',
-                          ),
-                        ],
+                            SizedBox(width: 8),
+                            Text(
+                              'Type coupon code',
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -246,13 +235,19 @@ class _CartScreenState extends State<CartScreen> {
                       Text("Order Summary",
                           style: Theme.of(context).textTheme.titleMedium),
                       SizedBox(
-                        height: defaultPadding / 2,
+                        height: defaultPadding,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Subtotal'),
-                          Text('\$${calculateSubtotal().toStringAsFixed(2)}'),
+                          Text(
+                            '\$${calculateSubtotal().toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: blackColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 8),
@@ -262,7 +257,10 @@ class _CartScreenState extends State<CartScreen> {
                           Text('Shipping Fee'),
                           Text(
                             'Free',
-                            style: TextStyle(color: Colors.green),
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -271,7 +269,13 @@ class _CartScreenState extends State<CartScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Total (Include of VAT)'),
-                          Text('\$${calculateTotal().toStringAsFixed(2)}'),
+                          Text(
+                            '\$${calculateTotal().toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: blackColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 8),
@@ -279,7 +283,13 @@ class _CartScreenState extends State<CartScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Estimated VAT'),
-                          Text('\$${calculateVAT().toStringAsFixed(2)}'),
+                          Text(
+                            '\$${calculateVAT().toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: blackColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ],
