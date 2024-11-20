@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/screens/address/views/components/address_popup_menu.dart';
 
 class AddressCard extends StatelessWidget {
   final String title;
@@ -86,104 +85,7 @@ class AddressCard extends StatelessWidget {
           Positioned(
             bottom: 0,
             right: 0,
-            child: PopupMenuButton<String>(
-              color: whiteColor,
-              icon: SvgPicture.asset(
-                "assets/icons/DotsV.svg",
-                height: 24,
-                width: 24,
-              ),
-              onSelected: (String result) {
-                if (result == 'edit') {
-                  // Handle edit address
-                } else if (result == 'delete') {
-                  // Handle delete address
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'default',
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: defaultPadding * 0.5,
-                          horizontal: defaultPadding / 2,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/Star.svg',
-                          height: 24,
-                          width: 24,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .color!
-                                .withOpacity(0.3),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                      Text('Set as Default Address'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'edit',
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: defaultPadding * 0.5,
-                          horizontal: defaultPadding / 2,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/Edit Square.svg',
-                          height: 24,
-                          width: 24,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .color!
-                                .withOpacity(0.3),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                      Text('Edit Address'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: defaultPadding * 0.5,
-                          horizontal: defaultPadding / 2,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/Delete.svg',
-                          height: 24,
-                          width: 24,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .color!
-                                .withOpacity(0.3),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                      Text('Delete Address'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: AddressPopupMenu(),
           ),
           if (isDefault)
             Positioned(
