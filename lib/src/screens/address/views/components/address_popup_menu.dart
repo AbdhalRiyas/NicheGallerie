@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/screens/address/views/components/popup_menu_item_svg.dart';
 
 class AddressPopupMenu extends StatelessWidget {
   const AddressPopupMenu({
@@ -30,24 +31,8 @@ class AddressPopupMenu extends StatelessWidget {
           value: 'default',
           child: Row(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: defaultPadding * 0.5,
-                  horizontal: defaultPadding / 2,
-                ),
-                child: SvgPicture.asset(
-                  'assets/icons/Star.svg',
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .color!
-                        .withOpacity(0.3),
-                    BlendMode.srcIn,
-                  ),
-                ),
+              PopupMenuItemSvgIcon(
+                iconPath: 'assets/icons/Star.svg',
               ),
               Text('Set as Default Address'),
             ],
@@ -57,24 +42,8 @@ class AddressPopupMenu extends StatelessWidget {
           value: 'edit',
           child: Row(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: defaultPadding * 0.5,
-                  horizontal: defaultPadding / 2,
-                ),
-                child: SvgPicture.asset(
-                  'assets/icons/Edit Square.svg',
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .color!
-                        .withOpacity(0.3),
-                    BlendMode.srcIn,
-                  ),
-                ),
+              PopupMenuItemSvgIcon(
+                iconPath: 'assets/icons/Edit Square.svg',
               ),
               Text('Edit Address'),
             ],
@@ -84,24 +53,8 @@ class AddressPopupMenu extends StatelessWidget {
           value: 'delete',
           child: Row(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: defaultPadding * 0.5,
-                  horizontal: defaultPadding / 2,
-                ),
-                child: SvgPicture.asset(
-                  'assets/icons/Delete.svg',
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .color!
-                        .withOpacity(0.3),
-                    BlendMode.srcIn,
-                  ),
-                ),
+              PopupMenuItemSvgIcon(
+                iconPath: 'assets/icons/Delete.svg',
               ),
               Text('Delete Address'),
             ],
