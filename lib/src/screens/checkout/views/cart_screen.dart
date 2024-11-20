@@ -224,7 +224,7 @@ class _CartScreenState extends State<CartScreen> {
                         children: [
                           Text('Subtotal'),
                           Text(
-                            '\$${calculateSubtotal().toStringAsFixed(2)}',
+                            'AED ${calculateSubtotal().toStringAsFixed(2)}',
                             style: TextStyle(
                               color: blackColor,
                               fontWeight: FontWeight.bold,
@@ -252,7 +252,7 @@ class _CartScreenState extends State<CartScreen> {
                         children: [
                           Text('Total (Include of VAT)'),
                           Text(
-                            '\$${calculateTotal().toStringAsFixed(2)}',
+                            'AED ${calculateTotal().toStringAsFixed(2)}',
                             style: TextStyle(
                               color: blackColor,
                               fontWeight: FontWeight.bold,
@@ -266,7 +266,7 @@ class _CartScreenState extends State<CartScreen> {
                         children: [
                           Text('Estimated VAT'),
                           Text(
-                            '\$${calculateVAT().toStringAsFixed(2)}',
+                            'AED ${calculateVAT().toStringAsFixed(2)}',
                             style: TextStyle(
                               color: blackColor,
                               fontWeight: FontWeight.bold,
