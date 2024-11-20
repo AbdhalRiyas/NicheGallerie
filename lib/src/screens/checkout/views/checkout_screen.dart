@@ -1,10 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
-import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
-
-import 'components/cart_product.dart';
+import 'package:shop/src/screens/address/views/components/address_card.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -14,7 +12,59 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  final TextEditingController _couponController = TextEditingController();
+  String? selectedPaymentMethod;
+
+  final List<Map<String, dynamic>> paymentMethods = [
+    // {
+    //   'title': 'Cash On Delivery',
+    //   'id': 'cash',
+    //   'icon': Icons.attach_money,
+    //   'iconColor': Colors.green,
+    // },
+    // {
+    //   'title': 'Card On Delivery',
+    //   'id': 'card_delivery',
+    //   'icon': Icons.credit_card,
+    //   'iconColor': Colors.blue,
+    // },
+    {
+      'title': 'Card Payment',
+      'id': 'credit_card',
+      'icon': Icons.payment,
+      'iconColor': Colors.green,
+    },
+    {
+      'title': 'PayPal',
+      'id': 'paypal',
+      'icon': Icons.payment,
+      'iconColor': Colors.blue,
+    },
+    // {
+    //   'title': 'Amex',
+    //   'id': 'amex',
+    //   'icon': Icons.credit_card,
+    //   'iconColor': Colors.blue,
+    // },
+    // {
+    //   'title': 'Debit Card',
+    //   'id': 'debit',
+    //   'icon': Icons.credit_card,
+    //   'iconColor': Colors.black,
+    // },
+    // {
+    //   'title': 'Apple Pay',
+    //   'id': 'apple_pay',
+    //   'icon': Icons.apple,
+    //   'iconColor': Colors.black,
+    // },
+    // {
+    //   'title': 'Google Pay',
+    //   'id': 'google_pay',
+    //   'icon': Icons.g_mobiledata,
+    //   'iconColor': Colors.blue,
+    // },
+  ];
+
   final List<Product> products = [
     Product(
       id: 1,
@@ -50,10 +100,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     ),
     Product(
       id: 3,
-      name: 'Floral Sleeveless Tiered Dress',
-      permalink: 'floral-sleeveless-tiered-dress',
+      name: 'Sleeveless Tiered Dobby Dress',
+      permalink: 'sleeveless-tiered-dobby-dress',
       type: 'simple',
-      shortDescription: 'Stylish floral sleeveless dress with tiered pattern',
+      shortDescription: 'Beautiful sleeveless summer dress with tiered design',
       stockStatus: 'instock',
       price: 299.43,
       regularPrice: 344.33,
@@ -66,232 +116,248 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     ),
     Product(
       id: 4,
-      name: 'Floral Sleeveless Tiered Dress',
-      permalink: 'floral-sleeveless-tiered-dress',
+      name: 'Printed Sleeveless Tiered Dress',
+      permalink: 'printed-sleeveless-tiered-dress',
       type: 'simple',
-      shortDescription: 'Stylish floral sleeveless dress with tiered pattern',
+      shortDescription: 'Elegant printed sleeveless dress with tiered pattern',
       stockStatus: 'instock',
       price: 299.43,
       regularPrice: 344.33,
       salePrice: 299.43,
       onSale: true,
       images: [
-        'https://example.com/dress3.jpg',
-        'https://example.com/dress3-2.jpg'
-      ],
-    ),
-    Product(
-      id: 5,
-      name: 'Floral Sleeveless Tiered Dress',
-      permalink: 'floral-sleeveless-tiered-dress',
-      type: 'simple',
-      shortDescription: 'Stylish floral sleeveless dress with tiered pattern',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress3.jpg',
-        'https://example.com/dress3-2.jpg'
+        'https://example.com/dress4.jpg',
+        'https://example.com/dress4-2.jpg'
       ],
     )
   ];
 
-  void _onCouponCodePressed() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return CouponPopup(couponController: _couponController);
-      },
-    );
-  }
-
-  double calculateSubtotal() {
-    return products.fold(0, (sum, product) => sum + product.price);
-  }
-
-  double calculateVAT() {
-    return calculateSubtotal() * 0.05; // Assuming 5% VAT
-  }
-
-  double calculateTotal() {
-    return calculateSubtotal() + calculateVAT();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: products.isEmpty
-          ? Center(
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/Empty-Cart.svg",
-                  height: 100,
-                  width: 100,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .color!
-                        .withOpacity(0.3),
-                    BlendMode.srcIn,
-                  ),
-                ),
-                SizedBox(height: defaultPadding),
-                Text(
-                  "Uh oh! Your cart is empty",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ],
-            ))
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(defaultPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Review your order',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    SizedBox(height: defaultPadding / 2),
-                    ...List.generate(
-                      products.length,
-                      (index) => CartProduct(
-                        product: products[index],
-                        onDismissed: () {
-                          setState(() {
-                            products.removeAt(index);
-                          });
-                        },
+      appBar: AppBar(
+        title: const Text('Checkout'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(defaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AddressCard(
+                title: 'My home',
+                name: 'Sophi Nowakowska',
+                address: 'Zabiniec 12/222, 31-215 Cracow, Poland',
+                phone: '+79 123 456',
+                countryCode: '789',
+              ),
+              SizedBox(height: defaultPadding),
+              Text(
+                'Payment method',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(height: defaultPadding / 2),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: paymentMethods.length,
+                itemBuilder: (context, index) {
+                  final method = paymentMethods[index];
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius:
+                            BorderRadius.circular(defaultBorderRadius),
+                      ),
+                      child: Icon(
+                        method['icon'],
+                        color: method['iconColor'],
                       ),
                     ),
-                    SizedBox(height: defaultPadding / 2),
-                    Text(
-                      'Your Coupon Code',
-                      style: Theme.of(context).textTheme.titleMedium,
+                    title: Text(
+                      method['title'],
+                      style: TextStyle(
+                        color: selectedPaymentMethod == method['id']
+                            ? Colors.black
+                            : greyColor,
+                        fontSize: 16,
+                      ),
                     ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: defaultPadding),
-                      child: InkWell(
-                        onTap: _onCouponCodePressed,
-                        child: Container(
-                          padding: EdgeInsets.all(defaultPadding),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius:
-                                BorderRadius.circular(defaultBorderRadius),
-                          ),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                "assets/icons/Tag.svg",
-                                height: 24,
-                                width: 24,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .color!
-                                      .withOpacity(0.3),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Type coupon code',
-                              ),
-                            ],
-                          ),
+                    trailing: Checkbox(
+                      activeColor: primaryColor,
+                      value: selectedPaymentMethod == method['id'],
+                      onChanged: (value) {
+                        setState(() {
+                          selectedPaymentMethod = method['id'];
+                        });
+                      },
+                    ),
+                    onTap: () {
+                      setState(() {
+                        selectedPaymentMethod = method['id'];
+                      });
+                    },
+                  );
+                },
+              ),
+              SizedBox(height: defaultPadding),
+              Text(
+                'Order Summary',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(height: defaultPadding / 2),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Subtotal'),
+                      Text(
+                        'AED 1,200',
+                        style: TextStyle(
+                          color: blackColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Shipping Fee'),
+                      Text(
+                        'Free',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Total (Include of VAT)'),
+                      Text(
+                        'AED 1,200',
+                        style: TextStyle(
+                          color: blackColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Estimated VAT'),
+                      Text(
+                        'AED 0',
+                        style: TextStyle(
+                          color: blackColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: defaultPadding),
+              Text(
+                'Review your order',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(height: defaultPadding / 2),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(defaultBorderRadius),
+                      child: CachedNetworkImage(
+                        imageUrl: product.images[0],
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Container(
+                          width: 60,
+                          height: 60,
+                          color: Colors.grey[200],
+                          child: Icon(Icons.image, color: Colors.grey),
                         ),
                       ),
                     ),
-                    SizedBox(height: defaultPadding / 2),
-                    Column(
+                    title: Text(
+                      product.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Order Summary",
-                            style: Theme.of(context).textTheme.titleMedium),
-                        SizedBox(
-                          height: defaultPadding,
-                        ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Subtotal'),
                             Text(
-                              '\$${calculateSubtotal().toStringAsFixed(2)}',
+                              'AED ${product.price.toStringAsFixed(2)}',
                               style: TextStyle(
-                                color: blackColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor),
                             ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Shipping Fee'),
-                            Text(
-                              'Free',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
+                            SizedBox(width: 8),
+                            if (product.onSale)
+                              Text(
+                                product.regularPrice.toStringAsFixed(2),
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Total (Include of VAT)'),
-                            Text(
-                              '\$${calculateTotal().toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Estimated VAT'),
-                            Text(
-                              '\$${calculateVAT().toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
                           ],
                         ),
                       ],
                     ),
-                    SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Checkout',
-                        ),
+                    trailing: Text(
+                      'x1',
+                      style: TextStyle(
+                        color: blackColor60,
+                        fontSize: 14,
                       ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+        child: SizedBox(
+          width: double.infinity,
+          child: FloatingActionButton.extended(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(defaultBorderRadius),
             ),
+            backgroundColor: primaryColor,
+            foregroundColor: Colors.white,
+            onPressed: () {},
+            label: const Text('Continue'),
+          ),
+        ),
+      ),
     );
   }
 }
