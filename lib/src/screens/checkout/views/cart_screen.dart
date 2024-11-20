@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
-import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
+import 'package:shop/src/screens/checkout/views/checkout_screen.dart';
 import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
 
 import 'components/cart_product.dart';
@@ -15,7 +15,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  TextEditingController _couponController = TextEditingController();
+  final TextEditingController _couponController = TextEditingController();
   final List<Product> products = [
     Product(
       id: 1,
@@ -281,7 +281,12 @@ class _CartScreenState extends State<CartScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CheckoutScreen()));
+                      },
                       child: Text(
                         'Checkout',
                       ),
