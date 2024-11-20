@@ -14,6 +14,7 @@ class AppTheme {
       primarySwatch: primaryMaterialColor,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: Colors.white,
+      canvasColor: Colors.white,
       iconTheme: const IconThemeData(color: sandDuneColor),
       textTheme: const TextTheme(
         bodyMedium: TextStyle(color: blackColor40),
@@ -28,6 +29,9 @@ class AppTheme {
       appBarTheme: appBarLightTheme,
       scrollbarTheme: scrollbarThemeData,
       dataTableTheme: dataTableLightThemeData,
+      dialogTheme: DialogTheme.of(context).copyWith(
+        backgroundColor: Colors.white,
+      ),
     );
   }
 

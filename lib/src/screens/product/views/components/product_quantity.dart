@@ -9,21 +9,25 @@ class ProductQuantity extends StatelessWidget {
     required this.numOfItem,
     required this.onIncrement,
     required this.onDecrement,
+    this.showLabel = true,
   });
 
   final int numOfItem;
   final VoidCallback onIncrement, onDecrement;
+  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Quantity",
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: defaultPadding),
+        if (showLabel) ...[
+          Text(
+            "Quantity",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: defaultPadding),
+        ],
         Row(
           children: [
             SizedBox(
