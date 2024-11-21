@@ -161,6 +161,7 @@ class _CartScreenState extends State<CartScreen> {
                   ...List.generate(
                     products.length,
                     (index) => CartProduct(
+                      key: Key(products[index].id.toString()),
                       product: products[index],
                       onDismissed: () {
                         setState(() {
