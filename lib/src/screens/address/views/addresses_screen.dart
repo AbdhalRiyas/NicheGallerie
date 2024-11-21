@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
 import 'package:shop/src/screens/address/views/components/addresses_skelton.dart';
@@ -64,33 +63,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
               padding: EdgeInsets.all(
                 defaultPadding,
               ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  border: DashedBorder.fromBorderSide(
-                    dashLength: 5,
-                    side: BorderSide(color: whileColor80, width: 2),
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(defaultBorderRadius),
-                  ),
-                ),
-                child: Center(
-                  child: ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/Location.svg",
-                          height: 24,
-                          width: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text('Add new address'),
-                      ],
-                    ),
-                    onTap: _addNewAddress,
-                  ),
-                ),
+              child: AddressButton(
+                text: 'Add new address',
+                onTap: _addNewAddress,
               ),
             ),
             Expanded(
