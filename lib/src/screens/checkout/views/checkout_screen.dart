@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
+import 'package:shop/src/screens/address/views/components/address_form.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -15,54 +18,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String? selectedPaymentMethod;
 
   final List<Map<String, dynamic>> paymentMethods = [
-    // {
-    //   'title': 'Cash On Delivery',
-    //   'id': 'cash',
-    //   'icon': Icons.attach_money,
-    //   'iconColor': Colors.green,
-    // },
-    // {
-    //   'title': 'Card On Delivery',
-    //   'id': 'card_delivery',
-    //   'icon': Icons.credit_card,
-    //   'iconColor': Colors.blue,
-    // },
     {
       'title': 'Card Payment',
       'id': 'credit_card',
-      'icon': Icons.payment,
-      'iconColor': Colors.green,
+      'svg': 'https://www.svgrepo.com/show/328136/generic.svg',
     },
     {
       'title': 'PayPal',
       'id': 'paypal',
-      'icon': Icons.payment,
-      'iconColor': Colors.blue,
+      'svg': 'https://www.svgrepo.com/show/328122/paypal.svg',
     },
-    // {
-    //   'title': 'Amex',
-    //   'id': 'amex',
-    //   'icon': Icons.credit_card,
-    //   'iconColor': Colors.blue,
-    // },
-    // {
-    //   'title': 'Debit Card',
-    //   'id': 'debit',
-    //   'icon': Icons.credit_card,
-    //   'iconColor': Colors.black,
-    // },
-    // {
-    //   'title': 'Apple Pay',
-    //   'id': 'apple_pay',
-    //   'icon': Icons.apple,
-    //   'iconColor': Colors.black,
-    // },
-    // {
-    //   'title': 'Google Pay',
-    //   'id': 'google_pay',
-    //   'icon': Icons.g_mobiledata,
-    //   'iconColor': Colors.blue,
-    // },
   ];
 
   final List<Product> products = [
@@ -144,6 +109,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              AddressButton(
+                  text: "Select Address",
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AddressForm();
+                      },
+                    );
+                  }),
+              SizedBox(height: defaultPadding),
               AddressCard(
                 title: 'My home',
                 name: 'Sophi Nowakowska',
@@ -162,43 +138,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: paymentMethods.length,
                 itemBuilder: (context, index) {
-                  final method = paymentMethods[index];
+                  final paymentMethod = paymentMethods[index];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Container(
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
                         borderRadius:
                             BorderRadius.circular(defaultBorderRadius),
                       ),
-                      child: Icon(
-                        method['icon'],
-                        color: method['iconColor'],
+                      child: SvgPicture.network(
+                        paymentMethod['svg'],
+                        width: 24,
+                        height: 24,
                       ),
                     ),
                     title: Text(
-                      method['title'],
+                      paymentMethod['title'],
                       style: TextStyle(
-                        color: selectedPaymentMethod == method['id']
-                            ? Colors.black
+                        color: selectedPaymentMethod == paymentMethod['id']
+                            ? blackColor
                             : greyColor,
-                        fontSize: 16,
                       ),
                     ),
-                    trailing: Checkbox(
-                      activeColor: primaryColor,
-                      value: selectedPaymentMethod == method['id'],
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPaymentMethod = method['id'];
-                        });
-                      },
+                    trailing: Icon(
+                      selectedPaymentMethod == paymentMethod['id']
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: selectedPaymentMethod == paymentMethod['id']
+                          ? primaryColor
+                          : Colors.grey,
                     ),
                     onTap: () {
                       setState(() {
-                        selectedPaymentMethod = method['id'];
+                        selectedPaymentMethod = paymentMethod['id'];
                       });
                     },
                   );
@@ -338,6 +312,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   );
                 },
               ),
+              SizedBox(height: defaultPadding * 4),
             ],
           ),
         ),
