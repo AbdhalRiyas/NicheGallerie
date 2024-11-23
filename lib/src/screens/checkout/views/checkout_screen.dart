@@ -5,7 +5,7 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
-import 'package:shop/src/screens/address/views/components/address_dialog.dart';
+import 'package:shop/src/screens/checkout/views/components/select_address_dialog.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -115,9 +115,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return AddressDialog(
-                          isSelect: true,
-                        );
+                        return SelectAddressDialog();
                       },
                     );
                   }),
@@ -128,6 +126,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 address: 'Zabiniec 12/222, 31-215 Cracow, Poland',
                 phone: '+79 123 456',
                 countryCode: '789',
+                isSelected: false,
+                showMenu: false,
               ),
               SizedBox(height: defaultPadding),
               Text(
