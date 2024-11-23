@@ -15,6 +15,7 @@ class SearchForm extends StatelessWidget {
     this.onFieldSubmitted,
     this.focusNode,
     this.autofocus = false,
+    this.hintText = 'Search',
   });
 
   final GlobalKey<FormState>? formKey;
@@ -24,6 +25,7 @@ class SearchForm extends StatelessWidget {
   final VoidCallback? onTabFilter;
   final FocusNode? focusNode;
   final bool autofocus;
+  final String hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class SearchForm extends StatelessWidget {
         validator: validator,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
-          hintText: "Find something...",
+          hintText: hintText,
           filled: false,
           border: secodaryOutlineInputBorder(context),
           enabledBorder: secodaryOutlineInputBorder(context),
