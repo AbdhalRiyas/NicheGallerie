@@ -115,7 +115,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return AddressDialog();
+                        return AddressDialog(
+                          isSelect: true,
+                        );
                       },
                     );
                   }),

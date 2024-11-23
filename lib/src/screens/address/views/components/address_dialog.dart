@@ -3,13 +3,21 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
 
 class AddressDialog extends StatefulWidget {
-  const AddressDialog({super.key});
+  const AddressDialog({super.key, this.isSelect = false});
+
+  final bool isSelect;
 
   @override
   State<AddressDialog> createState() => _AddressDialogState();
 }
 
 class _AddressDialogState extends State<AddressDialog> {
+  final List<String> addresses = [
+    'Address 1',
+    'Address 2',
+    'Address 3',
+  ];
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -36,49 +44,67 @@ class _AddressDialogState extends State<AddressDialog> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
         ),
-        title: const Text('Add new address'),
+        title: Text(widget.isSelect ? 'Select an address' : 'Add new address'),
         content: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
-            child: AddressForm(
-              formKey: _formKey,
-              firstNameController: _firstNameController,
-              lastNameController: _lastNameController,
-              companyNameController: _companyNameController,
-              address1Controller: _address1Controller,
-              address2Controller: _address2Controller,
-              cityController: _cityController,
-              postcodeController: _postcodeController,
-              phoneController: _phoneController,
-              stateController: _stateController,
-              countryController: _countryController,
-            ),
+            child: widget.isSelect
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: addresses.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(addresses[index]),
+                        onTap: () {
+                          // Handle address selection
+                          print('Selected: ${addresses[index]}');
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    },
+                  )
+                : AddressForm(
+                    formKey: _formKey,
+                    firstNameController: _firstNameController,
+                    lastNameController: _lastNameController,
+                    companyNameController: _companyNameController,
+                    address1Controller: _address1Controller,
+                    address2Controller: _address2Controller,
+                    cityController: _cityController,
+                    postcodeController: _postcodeController,
+                    phoneController: _phoneController,
+                    stateController: _stateController,
+                    countryController: _countryController,
+                  ),
           ),
         ),
         actions: <Widget>[
           Column(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  print('Saved');
-                  print(_firstNameController.text);
-                  print(_lastNameController.text);
-                  print(_companyNameController.text);
-                  print(_address1Controller.text);
-                  print(_address2Controller.text);
-                  print(_cityController.text);
-                  print(_postcodeController.text);
-                  print(_phoneController.text);
-                  print(_stateController.text);
-                  print(_countryController.text);
-                },
-                child: const Text('Save'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
+              if (!widget.isSelect)
+                ElevatedButton(
+                  onPressed: () {
+                    print('Saved');
+                    print(_firstNameController.text);
+                    print(_lastNameController.text);
+                    print(_companyNameController.text);
+                    print(_address1Controller.text);
+                    print(_address2Controller.text);
+                    print(_cityController.text);
+                    print(_postcodeController.text);
+                    print(_phoneController.text);
+                    print(_stateController.text);
+                    print(_countryController.text);
+                  },
+                  child: Text('Save'),
+                ),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
               ),
             ],
           ),
