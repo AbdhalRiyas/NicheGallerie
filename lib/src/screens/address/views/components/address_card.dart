@@ -9,6 +9,10 @@ class AddressCard extends StatelessWidget {
   final String phone;
   final String countryCode;
   final bool isDefault;
+  final bool fromSelect;
+  final bool? isSelected;
+  final bool? showMenu;
+  final VoidCallback? onTap;
 
   const AddressCard({
     super.key,
@@ -18,15 +22,19 @@ class AddressCard extends StatelessWidget {
     required this.phone,
     required this.countryCode,
     this.isDefault = false,
+    this.fromSelect = false,
+    this.isSelected = false,
+    this.showMenu = true,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget cardContent = Container(
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,
-          color: isDefault ? primaryColor : greyColor,
+          color: isDefault || isSelected! ? primaryColor : greyColor,
         ),
         borderRadius: BorderRadius.circular(defaultBorderRadius),
       ),
@@ -83,9 +91,19 @@ class AddressCard extends StatelessWidget {
             ),
           ),
           Positioned(
+            top: fromSelect ? 0 : null,
             bottom: 0,
-            right: 0,
-            child: AddressPopupMenu(),
+            right: fromSelect ? 5 : 0,
+            child: fromSelect
+                ? Icon(
+                    isSelected!
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked,
+                    color: isSelected! ? primaryColor : blackColor60,
+                  )
+                : showMenu!
+                    ? AddressPopupMenu()
+                    : const SizedBox.shrink(),
           ),
           if (isDefault)
             Positioned(
@@ -115,5 +133,15 @@ class AddressCard extends StatelessWidget {
         ],
       ),
     );
+
+    if (fromSelect) {
+      cardContent = InkWell(
+        onTap: () {
+          onTap!();
+        },
+        child: cardContent,
+      );
+    }
+    return cardContent;
   }
 }
