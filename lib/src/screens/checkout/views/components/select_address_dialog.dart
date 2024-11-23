@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
+import 'package:shop/src/screens/address/views/components/address_dialog.dart';
 
 class SelectAddressDialog extends StatefulWidget {
   const SelectAddressDialog({super.key});
@@ -47,28 +48,46 @@ class _SelectAddressDialogState extends State<SelectAddressDialog> {
       title: const Text('Select Address'),
       content: SizedBox(
         width: double.maxFinite,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: addresses.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-              child: AddressCard(
-                title: addresses[index]['title'],
-                name: addresses[index]['name'],
-                address: addresses[index]['address'],
-                phone: addresses[index]['phone'],
-                countryCode: addresses[index]['countryCode'],
-                fromSelect: true,
-                isSelected: _selectedIndex == index,
-                onTap: () {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
-              ),
-            );
-          },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AddressDialog();
+                  },
+                );
+              },
+              child: const Text('Add New Address'),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: addresses.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                  child: AddressCard(
+                    title: addresses[index]['title'],
+                    name: addresses[index]['name'],
+                    address: addresses[index]['address'],
+                    phone: addresses[index]['phone'],
+                    countryCode: addresses[index]['countryCode'],
+                    fromSelect: true,
+                    isSelected: _selectedIndex == index,
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
       actions: <Widget>[
