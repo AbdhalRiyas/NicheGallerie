@@ -95,11 +95,14 @@ class AddressCard extends StatelessWidget {
             bottom: 0,
             right: fromSelect ? 5 : 0,
             child: fromSelect
-                ? Icon(
-                    isSelected!
-                        ? Icons.radio_button_checked
-                        : Icons.radio_button_unchecked,
-                    color: isSelected! ? primaryColor : blackColor60,
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      isSelected!
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: isSelected! ? primaryColor : blackColor60,
+                    ),
                   )
                 : showMenu!
                     ? AddressPopupMenu()

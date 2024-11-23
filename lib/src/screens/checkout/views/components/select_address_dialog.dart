@@ -45,10 +45,20 @@ class _SelectAddressDialogState extends State<SelectAddressDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(defaultBorderRadius),
       ),
-      title: const Text('Select Address'),
+      title: Center(
+        child: Text(
+          'Select Address',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: blackColor,
+          ),
+        ),
+      ),
       content: SizedBox(
         width: double.maxFinite,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             TextButton(

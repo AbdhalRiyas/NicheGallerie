@@ -36,7 +36,16 @@ class _AddressDialogState extends State<AddressDialog> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
         ),
-        title: const Text('Add new address'),
+        title: Center(
+          child: Text(
+            'Add New Address',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: blackColor,
+            ),
+          ),
+        ),
         content: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
