@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
-import 'package:shop/src/screens/address/views/components/address_form.dart';
+import 'package:shop/src/screens/address/views/components/address_dialog.dart';
 import 'package:shop/src/screens/address/views/components/addresses_skelton.dart';
 
 class AddressesScreen extends StatefulWidget {
@@ -44,7 +44,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return AddressForm();
+        return AddressDialog();
       },
     );
   }

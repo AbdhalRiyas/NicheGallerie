@@ -5,7 +5,7 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
-import 'package:shop/src/screens/address/views/components/address_form.dart';
+import 'package:shop/src/screens/address/views/components/address_dialog.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -115,7 +115,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return AddressForm();
+                        return AddressDialog();
                       },
                     );
                   }),
