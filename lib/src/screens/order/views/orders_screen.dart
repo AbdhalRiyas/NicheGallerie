@@ -63,54 +63,54 @@ class OrdersScreen extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 itemCount: orderStatuses.length,
                 separatorBuilder: (context, index) => const Divider(
-                  color: blackColor40,
+                  height: 0,
+                  color: blackColor10,
                 ),
                 itemBuilder: (context, index) {
                   final status = orderStatuses[index];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Padding(
-                        padding: const EdgeInsets.all(defaultPadding / 2),
-                        child: SvgPicture.asset(
-                          status['svgIcon'],
-                          height: 30,
-                          width: 30,
-                        )),
-                    title: Text(
-                      status['title'] as String,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
+                  return GestureDetector(
+                    onTap: () {},
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: SvgPicture.asset(
+                        status['svgIcon'],
+                        height: 30,
+                        width: 30,
                       ),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: status['color'] as Color,
-                            borderRadius:
-                                BorderRadius.circular(defaultBorderRadius),
-                          ),
-                          child: Text(
-                            (status['count'] as int).toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                      title: Text(
+                        status['title'],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: status['color'],
+                              borderRadius:
+                                  BorderRadius.circular(defaultBorderRadius),
+                            ),
+                            child: Center(
+                              child: Text(
+                                status['count'].toStringAsFixed(0),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: defaultPadding / 2),
-                        const Icon(Icons.chevron_right, color: Colors.black54),
-                      ],
+                          const SizedBox(width: defaultPadding / 2),
+                          const Icon(Icons.chevron_right,
+                              color: Colors.black54),
+                        ],
+                      ),
                     ),
-                    onTap: () {
-                      // Handle navigation to specific order status list
-                    },
                   );
                 },
               ),
