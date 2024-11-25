@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/screens/address/views/components/address_popup_menu.dart';
 
 class AddressCard extends StatelessWidget {
   final String title;
@@ -10,6 +9,10 @@ class AddressCard extends StatelessWidget {
   final String phone;
   final String countryCode;
   final bool isDefault;
+  final bool fromSelect;
+  final bool? isSelected;
+  final bool? showMenu;
+  final VoidCallback? onTap;
 
   const AddressCard({
     super.key,
@@ -19,15 +22,19 @@ class AddressCard extends StatelessWidget {
     required this.phone,
     required this.countryCode,
     this.isDefault = false,
+    this.fromSelect = false,
+    this.isSelected = false,
+    this.showMenu = true,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget cardContent = Container(
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,
-          color: isDefault ? primaryColor : greyColor,
+          color: isDefault || isSelected! ? primaryColor : greyColor,
         ),
         borderRadius: BorderRadius.circular(defaultBorderRadius),
       ),
@@ -84,106 +91,22 @@ class AddressCard extends StatelessWidget {
             ),
           ),
           Positioned(
+            top: fromSelect ? 0 : null,
             bottom: 0,
-            right: 0,
-            child: PopupMenuButton<String>(
-              color: whiteColor,
-              icon: SvgPicture.asset(
-                "assets/icons/DotsV.svg",
-                height: 24,
-                width: 24,
-              ),
-              onSelected: (String result) {
-                if (result == 'edit') {
-                  // Handle edit address
-                } else if (result == 'delete') {
-                  // Handle delete address
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'default',
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: defaultPadding * 0.5,
-                          horizontal: defaultPadding / 2,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/Star.svg',
-                          height: 24,
-                          width: 24,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .color!
-                                .withOpacity(0.3),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                      Text('Set as Default Address'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'edit',
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: defaultPadding * 0.5,
-                          horizontal: defaultPadding / 2,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/Edit Square.svg',
-                          height: 24,
-                          width: 24,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .color!
-                                .withOpacity(0.3),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                      Text('Edit Address'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: defaultPadding * 0.5,
-                          horizontal: defaultPadding / 2,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/Delete.svg',
-                          height: 24,
-                          width: 24,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .color!
-                                .withOpacity(0.3),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                      Text('Delete Address'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            right: fromSelect ? 5 : 0,
+            child: fromSelect
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      isSelected!
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: isSelected! ? primaryColor : blackColor60,
+                    ),
+                  )
+                : showMenu!
+                    ? AddressPopupMenu()
+                    : const SizedBox.shrink(),
           ),
           if (isDefault)
             Positioned(
@@ -213,5 +136,15 @@ class AddressCard extends StatelessWidget {
         ],
       ),
     );
+
+    if (fromSelect) {
+      cardContent = InkWell(
+        onTap: () {
+          onTap!();
+        },
+        child: cardContent,
+      );
+    }
+    return cardContent;
   }
 }

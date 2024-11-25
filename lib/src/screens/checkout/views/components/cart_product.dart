@@ -25,7 +25,6 @@ class CartProduct extends StatelessWidget {
         padding: EdgeInsets.only(right: defaultPadding),
         child: SvgPicture.asset(
           'assets/icons/Delete.svg',
-          color: Colors.white,
           height: 24,
           width: 24,
         ),
@@ -33,6 +32,7 @@ class CartProduct extends StatelessWidget {
       direction: DismissDirection.endToStart,
       onDismissed: (_) => onDismissed(),
       child: ListTile(
+        onTap: () {},
         contentPadding: EdgeInsets.zero,
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
@@ -60,7 +60,7 @@ class CartProduct extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '\$${product.price.toStringAsFixed(2)}',
+                  'AED ${product.price.toStringAsFixed(2)}',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor),
@@ -68,7 +68,7 @@ class CartProduct extends StatelessWidget {
                 SizedBox(width: 8),
                 if (product.onSale)
                   Text(
-                    '\$${product.regularPrice.toStringAsFixed(2)}',
+                    product.regularPrice.toStringAsFixed(2),
                     style: TextStyle(
                       color: Colors.grey,
                       decoration: TextDecoration.lineThrough,
