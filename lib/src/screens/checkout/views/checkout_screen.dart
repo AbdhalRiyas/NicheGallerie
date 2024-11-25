@@ -8,7 +8,11 @@ import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/checkout/views/components/select_address_dialog.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  const CheckoutScreen(
+      {super.key, required this.cartItems, required this.subTotal});
+
+  final List cartItems;
+  final double subTotal;
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -28,73 +32,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'id': 'paypal',
       'svg': 'https://www.svgrepo.com/show/328122/paypal.svg',
     },
-  ];
-
-  final List<Product> products = [
-    Product(
-      id: 1,
-      name: 'Sleeveless Tiered Dobby Dress',
-      permalink: 'sleeveless-tiered-dobby-dress',
-      type: 'simple',
-      shortDescription: 'Beautiful sleeveless summer dress with tiered design',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress1.jpg',
-        'https://example.com/dress1-2.jpg'
-      ],
-    ),
-    Product(
-      id: 2,
-      name: 'Printed Sleeveless Tiered Dress',
-      permalink: 'printed-sleeveless-tiered-dress',
-      type: 'simple',
-      shortDescription: 'Elegant printed sleeveless dress with tiered pattern',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress2.jpg',
-        'https://example.com/dress2-2.jpg'
-      ],
-    ),
-    Product(
-      id: 3,
-      name: 'Sleeveless Tiered Dobby Dress',
-      permalink: 'sleeveless-tiered-dobby-dress',
-      type: 'simple',
-      shortDescription: 'Beautiful sleeveless summer dress with tiered design',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress3.jpg',
-        'https://example.com/dress3-2.jpg'
-      ],
-    ),
-    Product(
-      id: 4,
-      name: 'Printed Sleeveless Tiered Dress',
-      permalink: 'printed-sleeveless-tiered-dress',
-      type: 'simple',
-      shortDescription: 'Elegant printed sleeveless dress with tiered pattern',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress4.jpg',
-        'https://example.com/dress4-2.jpg'
-      ],
-    )
   ];
 
   @override
@@ -194,7 +131,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Text('Subtotal'),
                       Text(
-                        'AED 1,200',
+                        "AED ${widget.subTotal.toStringAsFixed(2)}",
                         style: TextStyle(
                           color: blackColor,
                           fontWeight: FontWeight.bold,
@@ -222,7 +159,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Text('Total (Include of VAT)'),
                       Text(
-                        'AED 1,200',
+                        'AED 0',
                         style: TextStyle(
                           color: blackColor,
                           fontWeight: FontWeight.bold,
@@ -255,15 +192,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: products.length,
+                itemCount: widget.cartItems.length,
                 itemBuilder: (context, index) {
-                  final product = products[index];
+                  final product = widget.cartItems[index];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(defaultBorderRadius),
                       child: CachedNetworkImage(
-                        imageUrl: product.images[0],
+                        imageUrl: product['product'].images[0],
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
@@ -276,7 +213,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                     ),
                     title: Text(
-                      product.name,
+                      product['product'].name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -286,26 +223,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Row(
                           children: [
                             Text(
-                              'AED ${product.price.toStringAsFixed(2)}',
+                              'AED ${product['product'].price.toStringAsFixed(2)}',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).primaryColor),
                             ),
-                            SizedBox(width: 8),
-                            if (product.onSale)
-                              Text(
-                                product.regularPrice.toStringAsFixed(2),
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  decoration: TextDecoration.lineThrough,
-                                ),
-                              ),
+                            // SizedBox(width: 8),
+                            // if (product['product'].onSale)
+                            //   Text(
+                            //     product.regularPrice.toStringAsFixed(2),
+                            //     style: TextStyle(
+                            //       color: Colors.grey,
+                            //       decoration: TextDecoration.lineThrough,
+                            //     ),
+                            //   ),
                           ],
                         ),
                       ],
                     ),
                     trailing: Text(
-                      'x1',
+                      'x${product['qty'].toString()}',
                       style: TextStyle(
                         color: blackColor60,
                         fontSize: 14,
