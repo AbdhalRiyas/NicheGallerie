@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/screens/checkout/views/checkout_screen.dart';
 import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
@@ -83,20 +82,21 @@ class _CartScreenState extends State<CartScreen> {
                         SizedBox(height: defaultPadding / 2),
                         ...List.generate(
                           provider.cartItems.length,
-                          (index) => CartProduct(
-                            key: Key(provider.cartItems[index]['product'].id
-                                .toString()),
-                            product: provider.cartItems[index]['product'],
-                            qty: provider.cartItems[index]['qty'],
-                            onDecrement: () => provider.decrementQty(
-                                provider.cartItems[index]['product']),
-                            onDismissed: () {
-                              setState(() {
-                                provider.cartItems[index]['product']
-                                    .removeAt(index);
-                              });
-                            },
-                          ),
+                          (index) {
+                            final cartItem = provider.cartItems[index];
+                            return CartProduct(
+                              key: Key(cartItem['product'].id.toString()),
+                              product: cartItem['product'],
+                              qty: cartItem['qty'],
+                              onDecrement: () =>
+                                  provider.decrementQty(cartItem['product']),
+                              onIncrement: () =>
+                                  provider.incrementQty(cartItem['product']),
+                              onDismissed: () {
+                                provider.removeItem(cartItem['product']);
+                              },
+                            );
+                          },
                         ),
                         SizedBox(height: defaultPadding / 2),
                         Text(
@@ -153,7 +153,7 @@ class _CartScreenState extends State<CartScreen> {
                               children: [
                                 Text('Subtotal'),
                                 Text(
-                                  'AED ${calculateSubtotal().toStringAsFixed(2)}',
+                                  'AED ${provider.calculateSubTotal().toStringAsFixed(2)}',
                                   style: TextStyle(
                                     color: blackColor,
                                     fontWeight: FontWeight.bold,
@@ -212,9 +212,14 @@ class _CartScreenState extends State<CartScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CheckoutScreen()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CheckoutScreen(
+                                    cartItems: provider.cartItems,
+                                    subTotal: provider.calculateSubTotal(),
+                                  ),
+                                ),
+                              );
                             },
                             child: Text(
                               'Checkout',

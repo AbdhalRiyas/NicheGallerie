@@ -7,13 +7,13 @@ class ProductQuantity extends StatelessWidget {
   const ProductQuantity({
     super.key,
     required this.numOfItem,
-    required this.onIncrement,
+    this.onIncrement,
     this.onDecrement,
     this.showLabel = true,
   });
 
   final int numOfItem;
-  final VoidCallback onIncrement;
+  final VoidCallback? onIncrement;
   final VoidCallback? onDecrement;
   final bool showLabel;
 

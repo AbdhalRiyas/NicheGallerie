@@ -10,6 +10,7 @@ class CartProduct extends StatelessWidget {
   final int qty;
   final VoidCallback onDismissed;
   final VoidCallback? onDecrement;
+  final VoidCallback? onIncrement;
 
   const CartProduct({
     super.key,
@@ -17,6 +18,7 @@ class CartProduct extends StatelessWidget {
     required this.qty,
     required this.onDismissed,
     this.onDecrement,
+    this.onIncrement,
   });
 
   @override
@@ -64,30 +66,29 @@ class CartProduct extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'AED ${product.price.toStringAsFixed(2)}',
+                  'AED ${(product.price * qty).toStringAsFixed(2)}',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor),
                 ),
                 SizedBox(width: 8),
-                if (product.onSale)
-                  Text(
-                    product.regularPrice.toStringAsFixed(2),
-                    style: TextStyle(
-                      color: Colors.grey,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                SizedBox(width: defaultPadding),
+                // if (product.onSale)
+                //   Text(
+                //     product.regularPrice.toStringAsFixed(2),
+                //     style: TextStyle(
+                //       color: Colors.grey,
+                //       decoration: TextDecoration.lineThrough,
+                //     ),
+                //   ),
                 Transform.scale(
                   scale: 0.7,
                   child: ProductQuantity(
                     showLabel: false,
                     numOfItem: qty,
-                    onIncrement: () {},
+                    onIncrement: onIncrement,
                     onDecrement: onDecrement,
                   ),
-                )
+                ),
               ],
             ),
           ],
