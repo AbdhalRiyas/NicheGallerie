@@ -1,7 +1,8 @@
 class Product {
   final int id;
   final String name, permalink, type, shortDescription, stockStatus;
-  final double price, regularPrice, salePrice;
+  final double price, regularPrice;
+  final double? salePrice;
   final bool onSale;
   final List<String> images;
 

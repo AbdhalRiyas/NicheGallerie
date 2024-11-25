@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_contants.dart';
+import 'package:shop/src/models/product.dart';
+import 'package:shop/src/providers/cart_provider.dart';
 
 import '../../constants.dart';
 import '../network_image_with_loader.dart';
@@ -7,16 +10,11 @@ import '../network_image_with_loader.dart';
 class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
-    required this.image,
-    required this.title,
-    required this.price,
-    this.priceAfterDiscount,
     this.dicountpercent,
     required this.press,
+    required this.product,
   });
-  final String image, title;
-  final double price;
-  final double? priceAfterDiscount;
+  final Product product;
   final int? dicountpercent;
   final VoidCallback press;
 
@@ -34,7 +32,8 @@ class ProductCard extends StatelessWidget {
             aspectRatio: 1.15,
             child: Stack(
               children: [
-                NetworkImageWithLoader(image, radius: defaultBorderRadius),
+                NetworkImageWithLoader(product.images.first,
+                    radius: defaultBorderRadius),
                 if (dicountpercent != null)
                   Positioned(
                     right: defaultPadding / 2,
@@ -68,7 +67,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
@@ -82,19 +81,19 @@ class ProductCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        priceAfterDiscount != null
-                            ? "${AppContants().currency}${priceAfterDiscount?.toStringAsFixed(priceAfterDiscount!.remainder(1) > 0 ? 2 : 0)}"
-                            : "${AppContants().currency}${price.toStringAsFixed(price.remainder(1) > 0 ? 2 : 0)}",
+                        product.salePrice != null
+                            ? "${AppContants().currency}${product.salePrice?.toStringAsFixed(product.salePrice!.remainder(1) > 0 ? 2 : 0)}"
+                            : "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
                         style: const TextStyle(
                           color: Color(0xFF2E3033),
                           fontWeight: FontWeight.w500,
                           fontSize: 11,
                         ),
                       ),
-                      if (priceAfterDiscount != null) ...[
+                      if (product.salePrice != null) ...[
                         const SizedBox(width: defaultPadding / 4),
                         Text(
-                          "${AppContants().currency}${price.toStringAsFixed(price.remainder(1) > 0 ? 2 : 0)}",
+                          "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
                           style: TextStyle(
                             color:
                                 Theme.of(context).textTheme.bodyMedium!.color,
@@ -110,7 +109,12 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              final provider =
+                  Provider.of<CartProvider>(context, listen: false);
+
+              provider.addItem(product);
+            },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(
                   vertical: 4,

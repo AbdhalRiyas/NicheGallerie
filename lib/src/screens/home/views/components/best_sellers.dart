@@ -25,34 +25,34 @@ class BestSellers extends StatelessWidget {
         ),
         // While loading use 👇
         // const ProductsSkelton(),
-        SizedBox(
-          height: 220,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            // Find demoBestSellersProducts on models/ProductModel.dart
-            itemCount: demoBestSellersProducts.length,
-            itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(
-                left: defaultPadding,
-                right: index == demoBestSellersProducts.length - 1
-                    ? defaultPadding
-                    : 0,
-              ),
-              child: ProductCard(
-                image: demoBestSellersProducts[index].image,
-                title: demoBestSellersProducts[index].title,
-                price: demoBestSellersProducts[index].price,
-                priceAfterDiscount:
-                    demoBestSellersProducts[index].priceAfterDiscount,
-                dicountpercent: demoBestSellersProducts[index].dicountpercent,
-                press: () {
-                  Navigator.pushNamed(context, productDetailsScreenRoute,
-                      arguments: index.isEven);
-                },
-              ),
-            ),
-          ),
-        )
+        // SizedBox(
+        //   height: 220,
+        //   child: ListView.builder(
+        //     scrollDirection: Axis.horizontal,
+        //     // Find demoBestSellersProducts on models/ProductModel.dart
+        //     itemCount: demoBestSellersProducts.length,
+        //     itemBuilder: (context, index) => Padding(
+        //       padding: EdgeInsets.only(
+        //         left: defaultPadding,
+        //         right: index == demoBestSellersProducts.length - 1
+        //             ? defaultPadding
+        //             : 0,
+        //       ),
+        //       child: ProductCard(
+        //         image: demoBestSellersProducts[index].image,
+        //         title: demoBestSellersProducts[index].title,
+        //         price: demoBestSellersProducts[index].price,
+        //         priceAfterDiscount:
+        //             demoBestSellersProducts[index].priceAfterDiscount,
+        //         dicountpercent: demoBestSellersProducts[index].dicountpercent,
+        //         press: () {
+        //           Navigator.pushNamed(context, productDetailsScreenRoute,
+        //               arguments: index.isEven);
+        //         },
+        //       ),
+        //     ),
+        //   ),
+        // )
       ],
     );
   }

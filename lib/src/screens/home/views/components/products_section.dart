@@ -94,10 +94,7 @@ class _ProductsSectionState extends State<ProductsSection> {
                             : 0,
                       ),
                       child: ProductCard(
-                        image: snapshot.data![index]!.images.first,
-                        title: snapshot.data![index]!.name,
-                        price: snapshot.data![index]!.regularPrice,
-                        priceAfterDiscount: snapshot.data![index]!.salePrice,
+                        product: snapshot.data![index]!,
                         dicountpercent: 10,
                         press: () {
                           Navigator.pushNamed(

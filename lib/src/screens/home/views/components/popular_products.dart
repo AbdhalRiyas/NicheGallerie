@@ -25,34 +25,34 @@ class PopularProducts extends StatelessWidget {
         ),
         // While loading use 👇
         // const ProductsSkelton(),
-        SizedBox(
-          height: 220,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            // Find demoPopularProducts on models/ProductModel.dart
-            itemCount: demoPopularProducts.length,
-            itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(
-                left: defaultPadding,
-                right: index == demoPopularProducts.length - 1
-                    ? defaultPadding
-                    : 0,
-              ),
-              child: ProductCard(
-                image: demoPopularProducts[index].image,
-                title: demoPopularProducts[index].title,
-                price: demoPopularProducts[index].price,
-                priceAfterDiscount:
-                    demoPopularProducts[index].priceAfterDiscount,
-                dicountpercent: demoPopularProducts[index].dicountpercent,
-                press: () {
-                  Navigator.pushNamed(context, productDetailsScreenRoute,
-                      arguments: index.isEven);
-                },
-              ),
-            ),
-          ),
-        )
+        // SizedBox(
+        //   height: 220,
+        //   child: ListView.builder(
+        //     scrollDirection: Axis.horizontal,
+        //     // Find demoPopularProducts on models/ProductModel.dart
+        //     itemCount: demoPopularProducts.length,
+        //     itemBuilder: (context, index) => Padding(
+        //       padding: EdgeInsets.only(
+        //         left: defaultPadding,
+        //         right: index == demoPopularProducts.length - 1
+        //             ? defaultPadding
+        //             : 0,
+        //       ),
+        //       child: ProductCard(
+        //         image: demoPopularProducts[index].image,
+        //         title: demoPopularProducts[index].title,
+        //         price: demoPopularProducts[index].price,
+        //         priceAfterDiscount:
+        //             demoPopularProducts[index].priceAfterDiscount,
+        //         dicountpercent: demoPopularProducts[index].dicountpercent,
+        //         press: () {
+        //           Navigator.pushNamed(context, productDetailsScreenRoute,
+        //               arguments: index.isEven);
+        //         },
+        //       ),
+        //     ),
+        //   ),
+        // )
       ],
     );
   }

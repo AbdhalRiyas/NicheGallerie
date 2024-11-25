@@ -1,7 +1,9 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
 
 class EntryPoint extends StatefulWidget {
@@ -132,8 +134,30 @@ class _EntryPointState extends State<EntryPoint> {
               label: "Bookmark",
             ),
             BottomNavigationBarItem(
-              icon: svgIcon("assets/icons/Bag.svg"),
-              activeIcon: svgIcon("assets/icons/Bag.svg", color: primaryColor),
+              icon: Consumer<CartProvider>(
+                builder: (BuildContext context, CartProvider provider,
+                        Widget? child) =>
+                    Stack(
+                  children: [
+                    svgIcon("assets/icons/Bag.svg"),
+                    if (provider.cartItems.isNotEmpty)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          color: Colors.red,
+                        ),
+                      )
+                  ],
+                ),
+              ),
+              activeIcon: Consumer<CartProvider>(
+                builder:
+                    (BuildContext context, CartProvider value, Widget? child) =>
+                        svgIcon("assets/icons/Bag.svg", color: primaryColor),
+              ),
               label: "Cart",
             ),
             BottomNavigationBarItem(

@@ -7,12 +7,16 @@ import 'package:shop/src/models/product.dart';
 
 class CartProduct extends StatelessWidget {
   final Product product;
+  final int qty;
   final VoidCallback onDismissed;
+  final VoidCallback? onDecrement;
 
   const CartProduct({
     super.key,
     required this.product,
+    required this.qty,
     required this.onDismissed,
+    this.onDecrement,
   });
 
   @override
@@ -79,9 +83,9 @@ class CartProduct extends StatelessWidget {
                   scale: 0.7,
                   child: ProductQuantity(
                     showLabel: false,
-                    numOfItem: 0,
+                    numOfItem: qty,
                     onIncrement: () {},
-                    onDecrement: () {},
+                    onDecrement: onDecrement,
                   ),
                 )
               ],
