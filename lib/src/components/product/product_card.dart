@@ -113,7 +113,7 @@ class ProductCard extends StatelessWidget {
               final provider =
                   Provider.of<CartProvider>(context, listen: false);
 
-              provider.addItem(product);
+              provider.addItem(product, 1);
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(

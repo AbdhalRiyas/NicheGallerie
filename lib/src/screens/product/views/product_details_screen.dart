@@ -22,7 +22,7 @@ class ProductDetailsScreen extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: product.stockStatus == 'instock'
           ? CartButton(
-              price: 140,
+              price: product.price,
               press: () {
                 customModalBottomSheet(
                   context,

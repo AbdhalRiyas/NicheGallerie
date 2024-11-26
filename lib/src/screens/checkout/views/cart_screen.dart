@@ -43,8 +43,9 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
-      builder: (BuildContext context, CartProvider provider, Widget? child) =>
-          provider.cartItems.isEmpty || !provider.isBoxInitialized
+      builder: (BuildContext context, CartProvider cartProvider,
+              Widget? child) =>
+          cartProvider.cartItems.isEmpty || !cartProvider.isBoxInitialized
               ? Center(
                   child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -79,19 +80,19 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       SizedBox(height: defaultPadding / 2),
                       ...List.generate(
-                        provider.cartItems.length,
+                        cartProvider.cartItems.length,
                         (index) {
-                          final cartItem = provider.cartItems[index];
+                          final cartItem = cartProvider.cartItems[index];
                           return CartProduct(
                             key: Key(cartItem['product'].id.toString()),
                             product: cartItem['product'],
                             qty: cartItem['qty'],
                             onDecrement: () =>
-                                provider.decrementQty(cartItem['product']),
+                                cartProvider.decrementQty(cartItem['product']),
                             onIncrement: () =>
-                                provider.incrementQty(cartItem['product']),
+                                cartProvider.incrementQty(cartItem['product']),
                             onDismissed: () {
-                              provider.removeItem(cartItem['product']);
+                              cartProvider.removeItem(cartItem['product']);
                             },
                           );
                         },
@@ -151,7 +152,7 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               Text('Subtotal'),
                               Text(
-                                'AED ${provider.calculateSubTotal().toStringAsFixed(2)}',
+                                'AED ${cartProvider.calculateSubTotal().toStringAsFixed(2)}',
                                 style: TextStyle(
                                   color: blackColor,
                                   fontWeight: FontWeight.bold,
@@ -213,8 +214,8 @@ class _CartScreenState extends State<CartScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CheckoutScreen(
-                                  cartItems: provider.cartItems,
-                                  subTotal: provider.calculateSubTotal(),
+                                  cartItems: cartProvider.cartItems,
+                                  subTotal: cartProvider.calculateSubTotal(),
                                 ),
                               ),
                             );
