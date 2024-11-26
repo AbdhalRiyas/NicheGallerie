@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/product/views/components/product_quantity.dart';
-import 'package:shop/src/models/product.dart';
+import 'package:shop/src/models/product/product.dart';
 
 class CartProduct extends StatelessWidget {
   final Product product;

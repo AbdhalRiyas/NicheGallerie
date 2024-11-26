@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
-import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/screens/product/views/product_returns_screen.dart';
 
 import 'components/notify_me_card.dart';
@@ -13,21 +13,23 @@ import 'components/product_list_tile.dart';
 import 'product_buy_now_screen.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  const ProductDetailsScreen({super.key, this.isProductAvailable = true});
+  const ProductDetailsScreen({super.key, required this.product});
 
-  final bool isProductAvailable;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: isProductAvailable
+      bottomNavigationBar: product.stockStatus == 'instock'
           ? CartButton(
               price: 140,
               press: () {
                 customModalBottomSheet(
                   context,
                   height: MediaQuery.of(context).size.height * 0.92,
-                  child: const ProductBuyNowScreen(),
+                  child: ProductBuyNowScreen(
+                    product: product,
+                  ),
                 );
               },
             )
@@ -47,21 +49,23 @@ class ProductDetailsScreen extends StatelessWidget {
               actions: [
                 IconButton(
                   onPressed: () {},
-                  icon: SvgPicture.asset("assets/icons/Bookmark.svg",
-                      color: Theme.of(context).textTheme.bodyLarge!.color),
+                  icon: SvgPicture.asset(
+                    "assets/icons/Bookmark.svg",
+                    colorFilter: ColorFilter.mode(
+                        Theme.of(context).textTheme.bodyLarge!.color!,
+                        BlendMode.srcIn),
+                  ),
                 ),
               ],
             ),
-            const ProductImages(
-              images: [productDemoImg1, productDemoImg2],
+            ProductImages(
+              images: product.images,
             ),
             ProductInfo(
               brand: "Armani",
-              title:
-                  "Armani Prive Rondo Armanian EDP 100ML (2000 PCS Limited Edition) – Collectible",
-              isAvailable: isProductAvailable,
-              description:
-                  "Rondò Armaniano, a fragrance inspired by Giorgio Armani’s Privé SS23 collection, is a delightful blend of lavender, sweet rose, and earthy iris.",
+              title: product.name,
+              isAvailable: product.stockStatus == 'instock',
+              description: product.shortDescription,
               rating: 4.4,
               numOfReviews: 126,
             ),

@@ -4,7 +4,7 @@ import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src//models/product_model.dart';
 import 'package:shop/src//route/screen_export.dart';
 import 'package:shop/src/components/skleton/product/products_skelton.dart';
-import 'package:shop/src/models/product.dart';
+import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import '../../../../constants.dart';
@@ -99,7 +99,7 @@ class _ProductsSectionState extends State<ProductsSection> {
                         press: () {
                           Navigator.pushNamed(
                               context, productDetailsScreenRoute,
-                              arguments: index.isEven);
+                              arguments: [snapshot.data![index]!]);
                         },
                       ),
                     ),

@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_contants.dart';
+import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/providers.dart';
 import 'package:shop/src/route/route_constants.dart';
 import 'package:shop/src/route/router.dart' as router;
 import 'package:shop/src/theme/app_theme.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load(fileName: ".env");
   GoRouter.optionURLReflectsImperativeAPIs = true;
+
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(ProductAdapter());
 
   runApp(const MyApp());
 }
