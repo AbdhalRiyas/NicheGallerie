@@ -23,7 +23,7 @@ class CartProvider extends ChangeNotifier {
     return cartBox.values.toList();
   }
 
-  void addItem(Product product, int? qty) {
+  void addItem(Product product, int qty) {
     if (!_isBoxInitialized) return;
 
     int index =
@@ -34,13 +34,13 @@ class CartProvider extends ChangeNotifier {
         index,
         {
           "product": product,
-          "qty": cartItems[index]['qty'] + 1,
+          "qty": cartItems[index]['qty'] + qty,
         },
       );
     } else {
       cartBox.add({
         "product": product,
-        "qty": qty ?? 1,
+        "qty": qty,
       });
     }
 
