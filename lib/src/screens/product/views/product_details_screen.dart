@@ -75,7 +75,6 @@ class ProductDetailsScreen extends StatelessWidget {
               press: () {
                 customModalBottomSheet(
                   context,
-                  height: MediaQuery.of(context).size.height * 0.92,
                   child: Placeholder(),
                   // child: const BuyFullKit(
                   //     images: ["assets/screens/Product detail.png"]),
@@ -88,7 +87,6 @@ class ProductDetailsScreen extends StatelessWidget {
               press: () {
                 customModalBottomSheet(
                   context,
-                  height: MediaQuery.of(context).size.height * 0.92,
                   child: Placeholder(),
                   // child: const BuyFullKit(
                   //     images: ["assets/screens/Product detail.png"]),
