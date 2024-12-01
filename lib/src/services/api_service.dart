@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/src/config/app_contants.dart';
 import 'package:shop/src/error/app_exception.dart';
@@ -28,6 +29,8 @@ class ApiService {
       throw FetchDataException("No Internet Connection", uri.toString());
     } on TimeoutException {
       throw ServerNotRespondException("Server request timeout", uri.toString());
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
