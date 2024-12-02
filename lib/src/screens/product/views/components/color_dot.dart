@@ -20,19 +20,27 @@ class ColorDot extends StatelessWidget {
       onTap: press,
       child: AnimatedContainer(
         duration: defaultDuration,
-        padding: EdgeInsets.all(isActive ? defaultPadding / 4 : 0),
+        // padding: EdgeInsets.all(isActive ? defaultPadding / 4 : 0),
         height: 40,
         width: 40,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
+          // shape: BoxShape.circle,
           border:
               Border.all(color: isActive ? primaryColor : Colors.transparent),
         ),
         child: Stack(
           alignment: Alignment.center,
           children: [
-            CircleAvatar(
-              backgroundColor: color,
+            // CircleAvatar(
+            //   backgroundColor: color,
+            // ),
+            Container(
+              height: 35,
+              width: 35,
+              decoration: BoxDecoration(
+                // shape: BoxShape.circle,
+                color: color,
+              ),
             ),
             AnimatedOpacity(
               opacity: isActive ? 1 : 0,

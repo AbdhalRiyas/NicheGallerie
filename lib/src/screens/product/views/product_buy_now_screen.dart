@@ -7,6 +7,11 @@ import 'package:shop/src/components/network_image_with_loader.dart';
 import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/screens/product/views/added_to_cart_message_screen.dart';
+import 'package:shop/src/screens/product/views/components/product_list_tile.dart';
+import 'package:shop/src/screens/product/views/components/selected_colors.dart';
+import 'package:shop/src/screens/product/views/components/selected_size.dart';
+import 'package:shop/src/screens/product/views/location_permission_store_availability_screen.dart';
+import 'package:shop/src/screens/product/views/size_guide_screen.dart';
 
 import '../../../constants.dart';
 import 'components/product_quantity.dart';
@@ -124,28 +129,29 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
                       ),
                     ),
                     const SliverToBoxAdapter(child: Divider()),
-                    // SliverToBoxAdapter(
-                    //   child: SelectedColors(
-                    //     colors: const [
-                    //       Color(0xFFEA6262),
-                    //       Color(0xFFB1CC63),
-                    //       Color(0xFFFFBF5F),
-                    //       Color(0xFF9FE1DD),
-                    //       Color(0xFFC482DB),
-                    //     ],
-                    //     selectedColorIndex: 2,
-                    //     press: (value) {},
-                    //   ),
-                    // ),
-                    // SliverToBoxAdapter(
-                    //   child: SelectedSize(
-                    //     sizes: const ["S", "M", "L", "XL", "XXL"],
-                    //     selectedIndex: 1,
-                    //     press: (value) {},
-                    //   ),
-                    // ),
+                    SliverToBoxAdapter(
+                      child: SelectedColors(
+                        colors: const [
+                          Color(0xFFEA6262),
+                          Color(0xFFB1CC63),
+                          Color(0xFFFFBF5F),
+                          Color(0xFF9FE1DD),
+                          Color(0xFFC482DB),
+                        ],
+                        selectedColorIndex: 2,
+                        press: (value) {},
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SelectedSize(
+                        sizes: const ["S", "M", "L", "XL", "XXL"],
+                        selectedIndex: 1,
+                        press: (value) {},
+                      ),
+                    ),
                     // SliverPadding(
-                    //   padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+                    //   padding:
+                    //       const EdgeInsets.symmetric(vertical: defaultPadding),
                     //   sliver: ProductListTile(
                     //     title: "Size guide",
                     //     svgSrc: "assets/icons/Sizeguid.svg",
@@ -160,8 +166,8 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
                     //   ),
                     // ),
                     // SliverPadding(
-                    //   padding:
-                    //       const EdgeInsets.symmetric(horizontal: defaultPadding),
+                    //   padding: const EdgeInsets.symmetric(
+                    //       horizontal: defaultPadding),
                     //   sliver: SliverToBoxAdapter(
                     //     child: Column(
                     //       crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +185,8 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
                     //   ),
                     // ),
                     // SliverPadding(
-                    //   padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+                    //   padding:
+                    //       const EdgeInsets.symmetric(vertical: defaultPadding),
                     //   sliver: ProductListTile(
                     //     title: "Check stores",
                     //     svgSrc: "assets/icons/Stores.svg",
@@ -188,13 +195,17 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
                     //       customModalBottomSheet(
                     //         context,
                     //         height: MediaQuery.of(context).size.height * 0.92,
-                    //         child: const LocationPermissonStoreAvailabilityScreen(),
+                    //         child:
+                    //             const LocationPermissonStoreAvailabilityScreen(),
                     //       );
                     //     },
                     //   ),
                     // ),
                     const SliverToBoxAdapter(
-                        child: SizedBox(height: defaultPadding))
+                      child: SizedBox(
+                        height: defaultPadding,
+                      ),
+                    )
                   ],
                 ),
               )

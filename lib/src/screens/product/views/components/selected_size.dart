@@ -67,7 +67,7 @@ class SizeButton extends StatelessWidget {
         onPressed: press,
         style: OutlinedButton.styleFrom(
           padding: EdgeInsets.zero,
-          shape: const CircleBorder(),
+          // shape: const CircleBorder(),
           side: isActive ? const BorderSide(color: primaryColor) : null,
         ),
         child: Text(
