@@ -8,7 +8,7 @@ class AccordsBottomSheet extends StatelessWidget {
     required this.accordsList,
   });
 
-  final List<Map<String, String>> accordsList;
+  final List<dynamic> accordsList;
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,14 @@ class AccordsBottomSheet extends StatelessWidget {
           SizedBox(
             height: 250,
             child: ListView.builder(
-              itemCount: accordsList.length,
+              itemCount: accordsList[0].length,
               itemBuilder: (context, index) {
+                print(accordsList);
                 final accord = accordsList[index];
                 return AccordProgressBar(
-                  name: accord['accord-name']!,
-                  percentage: double.parse(accord['accord-percentage']!),
-                  imageId: accord['accord-image']!,
+                  name: accord['accord_name']!,
+                  percentage: double.parse(accord['accord_percentage']!),
+                  imageId: accord['accord_image']!,
                 );
               },
             ),

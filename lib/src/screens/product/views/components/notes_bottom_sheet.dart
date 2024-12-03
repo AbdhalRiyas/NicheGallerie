@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 
 class NotesBottomSheet extends StatelessWidget {
-  final List<Map<String, String>> topNotes;
-  final List<Map<String, String>> middleNotes;
-  final List<Map<String, String>> baseNotes;
+  final List<dynamic> topNotes;
+  final List<dynamic> middleNotes;
+  final List<dynamic> baseNotes;
 
   const NotesBottomSheet({
     super.key,
@@ -33,7 +33,7 @@ class NotesBottomSheet extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           final section = sections[index];
-          final notesList = section['notes'] as List<Map<String, String>>;
+          final notesList = section['notes'] as List<dynamic>;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,11 +52,11 @@ class NotesBottomSheet extends StatelessWidget {
                 spacing: defaultPadding,
                 runSpacing: defaultPadding,
                 children: notesList.map((note) {
-                  String noteName = note.containsKey('top-note-name')
-                      ? note['top-note-name']!
-                      : note.containsKey('middle-note-name')
-                          ? note['middle-note-name']!
-                          : note['base-note-name']!;
+                  String noteName = note.containsKey('top_note_name')
+                      ? note['top_note_name']!
+                      : note.containsKey('middle_note_name')
+                          ? note['middle_note_name']!
+                          : note['base_note_name']!;
 
                   // String noteImage = note.containsKey('top-note-image')
                   //     ? note['top-note-image']!

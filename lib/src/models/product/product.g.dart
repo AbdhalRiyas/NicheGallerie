@@ -28,13 +28,14 @@ class ProductAdapter extends TypeAdapter<Product> {
       salePrice: fields[8] as double?,
       onSale: fields[9] as bool,
       images: (fields[10] as List).cast<String>(),
+      metadata: (fields[11] as Map?)?.cast<dynamic, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,7 +57,9 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(9)
       ..write(obj.onSale)
       ..writeByte(10)
-      ..write(obj.images);
+      ..write(obj.images)
+      ..writeByte(11)
+      ..write(obj.metadata);
   }
 
   @override

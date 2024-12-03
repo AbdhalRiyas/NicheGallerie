@@ -37,6 +37,9 @@ class Product {
   @HiveField(10)
   final List<String> images;
 
+  @HiveField(11)
+  final Map<dynamic, dynamic>? metadata;
+
   Product({
     required this.id,
     required this.name,
@@ -49,23 +52,24 @@ class Product {
     required this.salePrice,
     required this.onSale,
     required this.images,
+    required this.metadata,
   });
 
   factory Product.fromJson(Map<String, dynamic> product) => Product(
-        id: product['id'],
-        name: product['name'],
-        permalink: product['permalink'],
-        type: product['type'],
-        shortDescription: product['short_description'],
-        stockStatus: product['stock_status'],
-        price: double.parse(product['price']),
-        regularPrice: double.parse(product['regular_price']),
-        salePrice: product['sale_price'] != null
-            ? double.parse(product['sale_price'])
-            : null,
-        onSale: product['on_sale'],
-        images: List<String>.from(product['images']),
-      );
+      id: product['id'],
+      name: product['name'],
+      permalink: product['permalink'],
+      type: product['type'],
+      shortDescription: product['short_description'],
+      stockStatus: product['stock_status'],
+      price: double.parse(product['price']),
+      regularPrice: double.parse(product['regular_price']),
+      salePrice: product['sale_price'] != null
+          ? double.parse(product['sale_price'])
+          : null,
+      onSale: product['on_sale'],
+      images: List<String>.from(product['images']),
+      metadata: product['metadata']);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -79,5 +83,6 @@ class Product {
         'sale_price': salePrice,
         'on_sale': onSale,
         'images': images,
+        'metadata': metadata,
       };
 }

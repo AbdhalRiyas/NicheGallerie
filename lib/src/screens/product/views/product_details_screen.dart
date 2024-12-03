@@ -21,88 +21,14 @@ class ProductDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accordsList = [
-      {
-        "accord-name": "WOODY",
-        "accord-link": "https://staging19.nichegallerie.com/accords/woody/",
-        "accord-percentage": "100",
-        "accord-image": "6706"
-      },
-      {
-        "accord-name": "AMBER",
-        "accord-link": "https://staging19.nichegallerie.com/accords/amber/",
-        "accord-percentage": "70",
-        "accord-image": "6707"
-      },
-      {
-        "accord-name": "ANIMALIC",
-        "accord-link": "https://staging19.nichegallerie.com/accords/animalic/",
-        "accord-percentage": "50",
-        "accord-image": "6708"
-      },
-    ];
+    final List<dynamic> accordsList = product.metadata?['accords_lists'];
 
-    final List<Map<String, String>> topNotes = [
-      {
-        "top-note-name": "Pear",
-        "top-note-link": "https://staging19.nichegallerie.com/notes/pear/",
-        "top-note-image": "7414"
-      },
-      {
-        "top-note-name": "Pomelo",
-        "top-note-link": "https://staging19.nichegallerie.com/notes/pomelo/",
-        "top-note-image": "14627"
-      }
-    ];
+    final List<dynamic> topNotes = product.metadata?['top_notes'];
 
-    final List<Map<String, String>> middleNotes = [
-      {
-        "middle-note-name": "Rose",
-        "middle-note-link": "https://staging19.nichegallerie.com/notes/rose/",
-        "middle-note-image": "6684"
-      },
-      {
-        "middle-note-name": "Olibanum",
-        "middle-note-link":
-            "https://staging19.nichegallerie.com/notes/olibanum",
-        "middle-note-image": "7017"
-      },
-      {
-        "middle-note-name": "Cloves",
-        "middle-note-link": "https://staging19.nichegallerie.com/notes/cloves",
-        "middle-note-image": "7143"
-      },
-      {
-        "middle-note-name": "Cinnamon",
-        "middle-note-link":
-            "https://staging19.nichegallerie.com/notes/cinnamon",
-        "middle-note-image": "6685"
-      },
-      {
-        "middle-note-name": "Cumin",
-        "middle-note-link": "https://staging19.nichegallerie.com/notes/cumin",
-        "middle-note-image": "6686"
-      }
-    ];
+    final List<dynamic> middleNotes = product.metadata?['middle_notes'];
 
-    final List<Map<String, String>> baseNotes = [
-      {
-        "base-note-name": "Cedar",
-        "base-note-link": "https://staging19.nichegallerie.com/notes/cedar/",
-        "base-note-image": "7102"
-      },
-      {
-        "base-note-name": "Vetiver",
-        "base-note-link": "https://staging19.nichegallerie.com/notes/vetiver/",
-        "base-note-image": "6687"
-      },
-      {
-        "base-note-name": "Woody Notes",
-        "base-note-link":
-            "https://staging19.nichegallerie.com/notes/woody-notes/",
-        "base-note-image": "6860"
-      }
-    ];
+    final List<dynamic> baseNotes = product.metadata?['base_notes'];
+    ;
 
     return Scaffold(
       bottomNavigationBar: product.stockStatus == 'instock'
