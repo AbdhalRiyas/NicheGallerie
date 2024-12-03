@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/checkout/views/components/select_address_dialog.dart';
+import 'package:shop/src/services/api_service.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen(
@@ -20,6 +22,7 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String? selectedPaymentMethod;
+  AddressModel? selectedAddress;
 
   final List<Map<String, dynamic>> paymentMethods = [
     {
@@ -47,25 +50,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AddressButton(
-                  text: "Select Address",
+                  text: selectedAddress == null
+                      ? 'Select Address'
+                      : 'Change Address',
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return SelectAddressDialog();
+                        return SelectAddressDialog(
+                          onAddressSelected: (AddressModel address) {
+                            setState(() {
+                              selectedAddress = address;
+                            });
+                          },
+                        );
                       },
                     );
                   }),
               SizedBox(height: defaultPadding),
-              AddressCard(
-                title: 'My home',
-                name: 'Sophi Nowakowska',
-                address: 'Zabiniec 12/222, 31-215 Cracow, Poland',
-                phone: '+79 123 456',
-                countryCode: '789',
-                isSelected: false,
-                showMenu: false,
-              ),
+              selectedAddress != null
+                  ? AddressCard(
+                      title:
+                          '${selectedAddress!.firstName} ${selectedAddress!.lastName}',
+                      name: selectedAddress!.lastName,
+                      address: selectedAddress!.address1,
+                      phone: selectedAddress!.phone,
+                      countryCode: selectedAddress!.country,
+                      showMenu: false,
+                      isSelected: true,
+                    )
+                  : Container(),
               SizedBox(height: defaultPadding),
               Text(
                 'Payment method',
@@ -267,7 +281,65 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
             backgroundColor: primaryColor,
             foregroundColor: Colors.white,
-            onPressed: () {},
+            onPressed: () async {
+              if (selectedAddress == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please select address'),
+                  ),
+                );
+                return;
+              }
+              if (selectedPaymentMethod == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please select payment method'),
+                  ),
+                );
+                return;
+              }
+              await ApiService().post(
+                ApiContants().orders,
+                payload: {
+                  'payment_method': "bacs",
+                  'payment_method_title': "Direct Bank Transfer",
+                  'set_paid': true,
+                  'billing': {
+                    'first_name': selectedAddress!.firstName,
+                    'last_name': selectedAddress!.lastName,
+                    'address_1': selectedAddress!.address1,
+                    'address_2': selectedAddress!.address2,
+                    'city': selectedAddress!.city,
+                    'state': selectedAddress!.state,
+                    'postcode': selectedAddress!.postcode,
+                    'country': selectedAddress!.country,
+                    'email': selectedAddress!.email,
+                    'phone': selectedAddress!.phone,
+                  },
+                  'shipping': {
+                    'first_name': selectedAddress!.firstName,
+                    'last_name': selectedAddress!.lastName,
+                    'address_1': selectedAddress!.address1,
+                    'address_2': selectedAddress!.address2,
+                    'city': selectedAddress!.city,
+                    'state': selectedAddress!.state,
+                    'postcode': selectedAddress!.postcode,
+                    'country': selectedAddress!.country,
+                  },
+                  'line_items': [
+                    {'product_id': 93, ' quantity': 2},
+                    {'product_id': 22, 'variation_id': 23, 'quantity': 1}
+                  ],
+                  'shipping_lines': [
+                    {
+                      'method_id': "flat_rate",
+                      'method_title': "Flat Rate",
+                      'total': "10.00"
+                    }
+                  ],
+                },
+              );
+            },
             label: const Text('Continue'),
           ),
         ),
@@ -275,3 +347,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 }
+
+// $request->validate([
+//                 // Payment details
+//                 'payment_method' => 'required|string|max:255',
+//                 'payment_method_title' => 'required|string|max:255',
+//                 'set_paid' => 'required|boolean',
+
+//                 // Billing details
+//                 'billing' => 'required|array',
+//                 'billing.first_name' => 'required|string|max:255',
+//                 'billing.last_name' => 'required|string|max:255',
+//                 'billing.address_1' => 'required|string|max:255',
+//                 'billing.address_2' => 'nullable|string|max:255',
+//                 'billing.city' => 'required|string|max:255',
+//                 'billing.state' => 'required|string|max:255',
+//                 'billing.postcode' => 'required|string|max:20',
+//                 'billing.country' => 'required|string|max:2', // Assuming ISO Alpha-2 format
+//                 'billing.email' => 'required|email|max:255',
+//                 'billing.phone' => 'required|string|max:20',
+
+//                 // Shipping details
+//                 'shipping' => 'required|array',
+//                 'shipping.first_name' => 'required|string|max:255',
+//                 'shipping.last_name' => 'required|string|max:255',
+//                 'shipping.address_1' => 'required|string|max:255',
+//                 'shipping.address_2' => 'nullable|string|max:255',
+//                 'shipping.city' => 'required|string|max:255',
+//                 'shipping.state' => 'required|string|max:255',
+//                 'shipping.postcode' => 'required|string|max:20',
+//                 'shipping.country' => 'required|string|max:2',
+
+//                 // Line items
+//                 'line_items' => 'required|array|min:1',
+//                 'line_items.*.product_id' => 'required|integer',
+//                 'line_items.*.variation_id' => 'nullable|integer',
+//                 'line_items.*.quantity' => 'required|integer|min:1',
+
+//                 // Shipping lines
+//                 'shipping_lines' => 'required|array|min:1',
+//                 'shipping_lines.*.method_id' => 'required|string|max:255',
+//                 'shipping_lines.*.method_title' => 'required|string|max:255',
+//                 'shipping_lines.*.total' => 'required|regex:/^\d+(\.\d{1,2})?$/', // Validates decimal format (e.g., "10.00")
+//             ]);
