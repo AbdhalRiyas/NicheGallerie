@@ -44,7 +44,7 @@ class ApiService {
       final res = await http
           .post(
             uri,
-            // headers: _buildHeaders(userToken),
+            headers: _buildHeaders(),
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 60));
@@ -127,6 +127,7 @@ class ApiService {
 
       case 403:
       case 422:
+        print(responseJson);
         throw RequiredParamterException(
           responseJson['message'],
           response.request!.url.toString(),

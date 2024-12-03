@@ -298,7 +298,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 );
                 return;
               }
-              await ApiService().post(
+              final res = await ApiService().post(
                 ApiContants().orders,
                 payload: {
                   'payment_method': "bacs",
@@ -339,6 +339,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ],
                 },
               );
+              print(res);
             },
             label: const Text('Continue'),
           ),
