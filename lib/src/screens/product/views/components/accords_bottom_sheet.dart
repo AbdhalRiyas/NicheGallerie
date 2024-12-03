@@ -23,12 +23,11 @@ class AccordsBottomSheet extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: defaultPadding),
-          SizedBox(
-            height: 250,
+          Flexible(
             child: ListView.builder(
-              itemCount: accordsList[0].length,
+              shrinkWrap: true,
+              itemCount: accordsList.length,
               itemBuilder: (context, index) {
-                print(accordsList);
                 final accord = accordsList[index];
                 return AccordProgressBar(
                   name: accord['accord_name']!,
