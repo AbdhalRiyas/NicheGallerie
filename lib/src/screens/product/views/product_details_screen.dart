@@ -28,7 +28,6 @@ class ProductDetailsScreen extends StatelessWidget {
     final List<dynamic> middleNotes = product.metadata?['middle_notes'];
 
     final List<dynamic> baseNotes = product.metadata?['base_notes'];
-    ;
 
     return Scaffold(
       bottomNavigationBar: product.stockStatus == 'instock'

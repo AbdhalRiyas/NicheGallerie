@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/address/views/components/address_dialog.dart';
@@ -13,32 +14,7 @@ class AddressesScreen extends StatefulWidget {
 }
 
 class _AddressesScreenState extends State<AddressesScreen> {
-  final List<Map<String, dynamic>> addresses = const [
-    {
-      'title': 'My home',
-      'name': 'Sophi Nowakowska',
-      'address': 'Zabiniec 12/222, 31-215 Cracow, Poland',
-      'phone': '+79 123 456',
-      'countryCode': '789',
-      'isDefault': true,
-    },
-    {
-      'title': 'Office',
-      'name': 'Rio Nowakowska',
-      'address': 'Zabiniec 12/222, 31-215 Cracow, Poland',
-      'phone': '+79 123 456',
-      'countryCode': '789',
-      'isDefault': false,
-    },
-    {
-      'title': "Grandmother's home",
-      'name': 'Rio Nowakowska',
-      'address': 'Zabiniec 12/222, 31-215 Cracow, Poland',
-      'phone': '+79 123 456',
-      'countryCode': '789',
-      'isDefault': false,
-    },
-  ];
+  final List<AddressModel> addresses = dummyData;
 
   void _addNewAddress() {
     showDialog(
@@ -85,13 +61,16 @@ class _AddressesScreenState extends State<AddressesScreen> {
                               return Column(
                                 children: [
                                   AddressCard(
-                                    title: address['title'],
-                                    name: address['name'],
-                                    address: address['address'],
-                                    phone: address['phone'],
-                                    countryCode: address['countryCode'],
-                                    isDefault: address['isDefault'],
-                                  ),
+                                      title:
+                                          '${address.firstName} ${address.lastName}',
+                                      name: address.firstName,
+                                      address:
+                                          '${address.address1}, ${address.city}, ${address.state}, ${address.country}, ${address.postcode}',
+                                      phone: address.phone,
+                                      countryCode: address.country,
+                                      isDefault: index == 0,
+                                      showMenu: true,
+                                      onTap: () {}),
                                   const SizedBox(height: 16),
                                 ],
                               );

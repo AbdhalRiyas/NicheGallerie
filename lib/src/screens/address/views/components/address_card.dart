@@ -8,7 +8,7 @@ class AddressCard extends StatelessWidget {
   final String address;
   final String phone;
   final String countryCode;
-  final bool isDefault;
+  final bool? isDefault;
   final bool fromSelect;
   final bool? isSelected;
   final bool? showMenu;
@@ -34,7 +34,7 @@ class AddressCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,
-          color: isDefault || isSelected! ? primaryColor : greyColor,
+          color: isDefault! || isSelected! ? primaryColor : greyColor,
         ),
         borderRadius: BorderRadius.circular(defaultBorderRadius),
       ),
@@ -108,7 +108,7 @@ class AddressCard extends StatelessWidget {
                     ? AddressPopupMenu()
                     : const SizedBox.shrink(),
           ),
-          if (isDefault)
+          if (isDefault!)
             Positioned(
               top: 0,
               right: 0,
