@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -298,48 +300,48 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 );
                 return;
               }
-              final res = await ApiService().post(
-                ApiContants().orders,
-                payload: {
-                  'payment_method': "bacs",
-                  'payment_method_title': "Direct Bank Transfer",
-                  'set_paid': true,
-                  'billing': {
-                    'first_name': selectedAddress!.firstName,
-                    'last_name': selectedAddress!.lastName,
-                    'address_1': selectedAddress!.address1,
-                    'address_2': selectedAddress!.address2,
-                    'city': selectedAddress!.city,
-                    'state': selectedAddress!.state,
-                    'postcode': selectedAddress!.postcode,
-                    'country': selectedAddress!.country,
-                    'email': selectedAddress!.email,
-                    'phone': selectedAddress!.phone,
-                  },
-                  'shipping': {
-                    'first_name': selectedAddress!.firstName,
-                    'last_name': selectedAddress!.lastName,
-                    'address_1': selectedAddress!.address1,
-                    'address_2': selectedAddress!.address2,
-                    'city': selectedAddress!.city,
-                    'state': selectedAddress!.state,
-                    'postcode': selectedAddress!.postcode,
-                    'country': selectedAddress!.country,
-                  },
-                  'line_items': [
-                    {'product_id': 93, ' quantity': 2},
-                    {'product_id': 22, 'variation_id': 23, 'quantity': 1}
-                  ],
-                  'shipping_lines': [
-                    {
-                      'method_id': "flat_rate",
-                      'method_title': "Flat Rate",
-                      'total': "10.00"
-                    }
-                  ],
+              final res =
+                  await ApiService().post(ApiContants().orders, payload: {
+                'payment_method': selectedPaymentMethod,
+                'payment_method_title': selectedPaymentMethod,
+                'set_paid': true,
+                'billing': {
+                  'first_name': selectedAddress!.firstName,
+                  'last_name': selectedAddress!.lastName,
+                  'address_1': selectedAddress!.address1,
+                  'address_2': selectedAddress!.address2,
+                  'city': selectedAddress!.city,
+                  'state': selectedAddress!.state,
+                  'postcode': selectedAddress!.postcode,
+                  'country': selectedAddress!.country,
+                  'email': selectedAddress!.email,
+                  'phone': selectedAddress!.phone,
                 },
-              );
-              print(res);
+                'shipping': {
+                  'first_name': selectedAddress!.firstName,
+                  'last_name': selectedAddress!.lastName,
+                  'address_1': selectedAddress!.address1,
+                  'address_2': selectedAddress!.address2,
+                  'city': selectedAddress!.city,
+                  'state': selectedAddress!.state,
+                  'postcode': selectedAddress!.postcode,
+                  'country': selectedAddress!.country,
+                },
+                'line_items': widget.cartItems
+                    .map((e) => {
+                          'product_id': e['product'].id,
+                          'quantity': e['qty'],
+                        })
+                    .toList(),
+                'shipping_lines': [
+                  {
+                    'method_id': 'flat_rate',
+                    'method_title': 'Flat Rate',
+                    'total': widget.subTotal.toStringAsFixed(2),
+                  }
+                ],
+              });
+              log(res.toString());
             },
             label: const Text('Continue'),
           ),
