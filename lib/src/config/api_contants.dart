@@ -5,4 +5,5 @@ class ApiContants {
 
   final String home = '/home';
   final String products = '/products';
+  final String orders = '/orders';
 }
