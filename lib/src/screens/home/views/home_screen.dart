@@ -31,8 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     (index) => buildWidget(result.data[index])),
               );
             }
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            return ListView(
               children: [
                 Padding(
                   padding: EdgeInsets.all(defaultPadding / 2),

@@ -131,7 +131,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           List args = settings.arguments as List;
           Product product = args[0];
           return ProductDetailsScreen(
-            product: product,
+            productId: product.id,
             images: product.images,
           );
         },
