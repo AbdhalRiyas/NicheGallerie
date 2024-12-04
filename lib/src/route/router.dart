@@ -132,7 +132,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           Product product = args[0];
           return ProductDetailsScreen(
             productId: product.id,
-            images: product.images,
+            productImageUrls: product.images,
           );
         },
       );

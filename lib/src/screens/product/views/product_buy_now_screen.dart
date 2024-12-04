@@ -7,11 +7,8 @@ import 'package:shop/src/components/network_image_with_loader.dart';
 import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/screens/product/views/added_to_cart_message_screen.dart';
-import 'package:shop/src/screens/product/views/components/product_list_tile.dart';
 import 'package:shop/src/screens/product/views/components/selected_colors.dart';
 import 'package:shop/src/screens/product/views/components/selected_size.dart';
-import 'package:shop/src/screens/product/views/location_permission_store_availability_screen.dart';
-import 'package:shop/src/screens/product/views/size_guide_screen.dart';
 
 import '../../../constants.dart';
 import 'components/product_quantity.dart';
@@ -31,11 +28,8 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
-      builder: (
-        BuildContext context,
-        CartProvider cartProvider,
-        Widget? child,
-      ) {
+      builder:
+          (BuildContext context, CartProvider cartProvider, Widget? child) {
         return Scaffold(
           bottomNavigationBar: CartButton(
             price: widget.product.price * qty,

@@ -1,12 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/providers/wishlist_provider.dart';
 import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.dart';
 import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';
 import 'package:shop/src/screens/product/views/product_returns_screen.dart';
@@ -20,12 +20,12 @@ import 'product_buy_now_screen.dart';
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({
     super.key,
-    required this.images,
+    required this.productImageUrls,
     required this.productId,
   });
 
   final int productId;
-  final List<String> images;
+  final List<String> productImageUrls;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -84,19 +84,40 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               floating: true,
               actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset(
-                    "assets/icons/Bookmark.svg",
-                    colorFilter: ColorFilter.mode(
-                        Theme.of(context).textTheme.bodyLarge!.color!,
-                        BlendMode.srcIn),
-                  ),
+                Consumer<WishlistProvider>(
+                  builder: (context, wishlistProvider, child) {
+                    bool isInWishlist = wishlistProvider.wishlistItems
+                        .contains(widget.productId);
+                    return IconButton(
+                      onPressed: () {
+                        if (isInWishlist) {
+                          wishlistProvider.removeItem(widget.productId);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Removed from wishlist')),
+                          );
+                        } else {
+                          wishlistProvider.addItem(widget.productId);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Added to wishlist')),
+                          );
+                        }
+                      },
+                      icon: SvgPicture.asset(
+                        isInWishlist
+                            ? "assets/icons/Heart-Filled.svg"
+                            : "assets/icons/Heart.svg",
+                        colorFilter: isInWishlist
+                            ? const ColorFilter.mode(
+                                Colors.red, BlendMode.srcIn)
+                            : null,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
             ProductImages(
-              images: widget.images,
+              images: widget.productImageUrls,
             ),
             SliverToBoxAdapter(
               child: ValueListenableBuilder(
