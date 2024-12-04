@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shop/src/components/skleton/product/products_skelton.dart';
+import 'package:shop/src/components/skleton/skelton.dart';
+import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/home_repository.dart';
 import 'package:shop/src/utils/build_widget.dart';
 import 'package:shop/src/utils/result.dart';
@@ -28,7 +31,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     (index) => buildWidget(result.data[index])),
               );
             }
-            return CircularProgressIndicator.adaptive();
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(defaultPadding / 2),
+                  child: Skeleton(
+                    height: 200,
+                    width: double.infinity,
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                ProductsSkelton(),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      3,
+                      (index) => Skeleton(
+                        height: 150,
+                        width: (MediaQuery.of(context).size.width -
+                                (defaultPadding * 2 + 20)) /
+                            3,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            );
           },
         ),
       ),
