@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_contants.dart';
-import 'package:shop/src/models/product.dart';
+import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 
 import '../../constants.dart';
@@ -113,7 +113,7 @@ class ProductCard extends StatelessWidget {
               final provider =
                   Provider.of<CartProvider>(context, listen: false);
 
-              provider.addItem(product);
+              provider.addItem(product, 1);
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(

@@ -139,7 +139,11 @@ class _EntryPointState extends State<EntryPoint> {
                         Widget? child) =>
                     Stack(
                   children: [
-                    svgIcon("assets/icons/Bag.svg"),
+                    svgIcon(
+                      "assets/icons/Bag.svg",
+                      color:
+                          provider.cartItems.isNotEmpty ? primaryColor : null,
+                    ),
                     if (provider.cartItems.isNotEmpty)
                       Positioned(
                         top: 0,
@@ -147,16 +151,14 @@ class _EntryPointState extends State<EntryPoint> {
                         child: Container(
                           width: 10,
                           height: 10,
-                          color: Colors.red,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       )
                   ],
                 ),
-              ),
-              activeIcon: Consumer<CartProvider>(
-                builder:
-                    (BuildContext context, CartProvider value, Widget? child) =>
-                        svgIcon("assets/icons/Bag.svg", color: primaryColor),
               ),
               label: "Cart",
             ),

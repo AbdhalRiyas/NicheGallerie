@@ -1,14 +1,22 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/models/product.dart';
+import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/checkout/views/components/select_address_dialog.dart';
+import 'package:shop/src/services/api_service.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  const CheckoutScreen(
+      {super.key, required this.cartItems, required this.subTotal});
+
+  final List cartItems;
+  final double subTotal;
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -16,6 +24,7 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String? selectedPaymentMethod;
+  AddressModel? selectedAddress;
 
   final List<Map<String, dynamic>> paymentMethods = [
     {
@@ -28,73 +37,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'id': 'paypal',
       'svg': 'https://www.svgrepo.com/show/328122/paypal.svg',
     },
-  ];
-
-  final List<Product> products = [
-    Product(
-      id: 1,
-      name: 'Sleeveless Tiered Dobby Dress',
-      permalink: 'sleeveless-tiered-dobby-dress',
-      type: 'simple',
-      shortDescription: 'Beautiful sleeveless summer dress with tiered design',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress1.jpg',
-        'https://example.com/dress1-2.jpg'
-      ],
-    ),
-    Product(
-      id: 2,
-      name: 'Printed Sleeveless Tiered Dress',
-      permalink: 'printed-sleeveless-tiered-dress',
-      type: 'simple',
-      shortDescription: 'Elegant printed sleeveless dress with tiered pattern',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress2.jpg',
-        'https://example.com/dress2-2.jpg'
-      ],
-    ),
-    Product(
-      id: 3,
-      name: 'Sleeveless Tiered Dobby Dress',
-      permalink: 'sleeveless-tiered-dobby-dress',
-      type: 'simple',
-      shortDescription: 'Beautiful sleeveless summer dress with tiered design',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress3.jpg',
-        'https://example.com/dress3-2.jpg'
-      ],
-    ),
-    Product(
-      id: 4,
-      name: 'Printed Sleeveless Tiered Dress',
-      permalink: 'printed-sleeveless-tiered-dress',
-      type: 'simple',
-      shortDescription: 'Elegant printed sleeveless dress with tiered pattern',
-      stockStatus: 'instock',
-      price: 299.43,
-      regularPrice: 344.33,
-      salePrice: 299.43,
-      onSale: true,
-      images: [
-        'https://example.com/dress4.jpg',
-        'https://example.com/dress4-2.jpg'
-      ],
-    )
   ];
 
   @override
@@ -110,25 +52,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AddressButton(
-                  text: "Select Address",
+                  text: selectedAddress == null
+                      ? 'Select Address'
+                      : 'Change Address',
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return SelectAddressDialog();
+                        return SelectAddressDialog(
+                          onAddressSelected: (AddressModel address) {
+                            setState(() {
+                              selectedAddress = address;
+                            });
+                          },
+                        );
                       },
                     );
                   }),
               SizedBox(height: defaultPadding),
-              AddressCard(
-                title: 'My home',
-                name: 'Sophi Nowakowska',
-                address: 'Zabiniec 12/222, 31-215 Cracow, Poland',
-                phone: '+79 123 456',
-                countryCode: '789',
-                isSelected: false,
-                showMenu: false,
-              ),
+              selectedAddress != null
+                  ? AddressCard(
+                      title:
+                          '${selectedAddress!.firstName} ${selectedAddress!.lastName}',
+                      name: selectedAddress!.lastName,
+                      address: selectedAddress!.address1,
+                      phone: selectedAddress!.phone,
+                      countryCode: selectedAddress!.country,
+                      showMenu: false,
+                      isSelected: true,
+                    )
+                  : Container(),
               SizedBox(height: defaultPadding),
               Text(
                 'Payment method',
@@ -194,7 +147,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Text('Subtotal'),
                       Text(
-                        'AED 1,200',
+                        "AED ${widget.subTotal.toStringAsFixed(2)}",
                         style: TextStyle(
                           color: blackColor,
                           fontWeight: FontWeight.bold,
@@ -222,7 +175,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Text('Total (Include of VAT)'),
                       Text(
-                        'AED 1,200',
+                        'AED 0',
                         style: TextStyle(
                           color: blackColor,
                           fontWeight: FontWeight.bold,
@@ -255,15 +208,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: products.length,
+                itemCount: widget.cartItems.length,
                 itemBuilder: (context, index) {
-                  final product = products[index];
+                  final product = widget.cartItems[index];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(defaultBorderRadius),
                       child: CachedNetworkImage(
-                        imageUrl: product.images[0],
+                        imageUrl: product['product'].images[0],
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
@@ -276,7 +229,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                     ),
                     title: Text(
-                      product.name,
+                      product['product'].name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -286,26 +239,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Row(
                           children: [
                             Text(
-                              'AED ${product.price.toStringAsFixed(2)}',
+                              'AED ${product['product'].price.toStringAsFixed(2)}',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).primaryColor),
                             ),
-                            SizedBox(width: 8),
-                            if (product.onSale)
-                              Text(
-                                product.regularPrice.toStringAsFixed(2),
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  decoration: TextDecoration.lineThrough,
-                                ),
-                              ),
+                            // SizedBox(width: 8),
+                            // if (product['product'].onSale)
+                            //   Text(
+                            //     product.regularPrice.toStringAsFixed(2),
+                            //     style: TextStyle(
+                            //       color: Colors.grey,
+                            //       decoration: TextDecoration.lineThrough,
+                            //     ),
+                            //   ),
                           ],
                         ),
                       ],
                     ),
                     trailing: Text(
-                      'x1',
+                      'x${product['qty'].toString()}',
                       style: TextStyle(
                         color: blackColor60,
                         fontSize: 14,
@@ -330,7 +283,66 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
             backgroundColor: primaryColor,
             foregroundColor: Colors.white,
-            onPressed: () {},
+            onPressed: () async {
+              if (selectedAddress == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please select address'),
+                  ),
+                );
+                return;
+              }
+              if (selectedPaymentMethod == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please select payment method'),
+                  ),
+                );
+                return;
+              }
+              final res =
+                  await ApiService().post(ApiContants().orders, payload: {
+                'payment_method': selectedPaymentMethod,
+                'payment_method_title': selectedPaymentMethod,
+                'set_paid': true,
+                'billing': {
+                  'first_name': selectedAddress!.firstName,
+                  'last_name': selectedAddress!.lastName,
+                  'address_1': selectedAddress!.address1,
+                  'address_2': selectedAddress!.address2,
+                  'city': selectedAddress!.city,
+                  'state': selectedAddress!.state,
+                  'postcode': selectedAddress!.postcode,
+                  'country': selectedAddress!.country,
+                  'email': selectedAddress!.email,
+                  'phone': selectedAddress!.phone,
+                },
+                'shipping': {
+                  'first_name': selectedAddress!.firstName,
+                  'last_name': selectedAddress!.lastName,
+                  'address_1': selectedAddress!.address1,
+                  'address_2': selectedAddress!.address2,
+                  'city': selectedAddress!.city,
+                  'state': selectedAddress!.state,
+                  'postcode': selectedAddress!.postcode,
+                  'country': selectedAddress!.country,
+                },
+                'line_items': widget.cartItems
+                    .map((e) => {
+                          'product_id': e['product'].id,
+                          'quantity': e['qty'],
+                        })
+                    .toList(),
+                'shipping_lines': [
+                  {
+                    'method_id': 'flat_rate',
+                    'method_title': 'Flat Rate',
+                    'total': widget.subTotal.toStringAsFixed(2),
+                  }
+                ],
+              });
+              log(res.toString());
+            },
             label: const Text('Continue'),
           ),
         ),
@@ -338,3 +350,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 }
+
+// $request->validate([
+//                 // Payment details
+//                 'payment_method' => 'required|string|max:255',
+//                 'payment_method_title' => 'required|string|max:255',
+//                 'set_paid' => 'required|boolean',
+
+//                 // Billing details
+//                 'billing' => 'required|array',
+//                 'billing.first_name' => 'required|string|max:255',
+//                 'billing.last_name' => 'required|string|max:255',
+//                 'billing.address_1' => 'required|string|max:255',
+//                 'billing.address_2' => 'nullable|string|max:255',
+//                 'billing.city' => 'required|string|max:255',
+//                 'billing.state' => 'required|string|max:255',
+//                 'billing.postcode' => 'required|string|max:20',
+//                 'billing.country' => 'required|string|max:2', // Assuming ISO Alpha-2 format
+//                 'billing.email' => 'required|email|max:255',
+//                 'billing.phone' => 'required|string|max:20',
+
+//                 // Shipping details
+//                 'shipping' => 'required|array',
+//                 'shipping.first_name' => 'required|string|max:255',
+//                 'shipping.last_name' => 'required|string|max:255',
+//                 'shipping.address_1' => 'required|string|max:255',
+//                 'shipping.address_2' => 'nullable|string|max:255',
+//                 'shipping.city' => 'required|string|max:255',
+//                 'shipping.state' => 'required|string|max:255',
+//                 'shipping.postcode' => 'required|string|max:20',
+//                 'shipping.country' => 'required|string|max:2',
+
+//                 // Line items
+//                 'line_items' => 'required|array|min:1',
+//                 'line_items.*.product_id' => 'required|integer',
+//                 'line_items.*.variation_id' => 'nullable|integer',
+//                 'line_items.*.quantity' => 'required|integer|min:1',
+
+//                 // Shipping lines
+//                 'shipping_lines' => 'required|array|min:1',
+//                 'shipping_lines.*.method_id' => 'required|string|max:255',
+//                 'shipping_lines.*.method_title' => 'required|string|max:255',
+//                 'shipping_lines.*.total' => 'required|regex:/^\d+(\.\d{1,2})?$/', // Validates decimal format (e.g., "10.00")
+//             ]);

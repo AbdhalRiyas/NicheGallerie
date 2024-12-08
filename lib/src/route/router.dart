@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/entry_point.dart';
+import 'package:shop/src/models/product/product.dart';
 
 import 'screen_export.dart';
 
@@ -57,7 +58,6 @@ import 'screen_export.dart';
 // AddNewCardScreen()
 // EmptyPaymentScreen()
 // GetHelpScreen()
-
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -128,8 +128,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case productDetailsScreenRoute:
       return MaterialPageRoute(
         builder: (context) {
-          bool isProductAvailable = settings.arguments as bool? ?? true;
-          return ProductDetailsScreen(isProductAvailable: isProductAvailable);
+          List args = settings.arguments as List;
+          Product product = args[0];
+          return ProductDetailsScreen(
+            productId: product.id,
+            productImageUrls: product.images,
+          );
         },
       );
     case productReviewsScreenRoute:
