@@ -7,16 +7,23 @@ import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/route/route_constants.dart';
 import 'package:shop/src/services/api_service.dart';
 
-class CategoryScreen extends StatelessWidget {
+class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key, required this.category});
 
   final Category category;
+
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  final ScrollController _scrollController = ScrollController();
 
   Future<List<Product?>> _getProducts() async {
     List<Product> products = [];
 
     final res = await ApiService().get(ApiContants().products);
-    for (var element in res) {
+    for (var element in res['data']) {
       try {
         products.add(Product.fromJson(element));
       } catch (e) {
@@ -28,10 +35,21 @@ class CategoryScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    _scrollController.addListener(_loadMore);
+    super.initState();
+  }
+
+  void _loadMore() {
+    print(_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(category.name),
+        title: Text(widget.category.name),
       ),
       body: SafeArea(
         child: FutureBuilder(
@@ -45,6 +63,7 @@ class CategoryScreen extends StatelessWidget {
             }
 
             return CustomScrollView(
+              controller: _scrollController,
               slivers: [
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
