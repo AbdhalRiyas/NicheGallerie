@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shop/src/components/skleton/others/discover_categories_skelton.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/models/category_model.dart';
 import 'package:shop/src/repositories/category_repository.dart';
+import 'package:shop/src/screens/discover/views/category_screen.dart';
 import 'package:shop/src/screens/search/views/components/search_form.dart';
 import 'package:shop/src/utils/result.dart';
 
@@ -45,7 +45,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   Result result = snapshot.data!;
-
                   return Expanded(
                     child: ListView.builder(
                       itemCount: result.data.length,
@@ -54,6 +53,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         //result.data[index].image?.src ??
                         title: result.data[index].name,
                         subCategory: [],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CategoryScreen(
+                                category: result.data[index],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   );
