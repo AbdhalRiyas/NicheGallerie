@@ -17,41 +17,62 @@ class ExpansionCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      iconColor: Theme.of(context).textTheme.bodyLarge!.color,
-      collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
-      leading: SvgPicture.asset(
-        svgSrc,
-        height: 24,
-        width: 24,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).iconTheme.color!,
-          BlendMode.srcIn,
-        ),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 14),
-      ),
-      textColor: Theme.of(context).textTheme.bodyLarge!.color,
-      childrenPadding: const EdgeInsets.only(left: defaultPadding * 3.5),
-      children: List.generate(
-        subCategory.length,
-        (index) => Column(
-          children: [
-            ListTile(
-              onTap: () {
-                Navigator.pushNamed(context, onSaleScreenRoute);
-              },
-              title: Text(
-                subCategory[index].title,
-                style: const TextStyle(fontSize: 14),
+    return subCategory.isEmpty
+        ? ListTile(
+            iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+            leading: SvgPicture.network(
+              svgSrc,
+              height: 24,
+              width: 24,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).iconTheme.color!,
+                BlendMode.srcIn,
               ),
             ),
-            if (index < subCategory.length - 1) const Divider(height: 1),
-          ],
-        ),
-      ),
-    );
+            title: Text(
+              title,
+              style: const TextStyle(fontSize: 14),
+            ),
+            textColor: Theme.of(context).textTheme.bodyLarge!.color,
+            onTap: () {
+              Navigator.pushNamed(context, onSaleScreenRoute);
+            },
+          )
+        : ExpansionTile(
+            iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+            collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
+            leading: SvgPicture.network(
+              svgSrc,
+              height: 24,
+              width: 24,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).iconTheme.color!,
+                BlendMode.srcIn,
+              ),
+            ),
+            title: Text(
+              title,
+              style: const TextStyle(fontSize: 14),
+            ),
+            textColor: Theme.of(context).textTheme.bodyLarge!.color,
+            childrenPadding: const EdgeInsets.only(left: defaultPadding * 3.5),
+            children: List.generate(
+              subCategory.length,
+              (index) => Column(
+                children: [
+                  ListTile(
+                    onTap: () {
+                      Navigator.pushNamed(context, onSaleScreenRoute);
+                    },
+                    title: Text(
+                      subCategory[index].title,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  if (index < subCategory.length - 1) const Divider(height: 1),
+                ],
+              ),
+            ),
+          );
   }
 }
