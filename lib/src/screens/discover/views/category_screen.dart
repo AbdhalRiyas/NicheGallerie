@@ -40,7 +40,7 @@ class CategoryScreen extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.hasError) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator.adaptive(),
               );
             }
 
