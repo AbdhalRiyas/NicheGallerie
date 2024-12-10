@@ -30,7 +30,7 @@ class _ProductsSectionState extends State<ProductsSection> {
 
     if (widget.dataApiEndPoint.isNotEmpty) {
       final res = await ApiService().get(widget.dataApiEndPoint);
-      for (var element in res) {
+      for (var element in res['data']) {
         try {
           products.add(Product.fromJson(element));
         } catch (e) {
