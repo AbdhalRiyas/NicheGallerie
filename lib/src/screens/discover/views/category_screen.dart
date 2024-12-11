@@ -40,8 +40,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
 
     try {
-      final res =
-          await ApiService().get('${ApiContants().products}?page=$page');
+      final res = await ApiService().get(
+          '${ApiContants().products}?page=$page&category=${widget.category.id}');
+
       log(res['pagination'].toString());
 
       final List<Product> newProducts = [];
