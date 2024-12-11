@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/config/api_contants.dart';
@@ -18,31 +20,60 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final ScrollController _scrollController = ScrollController();
-
-  Future<List<Product?>> _getProducts() async {
-    List<Product> products = [];
-
-    final res = await ApiService().get(ApiContants().products);
-    for (var element in res['data']) {
-      try {
-        products.add(Product.fromJson(element));
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    return products;
-  }
+  final List<Product> _products = [];
+  bool _isLoadingMore = false;
+  int _currentPage = 1;
+  int _lastPage = 1;
 
   @override
   void initState() {
-    _scrollController.addListener(_loadMore);
     super.initState();
+    _scrollController.addListener(_loadMore);
+    _getProducts();
+  }
+
+  Future<void> _getProducts({int page = 1}) async {
+    if (_isLoadingMore) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final res =
+          await ApiService().get('${ApiContants().products}?page=$page');
+      log(res['pagination'].toString());
+
+      final List<Product> newProducts = [];
+      for (var element in res['data']) {
+        try {
+          newProducts.add(Product.fromJson(element));
+        } catch (e) {
+          print(e);
+        }
+      }
+
+      setState(() {
+        _products.addAll(newProducts);
+        _currentPage = res['pagination']['current_page'];
+        _lastPage = res['pagination']['last_page'];
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoadingMore = false;
+      });
+    }
   }
 
   void _loadMore() {
-    print(_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200);
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        !_isLoadingMore &&
+        _currentPage < _lastPage) {
+      _getProducts(page: _currentPage + 1);
+    }
   }
 
   @override
@@ -52,52 +83,61 @@ class _CategoryScreenState extends State<CategoryScreen> {
         title: Text(widget.category.name),
       ),
       body: SafeArea(
-        child: FutureBuilder(
-          future: _getProducts(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                snapshot.hasError) {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            }
-
-            return CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: defaultPadding, vertical: defaultPadding),
-                  sliver: SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200.0,
-                      mainAxisSpacing: defaultPadding,
-                      crossAxisSpacing: defaultPadding,
-                      childAspectRatio: 0.66,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return ProductCard(
-                          product: snapshot.data![index]!,
-                          press: () {
-                            Navigator.pushNamed(
-                              context,
-                              productDetailsScreenRoute,
-                              arguments: [snapshot.data![index]!],
-                            );
-                          },
-                        );
-                      },
-                      childCount: snapshot.data!.length,
+        child: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: defaultPadding, vertical: defaultPadding),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200.0,
+                        mainAxisSpacing: defaultPadding,
+                        crossAxisSpacing: defaultPadding,
+                        childAspectRatio: 0.66,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return ProductCard(
+                            product: _products[index],
+                            press: () {
+                              Navigator.pushNamed(
+                                context,
+                                productDetailsScreenRoute,
+                                arguments: [_products[index]],
+                              );
+                            },
+                          );
+                        },
+                        childCount: _products.length,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                  if (_isLoadingMore)
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(defaultPadding),
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
