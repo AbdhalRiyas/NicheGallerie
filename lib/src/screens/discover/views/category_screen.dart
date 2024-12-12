@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';

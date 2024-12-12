@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
+import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product/product.dart';
@@ -93,12 +94,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         if (isInWishlist) {
                           wishlistProvider.removeItem(widget.productId);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Removed from wishlist')),
+                            customSnackBar('Removed from wishlist'),
                           );
                         } else {
                           wishlistProvider.addItem(widget.productId);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Added to wishlist')),
+                            customSnackBar('Added to wishlist'),
                           );
                         }
                       },

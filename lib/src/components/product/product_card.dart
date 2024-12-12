@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/config/app_contants.dart';
 import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
@@ -112,8 +113,10 @@ class ProductCard extends StatelessWidget {
             onPressed: () {
               final provider =
                   Provider.of<CartProvider>(context, listen: false);
-
               provider.addItem(product, 1);
+              ScaffoldMessenger.of(context).showSnackBar(
+                customSnackBar('Product added to cart'),
+              );
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(
