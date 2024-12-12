@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/components/list_tile/divider_list_tile.dart';
-import 'package:shop/src/components/network_image_with_loader.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/route/screen_export.dart';
 

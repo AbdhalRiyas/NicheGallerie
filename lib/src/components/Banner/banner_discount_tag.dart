@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../constants.dart';
-
 class BannerDiscountTag extends StatelessWidget {
   const BannerDiscountTag({
     super.key,

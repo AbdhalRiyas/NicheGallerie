@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop/src/components/product/product_card.dart';
@@ -34,7 +36,7 @@ class _ProductsSectionState extends State<ProductsSection> {
         try {
           products.add(Product.fromJson(element));
         } catch (e) {
-          print(e);
+          log(e.toString());
         }
       }
     }

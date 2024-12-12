@@ -126,7 +126,6 @@ class ApiService {
 
       case 403:
       case 422:
-        print(responseJson);
         throw RequiredParamterException(
           responseJson['message'],
           response.request!.url.toString(),

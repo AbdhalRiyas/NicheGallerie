@@ -180,9 +180,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //   return MaterialPageRoute(
     //     builder: (context) => const SearchHistoryScreen(),
     //   );
-    case bookmarkScreenRoute:
+    case wishlistScreenRoute:
       return MaterialPageRoute(
-        builder: (context) => const BookmarkScreen(),
+        builder: (context) => const WishlistScreen(),
       );
     case entryPointScreenRoute:
       return MaterialPageRoute(

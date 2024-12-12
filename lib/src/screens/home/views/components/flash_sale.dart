@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop/src/components/Banner/M/banner_m_with_counter.dart';
-import 'package:shop/src/route/route_constants.dart';
 
-import '../../../../components/product/product_card.dart';
 import '../../../../constants.dart';
-import '../../../../models/product_model.dart';
 
 class FlashSale extends StatelessWidget {
   const FlashSale({
