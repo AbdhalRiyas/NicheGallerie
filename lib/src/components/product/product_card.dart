@@ -109,30 +109,50 @@ class ProductCard extends StatelessWidget {
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              final provider =
-                  Provider.of<CartProvider>(context, listen: false);
-              provider.addItem(product, 1);
-              ScaffoldMessenger.of(context).showSnackBar(
-                customSnackBar('Product added to cart'),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 16), // Adjust vertical padding for height
-              minimumSize: Size(
-                  0, 0), // Removes default minimum width and height constraints
-              tapTargetSize: MaterialTapTargetSize
-                  .shrinkWrap, // Reduces the button's tap area to fit its content
-            ),
-            child: FittedBox(
-                child: Text(
-              "Add to Cart".toUpperCase(),
-              style: TextStyle(fontSize: 10),
-            )),
-          ),
+          product.stockStatus == 'instock'
+              ? ElevatedButton(
+                  onPressed: () {
+                    final provider =
+                        Provider.of<CartProvider>(context, listen: false);
+                    provider.addItem(product.id, 1);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      customSnackBar('Product added to cart'),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 16), // Adjust vertical padding for height
+                    minimumSize: Size(0,
+                        0), // Removes default minimum width and height constraints
+                    tapTargetSize: MaterialTapTargetSize
+                        .shrinkWrap, // Reduces the button's tap area to fit its content
+                  ),
+                  child: FittedBox(
+                      child: Text(
+                    "Add to Cart".toUpperCase(),
+                    style: TextStyle(fontSize: 10),
+                  )),
+                )
+              : ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 16), // Adjust vertical padding for height
+                    minimumSize: Size(0,
+                        0), // Removes default minimum width and height constraints
+                    tapTargetSize: MaterialTapTargetSize
+                        .shrinkWrap, // Reduces the button's tap area to fit its content
+                  ),
+                  child: FittedBox(
+                    child: Text(
+                      "Out of Stock".toUpperCase(),
+                      style: TextStyle(fontSize: 10),
+                    ),
+                  ),
+                ),
         ],
       ),
     );
