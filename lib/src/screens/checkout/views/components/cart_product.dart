@@ -60,39 +60,48 @@ class CartProduct extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  'AED ${(product.price * qty).toStringAsFixed(2)}',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor),
-                ),
-                SizedBox(width: 8),
-                // if (product.onSale)
-                //   Text(
-                //     product.regularPrice.toStringAsFixed(2),
-                //     style: TextStyle(
-                //       color: Colors.grey,
-                //       decoration: TextDecoration.lineThrough,
-                //     ),
-                //   ),
-                Transform.scale(
-                  scale: 0.7,
-                  child: ProductQuantity(
-                    showLabel: false,
-                    numOfItem: qty,
-                    onIncrement: onIncrement,
-                    onDecrement: onDecrement,
+        subtitle: product.stockStatus == 'instock'
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'AED ${(product.price * qty).toStringAsFixed(2)}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor),
+                      ),
+                      SizedBox(width: 8),
+                      // if (product.onSale)
+                      //   Text(
+                      //     product.regularPrice.toStringAsFixed(2),
+                      //     style: TextStyle(
+                      //       color: Colors.grey,
+                      //       decoration: TextDecoration.lineThrough,
+                      //     ),
+                      //   ),
+                      Transform.scale(
+                        scale: 0.7,
+                        child: ProductQuantity(
+                          showLabel: false,
+                          numOfItem: qty,
+                          onIncrement: onIncrement,
+                          onDecrement: onDecrement,
+                        ),
+                      )
+                    ],
                   ),
+                ],
+              )
+            : Text(
+                'Out of stock',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
       ),
     );
   }

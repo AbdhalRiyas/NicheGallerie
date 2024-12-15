@@ -90,7 +90,9 @@ class _CartScreenState extends State<CartScreen> {
                 );
               }
 
-              final products = snapshot.data!;
+              final cartItems = snapshot.data!;
+              bool isOutOfStock = cartItems
+                  .any((product) => product.stockStatus == 'outofstock');
 
               return Padding(
                 padding: const EdgeInsets.all(defaultPadding),
@@ -105,14 +107,8 @@ class _CartScreenState extends State<CartScreen> {
                       cartProvider.cartItems.length,
                       (index) {
                         final cartItem = cartProvider.cartItems[index];
-                        final product = products.firstWhere(
+                        final product = cartItems.firstWhere(
                           (p) => p.id == cartItem['product_id'],
-                          // orElse: () => Product(
-
-                          //   id: cartItem['product_id'],
-                          //   name: 'Unknown Product',
-                          //   price: 0.0,
-                          // ),
                         );
 
                         return CartProduct(
@@ -240,18 +236,19 @@ class _CartScreenState extends State<CartScreen> {
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CheckoutScreen(
-                                cartItems: cartProvider.cartItems,
-                                subTotal: calculateSubtotal(),
-                                // subTotal: cartProvider.calculateSubTotal(),
-                              ),
-                            ),
-                          );
-                        },
+                        onPressed: isOutOfStock
+                            ? null
+                            : () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CheckoutScreen(
+                                      cartItems: cartItems,
+                                      subTotal: calculateSubtotal(),
+                                    ),
+                                  ),
+                                );
+                              },
                         child: Text(
                           'Checkout',
                         ),

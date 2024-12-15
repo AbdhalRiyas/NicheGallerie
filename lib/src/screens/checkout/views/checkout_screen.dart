@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/address_model.dart';
+import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/checkout/views/components/select_address_dialog.dart';
@@ -210,13 +211,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: widget.cartItems.length,
                 itemBuilder: (context, index) {
-                  final product = widget.cartItems[index];
+                  final Product product = widget.cartItems[index];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(defaultBorderRadius),
                       child: CachedNetworkImage(
-                        imageUrl: product['product'].images[0],
+                        imageUrl: product.images[0],
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
@@ -229,7 +230,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                     ),
                     title: Text(
-                      product['product'].name,
+                      product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -239,7 +240,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Row(
                           children: [
                             Text(
-                              'AED ${product['product'].price.toStringAsFixed(2)}',
+                              'AED ${product.price.toStringAsFixed(2)}',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).primaryColor),
@@ -257,13 +258,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ],
                     ),
-                    trailing: Text(
-                      'x${product['qty'].toString()}',
-                      style: TextStyle(
-                        color: blackColor60,
-                        fontSize: 14,
-                      ),
-                    ),
+                    // trailing: Text(
+                    //   'x${product['qty'].toString()}',
+                    //   style: TextStyle(
+                    //     color: blackColor60,
+                    //     fontSize: 14,
+                    //   ),
+                    // ),
                   );
                 },
               ),
