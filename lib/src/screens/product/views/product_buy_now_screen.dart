@@ -37,7 +37,7 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
             subTitle: "Total price",
             press: () {
               cartProvider.addItem(
-                widget.product,
+                widget.product.id,
                 qty,
               );
               customModalBottomSheet(

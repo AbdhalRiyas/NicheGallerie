@@ -1,11 +1,13 @@
+import 'dart:developer';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/result.dart';
 
 class ProductRepository {
-  Future<Result> fetchWishlistProducts(List<int> productIds) async {
+  Future<Result> fetchProductById(List<dynamic> productIds) async {
     try {
+      log(productIds.toString());
       final res = await ApiService()
           .get("${ApiContants().products}?include=${productIds.join(',')}");
 

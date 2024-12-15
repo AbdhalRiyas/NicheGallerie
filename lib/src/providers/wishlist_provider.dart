@@ -24,7 +24,7 @@ class WishlistProvider extends ChangeNotifier {
   Future<List<Product>?> fetchProducts() async {
     if (wishlistItems.isNotEmpty) {
       final Result res =
-          await _productRepository.fetchWishlistProducts(wishlistItems);
+          await _productRepository.fetchProductById(wishlistItems);
       return res.data;
     }
     return null;

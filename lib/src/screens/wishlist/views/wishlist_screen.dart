@@ -11,57 +11,56 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<WishlistProvider>(
-        builder: (BuildContext context, WishlistProvider wishlistProvider,
-                Widget? child) =>
-            wishlistProvider.wishlistItems.isEmpty
-                ? const Center(
-                    child: Text("No Bookmarks"),
-                  )
-                : FutureBuilder(
-                    future: wishlistProvider.fetchProducts(),
-                    builder: (BuildContext context,
-                            AsyncSnapshot<List<Product>?> snapshot) =>
-                        !snapshot.hasData
-                            ? const Center(
-                                child: Text("No Bookmarks"),
-                              )
-                            : CustomScrollView(
-                                slivers: [
-                                  SliverPadding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: defaultPadding,
-                                        vertical: defaultPadding),
-                                    sliver: SliverGrid(
-                                      gridDelegate:
-                                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 200.0,
-                                        mainAxisSpacing: defaultPadding,
-                                        crossAxisSpacing: defaultPadding,
-                                        childAspectRatio: 0.66,
-                                      ),
-                                      delegate: SliverChildBuilderDelegate(
-                                        (BuildContext context, int index) {
-                                          return ProductCard(
-                                            product: snapshot.data![index],
-                                            press: () {
-                                              Navigator.pushNamed(context,
-                                                  productDetailsScreenRoute,
-                                                  arguments: [
-                                                    snapshot.data![index]
-                                                  ]);
-                                            },
-                                          );
-                                        },
-                                        childCount: snapshot.data?.length,
-                                      ),
+    return Consumer<WishlistProvider>(
+      builder: (BuildContext context, WishlistProvider wishlistProvider,
+              Widget? child) =>
+          wishlistProvider.wishlistItems.isEmpty
+              ? const Center(
+                  child: Text("No Bookmarks"),
+                )
+              : FutureBuilder(
+                  future: wishlistProvider.fetchProducts(),
+                  builder: (BuildContext context,
+                          AsyncSnapshot<List<Product>?> snapshot) =>
+                      !snapshot.hasData
+                          ? const Center(
+                              child: Text("No Bookmarks"),
+                            )
+                          : CustomScrollView(
+                              slivers: [
+                                SliverPadding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: defaultPadding,
+                                      vertical: defaultPadding),
+                                  sliver: SliverGrid(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 200.0,
+                                      mainAxisSpacing: defaultPadding,
+                                      crossAxisSpacing: defaultPadding,
+                                      childAspectRatio: 0.66,
+                                    ),
+                                    delegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                        return ProductCard(
+                                          product: snapshot.data![index],
+                                          press: () {
+                                            Navigator.pushNamed(context,
+                                                productDetailsScreenRoute,
+                                                arguments: [
+                                                  snapshot.data![index]
+                                                ]);
+                                          },
+                                        );
+                                      },
+                                      childCount: snapshot.data?.length,
                                     ),
                                   ),
-                                ],
-                              ),
-                  ),
-      ),
+                                ),
+                              ],
+                            ),
+                ),
+
       // CustomScrollView(
       //   slivers: [
       // While loading use 👇
