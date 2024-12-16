@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/src/components/skleton/skelton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
@@ -89,7 +90,40 @@ class _CartScreenState extends State<CartScreen> {
             future: _cartProducts,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 24,
+                      ),
+                      ...List.generate(
+                        cartProvider.cartItems.length,
+                        (index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: defaultPadding / 2),
+                            child: Row(
+                              children: [
+                                Skeleton(height: 60, width: 60),
+                                const SizedBox(width: defaultPadding / 2),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Skeleton(height: 20, width: 300),
+                                    const SizedBox(height: defaultPadding / 2),
+                                    Skeleton(height: 20, width: 100),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
