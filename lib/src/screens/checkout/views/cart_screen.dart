@@ -18,6 +18,14 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   final TextEditingController _couponController = TextEditingController();
+  late Future<List<Product>?> _cartProducts;
+
+  @override
+  initState() {
+    super.initState();
+    _cartProducts =
+        Provider.of<CartProvider>(context, listen: false).fetchProducts();
+  }
 
   void _onCouponCodePressed() {
     showDialog(
@@ -78,7 +86,7 @@ class _CartScreenState extends State<CartScreen> {
         }
 
         return FutureBuilder<List<Product>?>(
-            future: cartProvider.fetchProducts(),
+            future: _cartProducts,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
