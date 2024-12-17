@@ -99,7 +99,7 @@ class _CartScreenState extends State<CartScreen> {
                         height: 24,
                       ),
                       ...List.generate(
-                        cartProvider.cartItems.length,
+                        5,
                         (index) {
                           return Padding(
                             padding: EdgeInsets.symmetric(
@@ -107,14 +107,18 @@ class _CartScreenState extends State<CartScreen> {
                             child: Row(
                               children: [
                                 Skeleton(height: 60, width: 60),
-                                const SizedBox(width: defaultPadding / 2),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Skeleton(height: 20, width: 300),
-                                    const SizedBox(height: defaultPadding / 2),
-                                    Skeleton(height: 20, width: 100),
-                                  ],
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Skeleton(height: 20, width: 300),
+                                      const SizedBox(
+                                          height: defaultPadding / 2),
+                                      Skeleton(height: 20, width: 100),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
