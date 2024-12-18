@@ -109,14 +109,4 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // double calculateSubTotal() {
-  //   if (!_isBoxInitialized) return 0;
-
-  //   double total = 0;
-  //   for (var item in cartItems) {
-  //     total += item['product_id'].price * item['qty'];
-  //   }
-  //   return total;
-  // }
 }

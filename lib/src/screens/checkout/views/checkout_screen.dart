@@ -14,9 +14,13 @@ import 'package:shop/src/services/api_service.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen(
-      {super.key, required this.cartItems, required this.subTotal});
+      {super.key,
+      required this.cartItems,
+      required this.subTotal,
+      required this.productMap});
 
   final List cartItems;
+  final List<Map<dynamic, dynamic>> productMap;
   final double subTotal;
 
   @override
@@ -258,13 +262,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ],
                     ),
-                    // trailing: Text(
-                    //   'x${product['qty'].toString()}',
-                    //   style: TextStyle(
-                    //     color: blackColor60,
-                    //     fontSize: 14,
-                    //   ),
-                    // ),
+                    trailing: Text(
+                      'x${widget.productMap[index]['qty'].toString()}',
+                      style: TextStyle(
+                        color: blackColor60,
+                        fontSize: 14,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -330,15 +334,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 },
                 'line_items': widget.cartItems
                     .map((e) => {
-                          'product_id': e['product'].id,
-                          'quantity': e['qty'],
+                          'product_id': e.id,
+                          'quantity': widget.productMap.firstWhere((element) =>
+                              element['product_id'] == e.id)['qty'],
                         })
                     .toList(),
                 'shipping_lines': [
                   {
                     'method_id': 'flat_rate',
                     'method_title': 'Flat Rate',
-                    'total': widget.subTotal.toStringAsFixed(2),
+                    'total': '0',
                   }
                 ],
               });
@@ -394,3 +399,5 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 //                 'shipping_lines.*.method_title' => 'required|string|max:255',
 //                 'shipping_lines.*.total' => 'required|regex:/^\d+(\.\d{1,2})?$/', // Validates decimal format (e.g., "10.00")
 //             ]);
+
+
