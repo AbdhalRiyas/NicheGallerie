@@ -167,7 +167,7 @@ class AppRouter {
           // ),
         ],
         pageBuilder: (context, state) {
-          return MaterialPage(child: LoginScreen());
+          return MaterialPage(child: EntryPoint());
           // final appBox = Hive.box("app");
 
           // return MaterialPage(
