@@ -86,4 +86,17 @@ List<AddressModel> dummyData = [
     email: 'jane.smith@example.com',
     phone: '555-5678',
   ),
+  AddressModel(
+    firstName: 'Alice',
+    lastName: 'Jones',
+    company: null,
+    address1: '789 Oak St',
+    address2: null,
+    city: 'Thirdtown',
+    state: 'Thirdstate',
+    postcode: '13579',
+    country: 'USA',
+    email: 'alice.jones@example.com',
+    phone: '555-2468',
+  )
 ];
