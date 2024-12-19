@@ -51,7 +51,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   double calculateVAT(double subtotal) {
-    return subtotal * 0.05; // Assuming 5% VAT
+    return subtotal * 0.00;
   }
 
   double calculateTotal(double subtotal, double vat) {
@@ -63,7 +63,7 @@ class _CartScreenState extends State<CartScreen> {
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
         if (!cartProvider.isBoxInitialized) {
-          return const Center(child: CircularProgressIndicator());
+          return _buildShimmer();
         }
 
         if (cartProvider.cartItems.isEmpty) {
@@ -98,42 +98,7 @@ class _CartScreenState extends State<CartScreen> {
           future: _cartProducts,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Padding(
-                padding: const EdgeInsets.all(defaultPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 24,
-                    ),
-                    ...List.generate(
-                      5,
-                      (index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: defaultPadding / 2),
-                          child: Row(
-                            children: [
-                              Skeleton(height: 60, width: 60),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Skeleton(height: 20, width: 300),
-                                    const SizedBox(height: defaultPadding / 2),
-                                    Skeleton(height: 20, width: 100),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              );
+              return _buildShimmer();
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -324,6 +289,44 @@ class _CartScreenState extends State<CartScreen> {
           },
         );
       },
+    );
+  }
+
+  Padding _buildShimmer() {
+    return Padding(
+      padding: const EdgeInsets.all(defaultPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 24,
+          ),
+          ...List.generate(
+            5,
+            (index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                child: Row(
+                  children: [
+                    Skeleton(height: 60, width: 60),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Skeleton(height: 20, width: 300),
+                          const SizedBox(height: defaultPadding / 2),
+                          Skeleton(height: 20, width: 100),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
