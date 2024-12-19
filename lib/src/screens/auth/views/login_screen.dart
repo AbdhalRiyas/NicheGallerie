@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shop/main.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/route/route_constants.dart';
 
@@ -71,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text("Don't have an account?"),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, signUpScreenRoute);
+                          context.go('/$signUpScreenRoute');
                         },
                         child: const Text("Sign up"),
                       )

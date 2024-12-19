@@ -1,43 +1,26 @@
-import 'package:hive/hive.dart';
-
-part 'product.g.dart';
-
-@HiveType(typeId: 0) // Assign a unique typeId for Hive
 class Product {
-  @HiveField(0)
   final int id;
 
-  @HiveField(1)
   final String name;
 
-  @HiveField(2)
   final String permalink;
 
-  @HiveField(3)
   final String type;
 
-  @HiveField(4)
   final String shortDescription;
 
-  @HiveField(5)
   final String stockStatus;
 
-  @HiveField(6)
   final double price;
 
-  @HiveField(7)
   final double regularPrice;
 
-  @HiveField(8)
   final double? salePrice;
 
-  @HiveField(9)
   final bool onSale;
 
-  @HiveField(10)
   final List<String> images;
 
-  @HiveField(11)
   final Map<dynamic, dynamic>? metadata;
 
   Product({

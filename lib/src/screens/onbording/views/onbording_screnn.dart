@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shop/main.dart';
 import 'package:shop/src/components/dot_indicators.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/route/route_constants.dart';
@@ -77,7 +79,7 @@ class _OnBordingScreenState extends State<OnBordingScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, entryPointScreenRoute);
+                    context.go('/$logInScreenRoute');
                   },
                   child: Text(
                     "Skip",

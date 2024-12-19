@@ -6,7 +6,7 @@ import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/wishlist_provider.dart';
 import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.dart';
 import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';

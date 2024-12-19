@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:shop/src/config/api_contants.dart';
-import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/models/product.dart';
 import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/result.dart';
 
