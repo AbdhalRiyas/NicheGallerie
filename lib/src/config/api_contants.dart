@@ -7,4 +7,5 @@ class ApiContants {
   final String products = '/products';
   final String categories = '/products/categories';
   final String orders = '/orders';
+  final String login = '/auth/login';
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shop/main.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/route_constants.dart';
 
 import 'components/login_form.dart';
@@ -15,10 +16,21 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    final Size size = MediaQuery.sizeOf(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -42,7 +54,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     "Log in with your data that you intered during your registration.",
                   ),
                   const SizedBox(height: defaultPadding),
-                  LogInForm(formKey: _formKey),
+                  LogInForm(
+                      formKey: _formKey,
+                      emailController: _emailController,
+                      passwordController: _passwordController),
                   Align(
                     child: TextButton(
                       child: const Text("Forgot password"),
@@ -57,12 +72,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         size.height > 700 ? size.height * 0.1 : defaultPadding,
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            entryPointScreenRoute,
-                            ModalRoute.withName(logInScreenRoute));
+                        final success = await authProvider.login(
+                            _emailController.text, _passwordController.text);
+
+                        if (success && context.mounted) {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            print(success);
+
+                            context.go('/home');
+                          }
+                        }
+                        // Navigator.pushNamedAndRemoveUntil(
+                        //     context,
+                        //     entryPointScreenRoute,
+                        //     ModalRoute.withName(logInScreenRoute));
                       }
                     },
                     child: const Text("Log in"),
