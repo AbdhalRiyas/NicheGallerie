@@ -40,7 +40,7 @@ class AppRouter {
             GoRoute(
               path: logInScreenRoute,
               name: logInScreenRoute,
-              redirect: (context, state) => _authCheck(context, state),
+              // redirect: (context, state) => _authCheck(context, state),
               pageBuilder: (context, state) {
                 return const MaterialPage(
                   child: LoginScreen(),

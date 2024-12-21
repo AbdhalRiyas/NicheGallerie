@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/list_tile/divider_list_tile.dart';
 import 'package:shop/src/constants.dart';
@@ -30,7 +31,10 @@ class ProfileScreen extends StatelessWidget {
                           Navigator.pushNamed(context, userInfoScreenRoute);
                         },
                       )
-                    : Text("Login Now"),
+                    : GestureDetector(
+                        child: Text("Login Now"),
+                        onTap: () => context.go('/$logInScreenRoute'),
+                      ),
           ),
           // Padding(
           //   padding: const EdgeInsets.symmetric(
