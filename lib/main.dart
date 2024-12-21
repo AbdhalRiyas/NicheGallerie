@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_contants.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/providers.dart';
+import 'package:shop/src/services/hive_service.dart';
 import 'package:shop/src/theme/app_theme.dart';
 
 import 'src/route/routes.dart';
@@ -18,6 +19,9 @@ Future<void> main() async {
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
   await Hive.initFlutter();
+
+  await Hive.openBox("app");
+  await HiveService().init();
 
   runApp(const MyApp());
 }

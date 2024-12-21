@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shop/main.dart';
 import 'package:shop/src/components/dot_indicators.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/route/route_constants.dart';
+import 'package:shop/src/services/hive_service.dart';
 
 import 'components/onbording_content.dart';
 
@@ -79,7 +79,8 @@ class _OnBordingScreenState extends State<OnBordingScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    context.go('/$logInScreenRoute');
+                    HiveService().setOnboardSkipped(true);
+                    context.go('/');
                   },
                   child: Text(
                     "Skip",
@@ -127,7 +128,8 @@ class _OnBordingScreenState extends State<OnBordingScreen> {
                           _pageController.nextPage(
                               curve: Curves.ease, duration: defaultDuration);
                         } else {
-                          Navigator.pushNamed(context, logInScreenRoute);
+                          HiveService().setOnboardSkipped(true);
+                          context.go('/');
                         }
                       },
                       style: ElevatedButton.styleFrom(
