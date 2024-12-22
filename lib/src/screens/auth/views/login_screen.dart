@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/route_constants.dart';
+import 'package:shop/src/services/hive_service.dart';
 
 import 'components/login_form.dart';
 

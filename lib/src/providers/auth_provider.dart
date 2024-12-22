@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shop/src/config/api_contants.dart';
-import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/services/api_service.dart';
+import 'package:shop/src/services/hive_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool _isLoggedIn = false;
@@ -18,6 +16,29 @@ class AuthProvider extends ChangeNotifier {
   String? get displayName => _userDisplayName;
   String? get nicename => _userNicename;
 
+  AuthProvider() {
+    _initializeAuth();
+  }
+
+  Future<void> _initializeAuth() async {
+    try {
+      final authData = await HiveService().getAuth();
+      if (authData != null && authData['token'] != null) {
+        _token = authData['token'];
+        _userEmail = authData['user_email'];
+        _userDisplayName = authData['user_display_name'];
+        _userNicename = authData['user_nicename'];
+        _isLoggedIn = true;
+      } else {
+        _isLoggedIn = false;
+      }
+    } catch (e) {
+      _isLoggedIn = false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<bool> login(String username, String password) async {
     try {
       final res = await ApiService().post(ApiContants().login, payload: {
@@ -30,7 +51,7 @@ class AuthProvider extends ChangeNotifier {
       _userDisplayName = res['user_display_name'];
       _userNicename = res['user_nicename'];
       _isLoggedIn = true;
-      print(res);
+      await HiveService().saveAuth(res);
       notifyListeners();
       return true;
     } catch (e) {
@@ -44,18 +65,7 @@ class AuthProvider extends ChangeNotifier {
     _userEmail = null;
     _userDisplayName = null;
     _userNicename = null;
-    notifyListeners(); // Notify widgets to rebuild
+    HiveService().clearAuth();
+    notifyListeners();
   }
-
-  // Future<void> checkAuthStatus() async {
-  //   // Check if the user is already logged in by validating the stored token
-  //   try {
-  //     final isValid = await validateToken(_token);
-  //     _isLoggedIn = isValid;
-  //     notifyListeners(); // Notify widgets to rebuild
-  //   } catch (error) {
-  //     _isLoggedIn = false;
-  //     notifyListeners();
-  //   }
-  // }
 }
