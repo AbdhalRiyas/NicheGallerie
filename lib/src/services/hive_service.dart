@@ -12,12 +12,4 @@ class HiveService {
   Future<void> init() async {
     _appBox = Hive.box("app");
   }
-
-  bool getOnboardSkipped() {
-    return _appBox.get("onboard_skipped", defaultValue: false);
-  }
-
-  void setOnboardSkipped(bool value) {
-    _appBox.put("onboard_skipped", value);
-  }
 }

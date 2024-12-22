@@ -1,6 +1,6 @@
-const String onbordingScreenRoute = "onbording";
 const String notificationPermissionScreenRoute = "notification_permission";
 const String preferredLanuageScreenRoute = "preferred_language";
+const String productScreenRoute = "perfume";
 const String logInScreenRoute = "my-account";
 const String signUpScreenRoute = "signup";
 const String profileSetupScreenRoute = "profile_setup";

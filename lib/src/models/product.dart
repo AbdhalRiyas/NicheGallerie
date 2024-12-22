@@ -7,6 +7,8 @@ class Product {
 
   final String type;
 
+  final String slug;
+
   final String shortDescription;
 
   final String stockStatus;
@@ -26,6 +28,7 @@ class Product {
   Product({
     required this.id,
     required this.name,
+    required this.slug,
     required this.permalink,
     required this.type,
     required this.shortDescription,
@@ -41,6 +44,7 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> product) => Product(
       id: product['id'],
       name: product['name'],
+      slug: product['slug'],
       permalink: product['permalink'],
       type: product['type'],
       shortDescription: product['short_description'],
@@ -57,6 +61,7 @@ class Product {
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
+        'slug': slug,
         'permalink': permalink,
         'type': type,
         'short_description': shortDescription,

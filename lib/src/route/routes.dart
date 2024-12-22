@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shop/entry_point.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
-import 'package:shop/src/services/hive_service.dart';
 
 import 'screen_export.dart';
 
@@ -16,24 +15,21 @@ class AppRouter {
       navigatorKey: GlobalKeyContants().navigatorKey,
       initialLocation: '/',
       errorBuilder: (context, state) => SizedBox(),
-      redirect: (context, state) {
-        if (!HiveService().getOnboardSkipped()) {
-          return "/$onbordingScreenRoute";
-        } else {
-          return null;
-        }
-      },
       routes: [
         GoRoute(
           path: '/',
           name: '/',
           routes: [
             GoRoute(
-              path: onbordingScreenRoute,
-              name: onbordingScreenRoute,
+              path: '$productScreenRoute/:slug',
+              name: productScreenRoute,
+              // redirect: (context, state) => _authCheck(context, state),
               pageBuilder: (context, state) {
-                return const MaterialPage(
-                  child: OnBordingScreen(),
+                final slug = state.pathParameters['slug'] as String;
+                return MaterialPage(
+                  child: ProductDetailsScreen(
+                    slug: slug,
+                  ),
                 );
               },
             ),

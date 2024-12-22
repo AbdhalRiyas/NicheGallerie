@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src//models/product_model.dart';
 import 'package:shop/src//route/screen_export.dart';
@@ -99,9 +100,8 @@ class _ProductsSectionState extends State<ProductsSection> {
                         product: snapshot.data![index]!,
                         dicountpercent: 10,
                         press: () {
-                          Navigator.pushNamed(
-                              context, productDetailsScreenRoute,
-                              arguments: [snapshot.data![index]!]);
+                          context.go(
+                              '/$productScreenRoute/${snapshot.data![index]!.slug}');
                         },
                       ),
                     ),

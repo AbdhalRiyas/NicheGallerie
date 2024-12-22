@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/category.dart';
+import 'package:shop/src/screens/discover/views/category_screen.dart';
 import 'package:shop/src/screens/home/views/components/explore_by_section.dart';
 import 'package:shop/src/screens/home/views/components/featured_category_card.dart';
 import 'package:shop/src/screens/home/views/components/offers_carousel.dart';
@@ -30,7 +33,22 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
       children.add(FeaturedCategoryCard(
         title: json['children'][i]['title'],
         imageUrl: json['children'][i]['image_url'],
-        press: () {},
+        press: () {
+          Navigator.push(
+            GlobalKeyContants().navigatorKey.currentContext!,
+            MaterialPageRoute(
+              builder: (context) => CategoryScreen(
+                category: Category(
+                  id: json['children'][i]['catagory_id'],
+                  parent: 0,
+                  name: json['children'][i]['title'],
+                  slug: json['children'][i]['category_slug'],
+                  image: json['children'][i]['image_url'],
+                ),
+              ),
+            ),
+          );
+        },
       ));
 
       if (i < json['children'].length - 1) {
