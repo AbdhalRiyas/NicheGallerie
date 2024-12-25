@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             Image.asset(
-              "assets/images/login_dark.png",
+              "assets/images/signUp_dark.webp",
               fit: BoxFit.cover,
             ),
             Padding(
