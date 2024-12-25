@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/services/api_service.dart';
@@ -45,6 +47,8 @@ class AuthProvider extends ChangeNotifier {
         'username': username,
         'password': password,
       });
+
+      log(res.toString());
 
       _token = res['token'];
       _userEmail = res['user_email'];

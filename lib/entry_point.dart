@@ -18,7 +18,6 @@ class _EntryPointState extends State<EntryPoint> {
     HomeScreen(),
     DiscoverScreen(),
     WishlistScreen(),
-    // EmptyCartScreen(), // if Cart is empty
     CartScreen(),
     ProfileScreen(),
   ];
@@ -40,9 +39,6 @@ class _EntryPointState extends State<EntryPoint> {
 
     return Scaffold(
       appBar: AppBar(
-        // pinned: true,
-        // floating: true,
-        // snap: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leading: const SizedBox(),
         leadingWidth: 0,
@@ -81,7 +77,6 @@ class _EntryPointState extends State<EntryPoint> {
           ),
         ],
       ),
-      // body: _pages[_currentIndex],
       body: PageTransitionSwitcher(
         duration: defaultDuration,
         transitionBuilder: (child, animation, secondAnimation) {
@@ -111,7 +106,6 @@ class _EntryPointState extends State<EntryPoint> {
               ? Colors.white
               : const Color(0xFF101015),
           type: BottomNavigationBarType.fixed,
-          // selectedLabelStyle: TextStyle(color: primaryColor),
           selectedFontSize: 12,
           selectedItemColor: primaryColor,
           unselectedItemColor: Colors.transparent,

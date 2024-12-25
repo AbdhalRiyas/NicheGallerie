@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shop/entry_point.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
+import 'package:shop/src/screens/auth/views/my_account_screen.dart';
 
 import 'screen_export.dart';
 
@@ -36,22 +37,24 @@ class AppRouter {
             GoRoute(
               path: logInScreenRoute,
               name: logInScreenRoute,
-              // redirect: (context, state) => _authCheck(context, state),
-              pageBuilder: (context, state) {
-                return const MaterialPage(
-                  child: LoginScreen(),
-                );
-              },
-            ),
-            GoRoute(
-              path: signUpScreenRoute,
-              name: signUpScreenRoute,
               redirect: (context, state) => _authCheck(context, state),
               pageBuilder: (context, state) {
                 return const MaterialPage(
-                  child: SignUpScreen(),
+                  child: MyAccountScreen(),
                 );
               },
+              routes: [
+                GoRoute(
+                  path: 'orders',
+                  name: 'orders',
+                  // redirect: (context, state) => _authCheck(context, state),
+                  pageBuilder: (context, state) {
+                    return const MaterialPage(
+                      child: OrdersScreen(),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
           pageBuilder: (context, state) => MaterialPage(child: EntryPoint()),
@@ -63,13 +66,9 @@ class AppRouter {
   String? _authCheck(BuildContext context, GoRouterState state) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    print(state.path);
-
     // Redirect based on the authentication state
-    if (!authProvider.isLoggedIn && state.path != '/') {
-      return '/';
-    } else if (authProvider.isLoggedIn && state.path == '/') {
-      return '/home';
+    if (!authProvider.isLoggedIn) {
+      return '/my-account';
     }
     return null; // No redirection
   }

@@ -1,15 +1,18 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/route_constants.dart';
-import 'package:shop/src/services/hive_service.dart';
 
 import 'components/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.switchPageHandler});
+
+  final Function switchPageHandler;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -31,8 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    final Size size = MediaQuery.sizeOf(context);
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -47,12 +48,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Welcome back!",
+                    "Log in",
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: defaultPadding / 2),
                   const Text(
-                    "Log in with your data that you intered during your registration.",
+                    "Please login to your account",
                   ),
                   const SizedBox(height: defaultPadding),
                   LogInForm(
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       passwordController: _passwordController),
                   Align(
                     child: TextButton(
-                      child: const Text("Forgot password"),
+                      child: const Text("Forgot Password?"),
                       onPressed: () {
                         Navigator.pushNamed(
                             context, passwordRecoveryScreenRoute);
@@ -69,10 +70,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height:
-                        size.height > 700 ? size.height * 0.1 : defaultPadding,
+                    height: defaultPadding,
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         final success = await authProvider.login(
@@ -93,16 +99,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         //     ModalRoute.withName(logInScreenRoute));
                       }
                     },
-                    child: const Text("Log in"),
+                    child: Text("Log in".toUpperCase()),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text("Don't have an account?"),
                       TextButton(
-                        onPressed: () {
-                          context.go('/$signUpScreenRoute');
-                        },
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () => widget.switchPageHandler('signup'),
                         child: const Text("Sign up"),
                       )
                     ],

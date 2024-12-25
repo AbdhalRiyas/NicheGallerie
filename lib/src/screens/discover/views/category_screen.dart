@@ -84,7 +84,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.category.name),
+        title: Text(widget.category.name.toUpperCase()),
       ),
       body: SafeArea(
         child: Column(

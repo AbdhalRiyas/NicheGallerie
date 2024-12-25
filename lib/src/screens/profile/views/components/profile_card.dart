@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shop/src/components/network_image_with_loader.dart';
 
 import '../../../../constants.dart';
 
@@ -8,7 +7,7 @@ class ProfileCard extends StatelessWidget {
   const ProfileCard({
     super.key,
     required this.name,
-    required this.email,
+    this.email,
     required this.imageSrc,
     this.proLableText = "Pro",
     this.isPro = false,
@@ -17,7 +16,8 @@ class ProfileCard extends StatelessWidget {
     this.isShowArrow = true,
   });
 
-  final String name, email, imageSrc;
+  final String name, imageSrc;
+  final String? email;
   final String proLableText;
   final bool isPro, isShowHi, isShowArrow;
   final VoidCallback? press;
@@ -27,10 +27,10 @@ class ProfileCard extends StatelessWidget {
     return ListTile(
       onTap: press,
       leading: CircleAvatar(
+        backgroundColor: Colors.transparent,
         radius: 28,
-        child: NetworkImageWithLoader(
+        child: SvgPicture.asset(
           imageSrc,
-          radius: 100,
         ),
       ),
       title: Row(
@@ -64,7 +64,7 @@ class ProfileCard extends StatelessWidget {
             ),
         ],
       ),
-      subtitle: Text(email),
+      subtitle: email != null ? Text(email!) : null,
       trailing: isShowArrow
           ? SvgPicture.asset(
               "assets/icons/miniRight.svg",

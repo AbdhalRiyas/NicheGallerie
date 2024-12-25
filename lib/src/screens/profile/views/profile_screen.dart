@@ -24,16 +24,21 @@ class ProfileScreen extends StatelessWidget {
                     ? ProfileCard(
                         name: provider.displayName.toString(),
                         email: provider.email.toString(),
-                        imageSrc: "https://i.imgur.com/IXnwbLk.png",
+                        imageSrc: "assets/icons/Avatar.svg",
                         // proLableText: "Sliver",
                         // isPro: true, if the user is pro
                         press: () {
-                          Navigator.pushNamed(context, userInfoScreenRoute);
+                          print(provider.token);
+                          // Navigator.pushNamed(context, userInfoScreenRoute);
                         },
                       )
-                    : GestureDetector(
-                        child: Text("Login Now"),
-                        onTap: () => context.go('/$logInScreenRoute'),
+                    : ProfileCard(
+                        name: 'Login',
+                        imageSrc: "assets/icons/Avatar.svg",
+                        isShowHi: false,
+                        press: () {
+                          context.go('/$logInScreenRoute');
+                        },
                       ),
           ),
           // Padding(
@@ -62,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
             text: "Orders",
             svgSrc: "assets/icons/Order.svg",
             press: () {
-              Navigator.pushNamed(context, ordersScreenRoute);
+              context.go('/$ordersScreenRoute');
             },
           ),
           // ProfileMenuListTile(

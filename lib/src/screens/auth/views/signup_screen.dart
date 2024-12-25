@@ -6,7 +6,9 @@ import 'package:shop/src/route/route_constants.dart';
 import '../../../constants.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({super.key, required this.switchPageHandler});
+
+  final Function switchPageHandler;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -33,12 +35,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Let’s get started!",
+                    "Register Account",
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: defaultPadding / 2),
                   const Text(
-                    "Please enter your valid data in order to create an account.",
+                    "Enter Details to register new account.",
                   ),
                   const SizedBox(height: defaultPadding),
                   SignUpForm(formKey: _formKey),
@@ -90,9 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       const Text("Do you have an account?"),
                       TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, logInScreenRoute);
-                        },
+                        onPressed: () => widget.switchPageHandler('login'),
                         child: const Text("Log in"),
                       )
                     ],
