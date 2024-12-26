@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop/src/components/skleton/skelton.dart';
+import 'package:shop/src/components/skeleton/skeleton.dart';
 import 'package:shop/src/constants.dart';
 
 class AddressCardSkelton extends StatelessWidget {

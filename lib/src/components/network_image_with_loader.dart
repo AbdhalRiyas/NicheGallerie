@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
-import 'skleton/skelton.dart';
+import 'skeleton/skeleton.dart';
 
 class NetworkImageWithLoader extends StatelessWidget {
   final BoxFit fit;

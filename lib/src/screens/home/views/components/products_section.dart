@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop/src/components/product/product_card.dart';
-import 'package:shop/src//models/product_model.dart';
 import 'package:shop/src//route/screen_export.dart';
-import 'package:shop/src/components/skleton/product/products_skelton.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/services/api_service.dart';
 
@@ -92,7 +91,7 @@ class _ProductsSectionState extends State<ProductsSection> {
                     itemBuilder: (context, index) => Padding(
                       padding: EdgeInsets.only(
                         left: defaultPadding,
-                        right: index == demoPopularProducts.length - 1
+                        right: index == snapshot.data!.length - 1
                             ? defaultPadding
                             : 0,
                       ),

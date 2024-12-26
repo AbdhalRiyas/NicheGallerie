@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 import '../product/secondary_product_skelton.dart';
-import '../skelton.dart';
+import '../skeleton.dart';
 
 class OrderStatusCardSkelton extends StatelessWidget {
   const OrderStatusCardSkelton({

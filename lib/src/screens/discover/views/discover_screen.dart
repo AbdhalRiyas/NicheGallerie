@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop/src/components/skleton/others/discover_categories_skelton.dart';
+import 'package:shop/src/components/skeleton/others/discover_categories_skelton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/category_repository.dart';
 import 'package:shop/src/screens/discover/views/category_screen.dart';

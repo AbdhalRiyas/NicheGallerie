@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
-import '../skelton.dart';
+import '../skeleton.dart';
 
 class BannerMWithCounterSkelton extends StatelessWidget {
   const BannerMWithCounterSkelton({

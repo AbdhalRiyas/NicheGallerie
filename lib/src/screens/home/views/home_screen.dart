@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop/src/components/skleton/product/products_skelton.dart';
-import 'package:shop/src/components/skleton/skelton.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
+import 'package:shop/src/components/skeleton/skeleton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/home_repository.dart';
 import 'package:shop/src/utils/build_widget.dart';
