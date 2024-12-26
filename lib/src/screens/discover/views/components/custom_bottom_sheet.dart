@@ -155,7 +155,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                           min: 99,
                           max: 10000,
                           activeColor: Colors.brown,
-                          inactiveColor: Colors.brown.withOpacity(0.2),
+                          inactiveColor: Colors.brown.withValues(alpha: 0.2),
                           onChanged: (RangeValues values) {
                             setState(() {
                               _currentRangeValues = values;

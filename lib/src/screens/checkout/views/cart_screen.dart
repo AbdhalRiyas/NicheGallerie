@@ -80,7 +80,7 @@ class _CartScreenState extends State<CartScreen> {
                         .textTheme
                         .bodyLarge!
                         .color!
-                        .withOpacity(0.3),
+                        .withValues(alpha: 0.3),
                     BlendMode.srcIn,
                   ),
                 ),
@@ -177,7 +177,7 @@ class _CartScreenState extends State<CartScreen> {
                                     .textTheme
                                     .bodyLarge!
                                     .color!
-                                    .withOpacity(0.3),
+                                    .withValues(alpha: 0.3),
                                 BlendMode.srcIn,
                               ),
                             ),

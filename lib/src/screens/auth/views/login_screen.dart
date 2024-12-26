@@ -1,11 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/route_constants.dart';
+import 'package:shop/src/utils/show_loader.dart';
 
 import 'components/login_form.dart';
 
@@ -61,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       emailController: _emailController,
                       passwordController: _passwordController),
                   Align(
+                    alignment: Alignment.centerRight,
                     child: TextButton(
                       child: const Text("Forgot Password?"),
                       onPressed: () {
@@ -81,15 +81,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
+                        showLoader(context, message: 'Logging in...');
+
                         final success = await authProvider.login(
                             _emailController.text, _passwordController.text);
+
+                        if (context.mounted) {
+                          hideLoader(context);
+                        }
 
                         if (success && context.mounted) {
                           if (context.canPop()) {
                             context.pop();
                           } else {
-                            print(success);
-
                             context.go('/home');
                           }
                         }
@@ -101,24 +105,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text("Log in".toUpperCase()),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account?"),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          textStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: () => widget.switchPageHandler('signup'),
-                        child: const Text("Sign up"),
-                      )
-                    ],
-                  ),
                 ],
               ),
-            )
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: defaultPadding,
+                ),
+                const Text("Don't have an account?"),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  onPressed: () => widget.switchPageHandler('signup'),
+                  child: const Text("Sign up"),
+                )
+              ],
+            ),
           ],
         ),
       ),

@@ -9,8 +9,6 @@ class AuthRepository {
       'password': password,
     });
 
-    print(res);
-
     return Result(data: res);
   }
 }
