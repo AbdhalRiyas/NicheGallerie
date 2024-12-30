@@ -11,9 +11,17 @@ class SignUpForm extends StatefulWidget {
   const SignUpForm({
     super.key,
     required this.formKey,
+    required this.emailController,
+    required this.passwordController,
+    required this.phoneController,
+    required this.dateOfBirthController,
   });
 
   final GlobalKey<FormState> formKey;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final TextEditingController phoneController;
+  final TextEditingController dateOfBirthController;
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -21,7 +29,6 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   DateTime _selectedDate = DateTime.now();
-  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +42,7 @@ class _SignUpFormState extends State<SignUpForm> {
             },
             validator: emaildValidator.call,
             textInputAction: TextInputAction.next,
+            controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               hintText: "Email address",
@@ -45,6 +53,7 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: defaultPadding),
           TextFormField(
             keyboardType: TextInputType.phone,
+            controller: widget.phoneController,
             textInputAction: TextInputAction.next,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -103,7 +112,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            controller: _textEditingController,
+            controller: widget.dateOfBirthController,
             onSaved: (date) {
               // Save birth date logic
             },
@@ -123,6 +132,7 @@ class _SignUpFormState extends State<SignUpForm> {
             onSaved: (pass) {
               // Save password logic
             },
+            controller: widget.passwordController,
             validator: passwordValidator.call,
             obscureText: true,
             decoration: InputDecoration(
@@ -157,7 +167,8 @@ class _SignUpFormState extends State<SignUpForm> {
     if (newSelectedDate != null) {
       setState(() {
         _selectedDate = newSelectedDate;
-        _textEditingController.text = DateFormat.yMd().format(_selectedDate);
+        widget.dateOfBirthController.text =
+            DateFormat.yMd().format(_selectedDate);
       });
     }
   }

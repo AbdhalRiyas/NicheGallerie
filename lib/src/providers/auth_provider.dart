@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/services/api_service.dart';
@@ -25,20 +24,36 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _initializeAuth() async {
     try {
       final authData = await HiveService().getAuth();
-      if (authData != null && authData['token'] != null) {
-        _token = authData['token'];
-        _userEmail = authData['user_email'];
-        _userDisplayName = authData['user_display_name'];
-        _userNicename = authData['user_nicename'];
-        _isLoggedIn = true;
+      if (authData != null) {
+        await _setUserData(authData);
+        final res = await ApiService().post(ApiContants().validate, payload: {
+          '_token': authData['data']['token'],
+        });
+
+        log(res.toString());
+
+        if (res['success'] == true) {
+          await _setUserData(res);
+        }
       } else {
         _isLoggedIn = false;
       }
     } catch (e) {
       _isLoggedIn = false;
+      log('Error initializing auth: $e');
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<void> _setUserData(Map<dynamic, dynamic> data) async {
+    _token = data['data']['token'];
+    _userEmail = data['data']['user']['user_email'];
+    _userDisplayName = data['data']['user']['display_name'];
+    _userNicename = data['data']['user']['user_nicename'];
+    _isLoggedIn = true;
+    await HiveService().saveAuth(data);
+    notifyListeners();
   }
 
   Future<bool> login(String username, String password) async {
@@ -48,17 +63,38 @@ class AuthProvider extends ChangeNotifier {
         'password': password,
       });
 
-      log(res.toString());
+      if (res['success'] == true) {
+        log(res.toString());
+        await _setUserData(res);
+        return true;
+      }
 
-      _token = res['token'];
-      _userEmail = res['user_email'];
-      _userDisplayName = res['user_display_name'];
-      _userNicename = res['user_nicename'];
-      _isLoggedIn = true;
-      await HiveService().saveAuth(res);
-      notifyListeners();
-      return true;
+      await HiveService().clearAuth();
+      return false;
     } catch (e) {
+      log('Login error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> register(String email, String password, String phoneNumber,
+      String dateOfBirth) async {
+    try {
+      final res = await ApiService().post(ApiContants().register, payload: {
+        'email': email,
+        'password': password,
+        'date_of_birth': dateOfBirth,
+        'phone_number': phoneNumber,
+      });
+
+      if (res['success'] == true) {
+        log(res.toString());
+        await _setUserData(res);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      log('Register error: $e');
       return false;
     }
   }

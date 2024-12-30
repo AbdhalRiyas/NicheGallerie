@@ -8,4 +8,6 @@ class ApiContants {
   final String categories = '/products/categories';
   final String orders = '/orders';
   final String login = '/auth/login';
+  final String register = '/auth/register';
+  final String validate = '/auth/validate';
 }

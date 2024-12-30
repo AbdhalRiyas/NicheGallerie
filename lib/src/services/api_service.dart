@@ -47,7 +47,6 @@ class ApiService {
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 60));
-
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
