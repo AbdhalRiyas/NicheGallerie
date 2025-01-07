@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/src/components/custom_snackbar.dart';
+import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/config/app_contants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
+import 'package:shop/src/route/screen_export.dart';
+import 'package:shop/src/screens/product/views/added_to_cart_message_screen.dart';
 
 import '../../constants.dart';
 import '../network_image_with_loader.dart';
@@ -112,12 +115,18 @@ class ProductCard extends StatelessWidget {
           ElevatedButton(
             onPressed: product.stockStatus == 'instock'
                 ? () {
-                    final provider =
-                        Provider.of<CartProvider>(context, listen: false);
-                    provider.addItem(product.id, 1);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      customSnackBar('Product added to cart'),
-                    );
+                    try {
+                      final provider =
+                          Provider.of<CartProvider>(context, listen: false);
+                      provider.addItem(product.id, 1);
+                      customModalBottomSheet(
+                        context,
+                        isDismissible: false,
+                        child: const AddedToCartMessageScreen(),
+                      );
+                    } catch (e) {
+                      context.go('/$logInScreenRoute');
+                    }
                   }
                 : null,
             style: ElevatedButton.styleFrom(

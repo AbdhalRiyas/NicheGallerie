@@ -1,17 +1,24 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/repositories/product_repository.dart';
 import 'package:shop/src/utils/result.dart';
 
+import '../route/route_constants.dart';
+
 class CartProvider extends ChangeNotifier {
   final ProductRepository _productRepository = ProductRepository();
+  final AuthProvider authProvider;
   late Box<Map<dynamic, dynamic>> cartBox;
   bool _isBoxInitialized = false;
 
   bool get isBoxInitialized => _isBoxInitialized;
 
-  CartProvider() {
+  CartProvider(this.authProvider) {
     _initBox();
   }
 
@@ -38,6 +45,10 @@ class CartProvider extends ChangeNotifier {
 
   void addItem(int productId, int qty) {
     if (!_isBoxInitialized) return;
+
+    if (!authProvider.isLoggedIn) {
+      throw Exception('User not logged in');
+    }
 
     int index = cartItems.indexWhere((item) => item['product_id'] == productId);
 

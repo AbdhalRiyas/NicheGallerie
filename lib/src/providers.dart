@@ -9,7 +9,8 @@ final List<SingleChildWidget> providers = [
   Provider<AppRouter>(create: (_) => AppRouter()),
   ChangeNotifierProvider(create: (_) => AuthProvider()),
   ChangeNotifierProvider(
-    create: (_) => CartProvider(),
+    create: (context) =>
+        CartProvider(Provider.of<AuthProvider>(context, listen: false)),
     lazy: true,
   ),
   ChangeNotifierProvider(

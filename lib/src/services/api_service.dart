@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/src/config/app_contants.dart';
 import 'package:shop/src/error/app_exception.dart';
@@ -21,15 +20,16 @@ class ApiService {
             headers: _buildHeaders(),
           )
           .timeout(
-            const Duration(seconds: 60),
+            const Duration(seconds: 10),
           );
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
     } on TimeoutException {
-      throw ServerNotRespondException("Server request timeout", uri.toString());
+      throw ServerNotRespondException(
+          "Couldn't able to connect with server on time.", uri.toString());
     } catch (e) {
-      debugPrint(e.toString());
+      rethrow;
     }
   }
 
@@ -46,7 +46,7 @@ class ApiService {
             headers: _buildHeaders(),
             body: jsonEncode(payload),
           )
-          .timeout(const Duration(seconds: 60));
+          .timeout(const Duration(seconds: 30));
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
@@ -68,7 +68,7 @@ class ApiService {
             // headers: _buildHeaders(userToken),
             body: jsonEncode(payload),
           )
-          .timeout(const Duration(seconds: 60));
+          .timeout(const Duration(seconds: 20));
 
       return _processResponse(res);
     } on SocketException {
@@ -89,7 +89,7 @@ class ApiService {
             // headers: _buildHeaders(userToken),
             body: jsonEncode(payload),
           )
-          .timeout(const Duration(seconds: 60));
+          .timeout(const Duration(seconds: 15));
 
       return _processResponse(res);
     } on SocketException {
@@ -113,7 +113,7 @@ class ApiService {
 
       case 400:
         throw BadRequestException(
-          responseJson["message"],
+          responseJson["message"] ?? "Something went wrong. Please try again.",
           response.request!.url.toString(),
         );
 
