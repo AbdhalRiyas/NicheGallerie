@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_contants.dart';
+import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/error/app_exception.dart';
+import 'package:shop/src/providers/auth_provider.dart';
 
 class ApiService {
   ApiService._internal();
@@ -22,6 +25,7 @@ class ApiService {
           .timeout(
             const Duration(seconds: 10),
           );
+      print(res.body);
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
@@ -65,7 +69,7 @@ class ApiService {
       final res = await http
           .put(
             uri,
-            // headers: _buildHeaders(userToken),
+            headers: _buildHeaders(),
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 20));
@@ -86,7 +90,7 @@ class ApiService {
       final res = await http
           .delete(
             uri,
-            // headers: _buildHeaders(userToken),
+            headers: _buildHeaders(),
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 15));
@@ -154,12 +158,11 @@ class ApiService {
   }
 
   Map<String, String> _buildHeaders() {
-    final consumerKey = 'ck_73560b846cff25ae31200f6b105007a1e46a1766';
-    final consumerSecret = 'cs_413054aed9df66e9b134aeefd591a0c06eb6c15e';
-    final authString =
-        base64Encode(utf8.encode('$consumerKey:$consumerSecret'));
+    final authProvider = Provider.of<AuthProvider>(
+        GlobalKeyContants().navigatorKey.currentContext!,
+        listen: false);
     return {
-      "Authorization": "Basic $authString",
+      "Authorization": "Bearer ${authProvider.token}",
       "Accept": "application/json",
       "Content-Type": "application/json",
       "Connection": "Keep-Alive",

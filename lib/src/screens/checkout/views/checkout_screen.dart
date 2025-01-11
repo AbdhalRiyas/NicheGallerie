@@ -319,7 +319,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   'state': selectedAddress!.state,
                   'postcode': selectedAddress!.postcode,
                   'country': selectedAddress!.country,
-                  'email': selectedAddress!.email,
+                  'email': 'demo@demo.com',
                   'phone': selectedAddress!.phone,
                 },
                 'shipping': {
@@ -399,5 +399,3 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 //                 'shipping_lines.*.method_title' => 'required|string|max:255',
 //                 'shipping_lines.*.total' => 'required|regex:/^\d+(\.\d{1,2})?$/', // Validates decimal format (e.g., "10.00")
 //             ]);
-
-

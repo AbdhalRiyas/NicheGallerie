@@ -31,6 +31,13 @@ class AppRouter {
               },
             ),
             GoRoute(
+              path: searchScreenRoute,
+              name: searchScreenRoute,
+              pageBuilder: (context, state) {
+                return const MaterialPage(child: SearchScreen());
+              },
+            ),
+            GoRoute(
               path: cartScreenRoute,
               name: cartScreenRoute,
               // Redirect is handled here
