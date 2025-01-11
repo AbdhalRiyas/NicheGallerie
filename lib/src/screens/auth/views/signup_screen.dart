@@ -1,12 +1,18 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/screens/auth/views/components/sign_up_form.dart';
 import 'package:shop/src/route/route_constants.dart';
+import 'package:shop/src/utils/show_loader.dart';
 
 import '../../../constants.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({super.key, required this.switchPageHandler});
+
+  final Function switchPageHandler;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -14,17 +20,30 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _phoneController.dispose();
+    _dateOfBirthController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Image.asset(
-              "assets/images/signUp_dark.png",
-              height: MediaQuery.of(context).size.height * 0.35,
-              width: double.infinity,
+              "assets/images/signUp_dark.webp",
               fit: BoxFit.cover,
             ),
             Padding(
@@ -33,15 +52,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Let’s get started!",
+                    "Register Account",
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: defaultPadding / 2),
                   const Text(
-                    "Please enter your valid data in order to create an account.",
+                    "Enter Details to register new account.",
                   ),
                   const SizedBox(height: defaultPadding),
-                  SignUpForm(formKey: _formKey),
+                  SignUpForm(
+                    formKey: _formKey,
+                    emailController: _emailController,
+                    passwordController: _passwordController,
+                    phoneController: _phoneController,
+                    dateOfBirthController: _dateOfBirthController,
+                  ),
                   const SizedBox(height: defaultPadding),
                   Row(
                     children: [
@@ -77,11 +102,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: defaultPadding * 2),
                   ElevatedButton(
-                    onPressed: () {
-                      // There is 2 more screens while user complete their profile
-                      // afre sign up, it's available on the pro version get it now
-                      // 🔗 https://theflutterway.gumroad.com/l/fluttershop
-                      Navigator.pushNamed(context, entryPointScreenRoute);
+                    onPressed: () async {
+                      showLoader(context, message: 'Registering...');
+
+                      final success = await authProvider.register(
+                          _emailController.text,
+                          _passwordController.text,
+                          _phoneController.text,
+                          _dateOfBirthController.text);
+
+                      if (context.mounted) {
+                        hideLoader(context);
+                      }
+
+                      if (success && context.mounted) {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go('/home');
+                        }
+                      }
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context,
+                      //     entryPointScreenRoute,
+                      //     ModalRoute.withName(logInScreenRoute));
                     },
                     child: const Text("Continue"),
                   ),
@@ -90,9 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       const Text("Do you have an account?"),
                       TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, logInScreenRoute);
-                        },
+                        onPressed: () => widget.switchPageHandler('login'),
                         child: const Text("Log in"),
                       )
                     ],

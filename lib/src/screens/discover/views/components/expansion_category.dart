@@ -10,10 +10,12 @@ class ExpansionCategory extends StatelessWidget {
     required this.title,
     required this.subCategory,
     required this.svgSrc,
+    required this.onTap,
   });
 
   final String title, svgSrc;
   final List subCategory;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,7 @@ class ExpansionCategory extends StatelessWidget {
               style: const TextStyle(fontSize: 14),
             ),
             textColor: Theme.of(context).textTheme.bodyLarge!.color,
-            onTap: () {
-              Navigator.pushNamed(context, onSaleScreenRoute);
-            },
+            onTap: onTap,
           )
         : ExpansionTile(
             iconColor: Theme.of(context).textTheme.bodyLarge!.color,

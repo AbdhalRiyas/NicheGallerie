@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PasswordRecoveryScreen extends StatelessWidget {
-  const PasswordRecoveryScreen({super.key});
+  const PasswordRecoveryScreen({super.key, required this.switchPageHandler});
+
+  final Function switchPageHandler;
 
   @override
   Widget build(BuildContext context) {

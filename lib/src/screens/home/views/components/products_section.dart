@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shop/src/components/product/product_card.dart';
-import 'package:shop/src//models/product_model.dart';
 import 'package:shop/src//route/screen_export.dart';
-import 'package:shop/src/components/skleton/product/products_skelton.dart';
-import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
+import 'package:shop/src/models/product.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import '../../../../constants.dart';
@@ -30,11 +32,11 @@ class _ProductsSectionState extends State<ProductsSection> {
 
     if (widget.dataApiEndPoint.isNotEmpty) {
       final res = await ApiService().get(widget.dataApiEndPoint);
-      for (var element in res) {
+      for (var element in res['data']) {
         try {
           products.add(Product.fromJson(element));
         } catch (e) {
-          print(e);
+          log(e.toString());
         }
       }
     }
@@ -89,7 +91,7 @@ class _ProductsSectionState extends State<ProductsSection> {
                     itemBuilder: (context, index) => Padding(
                       padding: EdgeInsets.only(
                         left: defaultPadding,
-                        right: index == demoPopularProducts.length - 1
+                        right: index == snapshot.data!.length - 1
                             ? defaultPadding
                             : 0,
                       ),
@@ -97,9 +99,8 @@ class _ProductsSectionState extends State<ProductsSection> {
                         product: snapshot.data![index]!,
                         dicountpercent: 10,
                         press: () {
-                          Navigator.pushNamed(
-                              context, productDetailsScreenRoute,
-                              arguments: [snapshot.data![index]!]);
+                          context.go(
+                              '/$productScreenRoute/${snapshot.data![index]!.slug}');
                         },
                       ),
                     ),

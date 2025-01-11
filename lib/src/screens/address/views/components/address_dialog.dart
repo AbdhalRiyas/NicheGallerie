@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
@@ -69,17 +71,17 @@ class _AddressDialogState extends State<AddressDialog> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  print('Saved');
-                  print(_firstNameController.text);
-                  print(_lastNameController.text);
-                  print(_companyNameController.text);
-                  print(_address1Controller.text);
-                  print(_address2Controller.text);
-                  print(_cityController.text);
-                  print(_postcodeController.text);
-                  print(_phoneController.text);
-                  print(_stateController.text);
-                  print(_countryController.text);
+                  log('Saved');
+                  log(_firstNameController.text);
+                  log(_lastNameController.text);
+                  log(_companyNameController.text);
+                  log(_address1Controller.text);
+                  log(_address2Controller.text);
+                  log(_cityController.text);
+                  log(_postcodeController.text);
+                  log(_phoneController.text);
+                  log(_stateController.text);
+                  log(_countryController.text);
                 },
                 child: const Text('Save'),
               ),

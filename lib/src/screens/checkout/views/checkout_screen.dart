@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/address_model.dart';
+import 'package:shop/src/models/product.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/checkout/views/components/select_address_dialog.dart';
@@ -13,9 +14,13 @@ import 'package:shop/src/services/api_service.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen(
-      {super.key, required this.cartItems, required this.subTotal});
+      {super.key,
+      required this.cartItems,
+      required this.subTotal,
+      required this.productMap});
 
   final List cartItems;
+  final List<Map<dynamic, dynamic>> productMap;
   final double subTotal;
 
   @override
@@ -210,13 +215,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: widget.cartItems.length,
                 itemBuilder: (context, index) {
-                  final product = widget.cartItems[index];
+                  final Product product = widget.cartItems[index];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(defaultBorderRadius),
                       child: CachedNetworkImage(
-                        imageUrl: product['product'].images[0],
+                        imageUrl: product.images[0],
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
@@ -229,7 +234,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                     ),
                     title: Text(
-                      product['product'].name,
+                      product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -239,7 +244,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Row(
                           children: [
                             Text(
-                              'AED ${product['product'].price.toStringAsFixed(2)}',
+                              'AED ${product.price.toStringAsFixed(2)}',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).primaryColor),
@@ -258,7 +263,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ],
                     ),
                     trailing: Text(
-                      'x${product['qty'].toString()}',
+                      'x${widget.productMap[index]['qty'].toString()}',
                       style: TextStyle(
                         color: blackColor60,
                         fontSize: 14,
@@ -314,7 +319,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   'state': selectedAddress!.state,
                   'postcode': selectedAddress!.postcode,
                   'country': selectedAddress!.country,
-                  'email': selectedAddress!.email,
+                  'email': 'demo@demo.com',
                   'phone': selectedAddress!.phone,
                 },
                 'shipping': {
@@ -329,15 +334,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 },
                 'line_items': widget.cartItems
                     .map((e) => {
-                          'product_id': e['product'].id,
-                          'quantity': e['qty'],
+                          'product_id': e.id,
+                          'quantity': widget.productMap.firstWhere((element) =>
+                              element['product_id'] == e.id)['qty'],
                         })
                     .toList(),
                 'shipping_lines': [
                   {
                     'method_id': 'flat_rate',
                     'method_title': 'Flat Rate',
-                    'total': widget.subTotal.toStringAsFixed(2),
+                    'total': '0',
                   }
                 ],
               });

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/config/app_contants.dart';
-import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
+import 'package:shop/src/route/screen_export.dart';
+import 'package:shop/src/screens/product/views/added_to_cart_message_screen.dart';
 
 import '../../constants.dart';
 import '../network_image_with_loader.dart';
@@ -109,12 +113,22 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {
-              final provider =
-                  Provider.of<CartProvider>(context, listen: false);
-
-              provider.addItem(product, 1);
-            },
+            onPressed: product.stockStatus == 'instock'
+                ? () {
+                    try {
+                      final provider =
+                          Provider.of<CartProvider>(context, listen: false);
+                      provider.addItem(product.id, 1);
+                      customModalBottomSheet(
+                        context,
+                        isDismissible: false,
+                        child: const AddedToCartMessageScreen(),
+                      );
+                    } catch (e) {
+                      context.go('/$logInScreenRoute');
+                    }
+                  }
+                : null,
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(
                   vertical: 4,
@@ -126,10 +140,12 @@ class ProductCard extends StatelessWidget {
             ),
             child: FittedBox(
                 child: Text(
-              "Add to Cart".toUpperCase(),
+              product.stockStatus == 'instock'
+                  ? "Add to Cart".toUpperCase()
+                  : "Out of Stock".toUpperCase(),
               style: TextStyle(fontSize: 10),
             )),
-          ),
+          )
         ],
       ),
     );

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/product/views/components/product_quantity.dart';
-import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/models/product.dart';
 
 class CartProduct extends StatelessWidget {
   final Product product;
@@ -60,39 +60,48 @@ class CartProduct extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  'AED ${(product.price * qty).toStringAsFixed(2)}',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor),
-                ),
-                SizedBox(width: 8),
-                // if (product.onSale)
-                //   Text(
-                //     product.regularPrice.toStringAsFixed(2),
-                //     style: TextStyle(
-                //       color: Colors.grey,
-                //       decoration: TextDecoration.lineThrough,
-                //     ),
-                //   ),
-                Transform.scale(
-                  scale: 0.7,
-                  child: ProductQuantity(
-                    showLabel: false,
-                    numOfItem: qty,
-                    onIncrement: onIncrement,
-                    onDecrement: onDecrement,
+        subtitle: product.stockStatus == 'instock'
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'AED ${(product.price * qty).toStringAsFixed(2)}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor),
+                      ),
+                      SizedBox(width: 8),
+                      // if (product.onSale)
+                      //   Text(
+                      //     product.regularPrice.toStringAsFixed(2),
+                      //     style: TextStyle(
+                      //       color: Colors.grey,
+                      //       decoration: TextDecoration.lineThrough,
+                      //     ),
+                      //   ),
+                      Transform.scale(
+                        scale: 0.7,
+                        child: ProductQuantity(
+                          showLabel: false,
+                          numOfItem: qty,
+                          onIncrement: onIncrement,
+                          onDecrement: onDecrement,
+                        ),
+                      )
+                    ],
                   ),
+                ],
+              )
+            : Text(
+                'Out of stock',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
       ),
     );
   }

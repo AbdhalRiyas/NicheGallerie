@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/components/list_tile/divider_list_tile.dart';
-import 'package:shop/src/components/network_image_with_loader.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
 
 import 'components/profile_card.dart';
@@ -16,15 +18,28 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          ProfileCard(
-            name: "May",
-            email: "user@gmail.com",
-            imageSrc: "https://i.imgur.com/IXnwbLk.png",
-            // proLableText: "Sliver",
-            // isPro: true, if the user is pro
-            press: () {
-              Navigator.pushNamed(context, userInfoScreenRoute);
-            },
+          Consumer<AuthProvider>(
+            builder: (BuildContext context, provider, Widget? child) =>
+                provider.isLoggedIn
+                    ? ProfileCard(
+                        name: provider.displayName.toString(),
+                        email: provider.email.toString(),
+                        imageSrc: "assets/icons/Avatar.svg",
+                        // proLableText: "Sliver",
+                        // isPro: true, if the user is pro
+                        press: () {
+                          ;
+                          // Navigator.pushNamed(context, userInfoScreenRoute);
+                        },
+                      )
+                    : ProfileCard(
+                        name: 'Login',
+                        imageSrc: "assets/icons/Avatar.svg",
+                        isShowHi: false,
+                        press: () {
+                          context.go('/$logInScreenRoute');
+                        },
+                      ),
           ),
           // Padding(
           //   padding: const EdgeInsets.symmetric(
@@ -52,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
             text: "Orders",
             svgSrc: "assets/icons/Order.svg",
             press: () {
-              Navigator.pushNamed(context, ordersScreenRoute);
+              context.go('/$ordersScreenRoute');
             },
           ),
           // ProfileMenuListTile(
@@ -156,22 +171,30 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: defaultPadding),
 
           // Log Out
-          ListTile(
-            onTap: () {},
-            minLeadingWidth: 24,
-            leading: SvgPicture.asset(
-              "assets/icons/Logout.svg",
-              height: 24,
-              width: 24,
-              colorFilter: const ColorFilter.mode(
-                errorColor,
-                BlendMode.srcIn,
-              ),
-            ),
-            title: const Text(
-              "Log Out",
-              style: TextStyle(color: errorColor, fontSize: 14, height: 1),
-            ),
+          Consumer<AuthProvider>(
+            builder: (BuildContext context, provider, Widget? child) => provider
+                    .isLoggedIn
+                ? ListTile(
+                    onTap: () {
+                      provider.logout();
+                    },
+                    minLeadingWidth: 24,
+                    leading: SvgPicture.asset(
+                      "assets/icons/Logout.svg",
+                      height: 24,
+                      width: 24,
+                      colorFilter: const ColorFilter.mode(
+                        errorColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    title: const Text(
+                      "Log Out",
+                      style:
+                          TextStyle(color: errorColor, fontSize: 14, height: 1),
+                    ),
+                  )
+                : SizedBox(),
           )
         ],
       ),

@@ -3,9 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
+import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/models/product/product.dart';
+import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/wishlist_provider.dart';
 import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.dart';
 import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';
@@ -20,12 +21,12 @@ import 'product_buy_now_screen.dart';
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({
     super.key,
-    required this.productImageUrls,
-    required this.productId,
+    this.productImageUrls,
+    required this.slug,
   });
 
-  final int productId;
-  final List<String> productImageUrls;
+  final String slug;
+  final List<String>? productImageUrls;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -36,7 +37,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   void getProduct() async {
     final res =
-        await ApiService().get('${ApiContants().products}/${widget.productId}');
+        await ApiService().get('${ApiContants().products}/${widget.slug}');
 
     _product.value = Product.fromJson(res);
   }
@@ -87,18 +88,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 Consumer<WishlistProvider>(
                   builder: (context, wishlistProvider, child) {
                     bool isInWishlist = wishlistProvider.wishlistItems
-                        .contains(widget.productId);
+                        .contains(_product.value?.id);
                     return IconButton(
                       onPressed: () {
                         if (isInWishlist) {
-                          wishlistProvider.removeItem(widget.productId);
+                          wishlistProvider.removeItem(_product.value!.id);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Removed from wishlist')),
+                            customSnackBar('Removed from wishlist'),
                           );
                         } else {
-                          wishlistProvider.addItem(widget.productId);
+                          wishlistProvider.addItem(_product.value!.id);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Added to wishlist')),
+                            customSnackBar('Added to wishlist'),
                           );
                         }
                       },
@@ -116,9 +117,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
               ],
             ),
-            ProductImages(
-              images: widget.productImageUrls,
-            ),
             SliverToBoxAdapter(
               child: ValueListenableBuilder(
                 valueListenable: _product,
@@ -128,6 +126,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ? CircularProgressIndicator.adaptive()
                         : Column(
                             children: [
+                              ProductImages(
+                                images: product.images,
+                              ),
                               ProductInfo(
                                 brand: "Armani",
                                 title: product.name,

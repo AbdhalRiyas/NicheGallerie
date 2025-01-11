@@ -99,7 +99,7 @@ class CountryStatePicker extends StatelessWidget {
 
                       ///triggers once country selected in dropdown
                       onCountryChanged: (value) =>
-                          countryController.text = value,
+                          countryController.text = value ?? '',
 
                       ///triggers once state selected in dropdown
                       onStateChanged: (value) =>

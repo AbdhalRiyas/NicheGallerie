@@ -7,8 +7,8 @@ const AppBarTheme appBarLightTheme = AppBarTheme(
   elevation: 0,
   iconTheme: IconThemeData(color: blackColor),
   titleTextStyle: TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.bold,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
     color: blackColor,
   ),
 );

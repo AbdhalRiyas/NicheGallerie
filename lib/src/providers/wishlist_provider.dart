@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:shop/src/models/product.dart';
+import 'package:shop/src/repositories/product_repository.dart';
+import 'package:shop/src/utils/result.dart';
 
 class WishlistProvider extends ChangeNotifier {
+  final ProductRepository _productRepository = ProductRepository();
   late Box<int> wishlistBox;
   bool _isBoxInitialized = false;
 
@@ -15,6 +19,15 @@ class WishlistProvider extends ChangeNotifier {
     wishlistBox = await Hive.openBox<int>('wishlistBox');
     _isBoxInitialized = true;
     notifyListeners();
+  }
+
+  Future<List<Product>?> fetchProducts() async {
+    if (wishlistItems.isNotEmpty) {
+      final Result res =
+          await _productRepository.fetchProductById(wishlistItems);
+      return res.data;
+    }
+    return null;
   }
 
   List<int> get wishlistItems {

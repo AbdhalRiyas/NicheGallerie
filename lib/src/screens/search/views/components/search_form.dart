@@ -16,6 +16,7 @@ class SearchForm extends StatelessWidget {
     this.focusNode,
     this.autofocus = false,
     this.hintText = 'Search',
+    this.suffixIcon = "assets/icons/Filter.svg",
   });
 
   final GlobalKey<FormState>? formKey;
@@ -26,6 +27,7 @@ class SearchForm extends StatelessWidget {
   final FocusNode? focusNode;
   final bool autofocus;
   final String hintText;
+  final String suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class SearchForm extends StatelessWidget {
             child: SvgPicture.asset(
               "assets/icons/Search.svg",
               height: 24,
-              color: Theme.of(context).iconTheme.color!.withOpacity(0.3),
+              color: Theme.of(context).iconTheme.color!.withValues(alpha: 0.3),
             ),
           ),
           suffixIcon: SizedBox(
@@ -64,9 +66,12 @@ class SearchForm extends StatelessWidget {
                   child: IconButton(
                     onPressed: onTabFilter,
                     icon: SvgPicture.asset(
-                      "assets/icons/Filter.svg",
+                      suffixIcon,
                       height: 24,
-                      color: Theme.of(context).iconTheme.color,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).iconTheme.color!,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ),
