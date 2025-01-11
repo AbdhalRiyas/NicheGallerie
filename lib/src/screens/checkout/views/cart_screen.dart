@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/src/components/empty_handle_widget.dart';
 import 'package:shop/src/components/skeleton/skeleton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
@@ -75,30 +76,9 @@ class _CartScreenState extends State<CartScreen> {
           }
 
           if (cartProvider.cartItems.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    "assets/icons/Empty-Cart.svg",
-                    height: 100,
-                    width: 100,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .color!
-                          .withValues(alpha: 0.3),
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  const SizedBox(height: defaultPadding),
-                  Text(
-                    "Uh oh! Your cart is empty",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
-              ),
+            return EmptyHandleWidget(
+              iconSrc: "assets/icons/Empty-Cart.svg",
+              title: "Uh oh! Your cart is empty",
             );
           }
 

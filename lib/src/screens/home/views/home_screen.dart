@@ -5,12 +5,12 @@ import 'package:shop/src/utils/build_widget.dart';
 import 'package:shop/src/utils/result.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.repository});
+
+  final HomeRepository repository;
 
   @override
   Widget build(BuildContext context) {
-    final repository = HomeRepository();
-
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
@@ -19,7 +19,6 @@ class HomeScreen extends StatelessWidget {
             Result? result = snapshot.data;
 
             if (snapshot.hasError) {
-              // Handle snapshot error (if any)
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
