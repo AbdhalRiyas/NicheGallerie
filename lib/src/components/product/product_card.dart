@@ -14,16 +14,17 @@ import '../network_image_with_loader.dart';
 class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
-    this.dicountpercent,
     required this.press,
     required this.product,
   });
   final Product product;
-  final int? dicountpercent;
   final VoidCallback press;
 
   @override
   Widget build(BuildContext context) {
+    double percentageOff = (product.regularPrice - product.salePrice!) /
+        product.regularPrice *
+        100;
     return OutlinedButton(
       onPressed: press,
       style: OutlinedButton.styleFrom(
@@ -38,7 +39,8 @@ class ProductCard extends StatelessWidget {
               children: [
                 NetworkImageWithLoader(product.images.first,
                     radius: defaultBorderRadius),
-                if (dicountpercent != null)
+                if (product.salePrice != null &&
+                    product.salePrice! < product.regularPrice)
                   Positioned(
                     right: defaultPadding / 2,
                     top: defaultPadding / 2,
@@ -52,7 +54,7 @@ class ProductCard extends StatelessWidget {
                             Radius.circular(defaultBorderRadius)),
                       ),
                       child: Text(
-                        "$dicountpercent% off",
+                        "${percentageOff.toStringAsFixed(0)}% OFF",
                         style: const TextStyle(
                             color: Colors.white,
                             fontSize: 10,

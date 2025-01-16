@@ -1,27 +1,28 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shop/src/components/product/product_card.dart';
-import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/models/category.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/route/route_constants.dart';
 import 'package:shop/src/screens/search/views/components/search_form.dart';
 import 'package:shop/src/services/api_service.dart';
 
-import 'components/custom_bottom_sheet.dart';
+import '../components/custom_bottom_sheet.dart';
 
-class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({super.key, required this.category});
+class ProductsListScreen extends StatefulWidget {
+  const ProductsListScreen(
+      {super.key, required this.title, required this.apiEndPoint});
 
-  final Category category;
+  final String title;
+  final String apiEndPoint;
 
   @override
-  State<CategoryScreen> createState() => _CategoryScreenState();
+  State<ProductsListScreen> createState() => _ProductsListScreenState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
+class _ProductsListScreenState extends State<ProductsListScreen> {
   final ScrollController _scrollController = ScrollController();
   final List<Product> _products = [];
   bool _isLoadingMore = false;
@@ -43,8 +44,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
 
     try {
-      final res = await ApiService().get(
-          '${ApiContants().products}?page=$page&category=${widget.category.id}');
+      final res = await ApiService().get("${widget.apiEndPoint}&page=$page");
 
       log(res['pagination'].toString());
 
@@ -84,7 +84,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.category.name.toUpperCase()),
+        title: Text(widget.title.toUpperCase()),
       ),
       body: SafeArea(
         child: Column(
@@ -127,11 +127,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           return ProductCard(
                             product: _products[index],
                             press: () {
-                              Navigator.pushNamed(
-                                context,
-                                productDetailsScreenRoute,
-                                arguments: [_products[index]],
-                              );
+                              context.go(
+                                  '/$productScreenRoute/${_products[index].slug}');
                             },
                           );
                         },
