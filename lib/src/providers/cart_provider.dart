@@ -1,14 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/repositories/product_repository.dart';
 import 'package:shop/src/utils/result.dart';
-
-import '../route/route_constants.dart';
 
 class CartProvider extends ChangeNotifier {
   final ProductRepository _productRepository = ProductRepository();
