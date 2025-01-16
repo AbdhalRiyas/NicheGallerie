@@ -3,7 +3,7 @@ import 'package:shop/src/components/skeleton/others/discover_categories_skelton.
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/category_repository.dart';
-import 'package:shop/src/screens/products_list/views/products_list_screen.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/utils/result.dart';
 
 import 'components/expansion_category.dart';

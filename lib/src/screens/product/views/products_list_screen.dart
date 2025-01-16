@@ -9,7 +9,7 @@ import 'package:shop/src/route/route_constants.dart';
 import 'package:shop/src/screens/search/views/components/search_form.dart';
 import 'package:shop/src/services/api_service.dart';
 
-import '../components/custom_bottom_sheet.dart';
+import 'components/custom_bottom_sheet.dart';
 
 class ProductsListScreen extends StatefulWidget {
   const ProductsListScreen(

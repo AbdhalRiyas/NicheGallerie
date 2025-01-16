@@ -6,7 +6,7 @@ import 'package:shop/src/screens/home/views/components/explore_by_section.dart';
 import 'package:shop/src/screens/home/views/components/featured_category_card.dart';
 import 'package:shop/src/screens/home/views/components/offers_carousel.dart';
 import 'package:shop/src/screens/home/views/components/products_section.dart';
-import 'package:shop/src/screens/products_list/views/products_list_screen.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 Widget buildWidget(Map<dynamic, dynamic> json) {
   if (json['widget_name'] == 'carousel') {

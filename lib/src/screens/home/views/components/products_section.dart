@@ -7,7 +7,7 @@ import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src//route/screen_export.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/models/product.dart';
-import 'package:shop/src/screens/products_list/views/products_list_screen.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import '../../../../constants.dart';
