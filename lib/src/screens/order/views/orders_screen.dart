@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:shop/src/components/empty_error_state_widget.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/order.dart';
 import 'package:shop/src/repositories/order_repository.dart';
+import 'package:shop/src/screens/checkout/payment_webview_screen.dart';
+import 'package:shop/src/screens/home/views/components/home_skeleton.dart';
+import 'package:shop/src/utils/result.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -8,8 +16,6 @@ class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final OrderRepository orderRepository = OrderRepository();
-
-    orderRepository.fetchOrders();
 
     final Map<String, dynamic> orderStatus = {
       'pending': {
@@ -48,105 +54,146 @@ class OrdersScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: defaultPadding / 3),
-        child: ListView.builder(
-          itemBuilder: (context, index) => Container(
-            padding: EdgeInsets.all(defaultPadding),
-            margin: EdgeInsets.symmetric(vertical: defaultPadding / 4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color.fromARGB(13, 0, 0, 0),
-                  blurRadius: 10,
-                  offset: Offset(0, 1),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                InkWell(
-                  onTap: () {},
+        child: SnapHelperWidget<Result>(
+          future: orderRepository.fetchOrders(),
+          onSuccess: (result) {
+            if (result.isSuccess) {
+              List<Order> orders = result.data;
+
+              // Render data if the result indicates success
+              return ListView.builder(
+                itemBuilder: (context, index) => Container(
+                  padding: EdgeInsets.all(defaultPadding),
+                  margin: EdgeInsets.symmetric(vertical: defaultPadding / 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(13, 0, 0, 0),
+                        blurRadius: 10,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                  ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      InkWell(
+                        onTap: () {},
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "#${orders[index].id}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: sandDuneColor,
+                                  ),
+                                ),
+                                Text(
+                                  orderStatus[orders[index].status]['title'],
+                                  style: TextStyle(
+                                    color: orderStatus[orders[index].status]
+                                        ['color'],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: defaultPadding / 2),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${orders[index].currency} ${orders[index].total} for ${orderRepository.totalItemsInOrder(orders[index].items)} ${orderRepository.totalItemsInOrder(orders[index].items) > 1 ? 'items' : 'item'}",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat('MMMM d, yyyy').format(
+                                      DateTime.parse(
+                                          orders[index].dateCreated)),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: defaultPadding),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "#46994",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: sandDuneColor,
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(fontSize: 12),
+                              ),
                             ),
                           ),
-                          Text(
-                            orderStatus['processing']['title'],
-                            style: TextStyle(
-                              color: orderStatus['processing']['color'],
+                          SizedBox(width: 2),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "Order Again",
+                                style: TextStyle(fontSize: 12),
+                              ),
                             ),
                           ),
+                          if (orders[index].status == 'pending')
+                            SizedBox(width: 2),
+                          if (orders[index].status == 'pending')
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          PaymentWebViewScreen(
+                                              checkoutUrl: orders[index]
+                                                  .paymentUrl
+                                                  .toString())));
+                                },
+                                child: Text(
+                                  "Pay",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
-                      SizedBox(height: defaultPadding / 2),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "AED3,398 for 3 items",
-                            style: TextStyle(
-                              color: blackColor,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            "January 7, 2025",
-                            style: TextStyle(
-                              color: blackColor,
-                            ),
-                          ),
-                        ],
-                      )
                     ],
                   ),
                 ),
-                SizedBox(height: defaultPadding),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 2),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Order Again",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 2),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Pay",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                itemCount: orders.length,
+              );
+            } else {
+              // Display NoDataWidget if the result indicates failure
+              return NoDataWidget(
+                title: 'No Data', // Display error message
+                imageWidget: const ErrorStateWidget(),
+                retryText: 'Reload',
+                onRetry: () {}, // Retry logic
+              );
+            }
+          },
+          loadingWidget: const HomeSkeleton(), // Loading UI
+          errorBuilder: (error) {
+            // Handle errors by showing the NoDataWidget
+            return NoDataWidget(
+              title: error.toString(), // Display error message
+              imageWidget: const ErrorStateWidget(),
+              retryText: 'Reload',
+              onRetry: () {}, // Retry logic
+            );
+          },
         ),
       ),
     );

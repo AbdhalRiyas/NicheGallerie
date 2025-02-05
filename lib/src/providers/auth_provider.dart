@@ -87,6 +87,8 @@ class AuthProvider extends ChangeNotifier {
         'phone_number': phoneNumber,
       });
 
+      log(res.toString());
+
       if (res['success'] == true) {
         log(res.toString());
         await _setUserData(res);
