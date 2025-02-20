@@ -51,33 +51,35 @@ class SearchForm extends StatelessWidget {
             child: SvgPicture.asset(
               "assets/icons/Search.svg",
               height: 24,
-              color: Theme.of(context).iconTheme.color!.withValues(alpha: 0.3),
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).iconTheme.color!.withValues(alpha: 0.3),
+                  BlendMode.srcIn),
             ),
           ),
-          suffixIcon: SizedBox(
-            width: 40,
-            child: Row(
-              children: [
-                const SizedBox(
-                  height: 24,
-                  child: VerticalDivider(width: 1),
-                ),
-                Expanded(
-                  child: IconButton(
-                    onPressed: onTabFilter,
-                    icon: SvgPicture.asset(
-                      suffixIcon,
-                      height: 24,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).iconTheme.color!,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // suffixIcon: SizedBox(
+          //   width: 40,
+          //   child: Row(
+          //     children: [
+          //       const SizedBox(
+          //         height: 24,
+          //         child: VerticalDivider(width: 1),
+          //       ),
+          //       Expanded(
+          //         child: IconButton(
+          //           onPressed: onTabFilter,
+          //           icon: SvgPicture.asset(
+          //             suffixIcon,
+          //             height: 24,
+          //             colorFilter: ColorFilter.mode(
+          //               Theme.of(context).iconTheme.color!,
+          //               BlendMode.srcIn,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ),
       ),
     );

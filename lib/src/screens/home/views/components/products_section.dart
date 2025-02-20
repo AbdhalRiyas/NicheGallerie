@@ -7,6 +7,7 @@ import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src//route/screen_export.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import '../../../../constants.dart';
@@ -60,7 +61,17 @@ class _ProductsSectionState extends State<ProductsSection> {
               ),
               if (widget.viewAllVisibility)
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductsListScreen(
+                          title: widget.title,
+                          apiEndPoint: widget.dataApiEndPoint,
+                        ),
+                      ),
+                    );
+                  },
                   child: Row(
                     children: [
                       const Text("View all"),
@@ -68,7 +79,7 @@ class _ProductsSectionState extends State<ProductsSection> {
                       SvgPicture.asset(
                         "assets/icons/Arrow - Right.svg",
                         colorFilter: const ColorFilter.mode(
-                            Colors.black, BlendMode.srcIn),
+                            Colors.grey, BlendMode.srcIn),
                       )
                     ],
                   ),
@@ -97,7 +108,6 @@ class _ProductsSectionState extends State<ProductsSection> {
                       ),
                       child: ProductCard(
                         product: snapshot.data![index]!,
-                        dicountpercent: 10,
                         press: () {
                           context.go(
                               '/$productScreenRoute/${snapshot.data![index]!.slug}');

@@ -1,6 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:shop/src/config/api_contants.dart';
+import 'package:shop/src/error/app_exception.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/services/api_service.dart';
+import 'package:shop/src/utils/result.dart';
 
 class OrderRepository {
   // Private constructor
@@ -15,13 +18,29 @@ class OrderRepository {
     return _instance;
   }
 
-  Future<List<Order>> fetchOrders({int page = 1}) async {
+  Future<Result> fetchOrders({int page = 1}) async {
     try {
       final res = await ApiService().get(ApiContants().orders);
-      print(res);
-      return [];
+      List<Order> orders = [];
+
+      for (var order in res) {
+        try {
+          orders.add(Order.fromJson(order));
+        } catch (e, stacktrace) {
+          debugPrint(stacktrace.toString());
+        }
+      }
+
+      return Result(data: orders, message: 'Orders fetched successfully');
+    } on AppException catch (e) {
+      return Result(message: e.message.toString());
     } catch (e) {
-      return [];
+      return Result(message: 'Unexpected error occured');
     }
+  }
+
+  int totalItemsInOrder(List<OrderItem> orderItems) {
+    return orderItems.fold(
+        0, (previousValue, element) => previousValue + element.quantity);
   }
 }

@@ -1,9 +1,10 @@
-class Result<T> {
-  final T? data;
-  final String? error;
+class Result {
+  final String message;
+  dynamic data;
+  dynamic errors;
 
-  Result({this.data, this.error});
+  Result({required this.message, this.data, this.errors});
 
-  bool get isSuccess => error == null;
-  bool get isError => error != null;
+  bool get isSuccess => data != null;
+  bool get isFailure => errors != null;
 }

@@ -25,7 +25,6 @@ class ApiService {
           .timeout(
             const Duration(seconds: 10),
           );
-      print(res.body);
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
@@ -51,6 +50,7 @@ class ApiService {
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 30));
+      print(res.body);
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
@@ -117,7 +117,6 @@ class ApiService {
 
       case 400:
         throw BadRequestException(
-          responseJson["message"] ?? "Something went wrong. Please try again.",
           response.request!.url.toString(),
         );
 

@@ -10,7 +10,6 @@ import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/wishlist_provider.dart';
 import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.dart';
 import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';
-import 'package:shop/src/screens/product/views/product_returns_screen.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import 'components/product_images.dart';
@@ -61,7 +60,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       press: () {
                         customModalBottomSheet(
                           context,
-                          height: MediaQuery.of(context).size.height * 0.92,
+                          height: MediaQuery.sizeOf(context).height * 0.92,
                           child: ProductBuyNowScreen(
                             product: product,
                           ),
@@ -167,34 +166,34 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   );
                                 },
                               ),
-                              ProductListTile(
-                                svgSrc: "assets/icons/Delivery.svg",
-                                title: "Shipping Information",
-                                press: () {
-                                  customModalBottomSheet(
-                                    context,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.92,
-                                    child: Placeholder(),
-                                    // child: const BuyFullKit(
-                                    //   images: ["assets/screens/Shipping information.png"],
-                                    // ),
-                                  );
-                                },
-                              ),
-                              ProductListTile(
-                                svgSrc: "assets/icons/Return.svg",
-                                title: "Returns",
-                                isShowBottomBorder: true,
-                                press: () {
-                                  customModalBottomSheet(
-                                    context,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.92,
-                                    child: const ProductReturnsScreen(),
-                                  );
-                                },
-                              ),
+                              // ProductListTile(
+                              //   svgSrc: "assets/icons/Delivery.svg",
+                              //   title: "Shipping Information",
+                              //   press: () {
+                              //     customModalBottomSheet(
+                              //       context,
+                              //       height: MediaQuery.of(context).size.height *
+                              //           0.92,
+                              //       child: Placeholder(),
+                              //       // child: const BuyFullKit(
+                              //       //   images: ["assets/screens/Shipping information.png"],
+                              //       // ),
+                              //     );
+                              //   },
+                              // ),
+                              // ProductListTile(
+                              //   svgSrc: "assets/icons/Return.svg",
+                              //   title: "Returns",
+                              //   isShowBottomBorder: true,
+                              //   press: () {
+                              //     customModalBottomSheet(
+                              //       context,
+                              //       height: MediaQuery.of(context).size.height *
+                              //           0.92,
+                              //       child: const ProductReturnsScreen(),
+                              //     );
+                              //   },
+                              // ),
                               // const SliverToBoxAdapter(
                               //   child: Padding(
                               //     padding: EdgeInsets.all(defaultPadding),

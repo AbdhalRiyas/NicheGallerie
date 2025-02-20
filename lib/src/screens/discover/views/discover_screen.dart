@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shop/src/components/skeleton/others/discover_categories_skelton.dart';
+import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/category_repository.dart';
-import 'package:shop/src/screens/discover/views/category_screen.dart';
-import 'package:shop/src/screens/search/views/components/search_form.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/utils/result.dart';
 
 import 'components/expansion_category.dart';
@@ -25,10 +25,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(defaultPadding),
-              child: SearchForm(),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: defaultPadding, vertical: defaultPadding / 2),
@@ -57,8 +53,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CategoryScreen(
-                                category: result.data[index],
+                              builder: (context) => ProductsListScreen(
+                                title: result.data[index].name,
+                                apiEndPoint:
+                                    '${ApiContants().products}?category=${result.data[index].id}',
                               ),
                             ),
                           );

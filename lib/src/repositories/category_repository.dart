@@ -13,6 +13,6 @@ class CategoryRepository {
       categories.add(Category.fromJson(cat));
     }
 
-    return Result(data: categories);
+    return Result(data: categories, message: 'Categories fetched successfully');
   }
 }
