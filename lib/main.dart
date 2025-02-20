@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/firebase_options.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/config/app_contants.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/providers.dart';
@@ -15,6 +17,8 @@ import 'src/route/routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initialize();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -28,7 +32,14 @@ Future<void> main() async {
 
   await HiveService().init();
 
-  runApp(const MyApp());
+  final appConfig = AppConfig();
+
+  await appConfig.initialize();
+
+  runApp(ChangeNotifierProvider.value(
+    value: appConfig,
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

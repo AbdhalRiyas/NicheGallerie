@@ -3,6 +3,7 @@ class ApiContants {
   static final _instance = ApiContants._internal();
   factory ApiContants() => _instance;
 
+  final String config = '/config';
   final String home = '/home';
   final String products = '/products';
   final String categories = '/products/categories';

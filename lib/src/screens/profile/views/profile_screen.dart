@@ -3,9 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/list_tile/divider_list_tile.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'components/profile_card.dart';
 import 'components/profile_menu_item_list_tile.dart';
@@ -16,187 +18,201 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          Consumer<AuthProvider>(
-            builder: (BuildContext context, provider, Widget? child) =>
-                provider.isLoggedIn
-                    ? ProfileCard(
-                        name: provider.displayName.toString(),
-                        email: provider.email.toString(),
-                        imageSrc: "assets/icons/Avatar.svg",
-                        // proLableText: "Sliver",
-                        // isPro: true, if the user is pro
-                        press: () {
-                          ;
-                          // Navigator.pushNamed(context, userInfoScreenRoute);
-                        },
-                      )
-                    : ProfileCard(
-                        name: 'Login',
-                        imageSrc: "assets/icons/Avatar.svg",
-                        isShowHi: false,
-                        press: () {
-                          context.go('/$logInScreenRoute');
-                        },
-                      ),
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(
-          //       horizontal: defaultPadding, vertical: defaultPadding * 1.5),
-          //   child: GestureDetector(
-          //     onTap: () {},
-          //     child: const AspectRatio(
-          //       aspectRatio: 1.8,
-          //       child:
-          //           NetworkImageWithLoader("https://i.imgur.com/dz0BBom.png"),
-          //     ),
-          //   ),
-          // ),
+      body: Consumer<AppConfig>(
+        builder: (context, appConfig, child) => ListView(
+          children: [
+            Consumer<AuthProvider>(
+              builder: (BuildContext context, provider, Widget? child) =>
+                  provider.isLoggedIn
+                      ? ProfileCard(
+                          name: provider.displayName.toString(),
+                          email: provider.email.toString(),
+                          imageSrc: "assets/icons/Avatar.svg",
+                          // proLableText: "Sliver",
+                          // isPro: true, if the user is pro
+                          press: () {
+                            ;
+                            // Navigator.pushNamed(context, userInfoScreenRoute);
+                          },
+                        )
+                      : ProfileCard(
+                          name: 'Login',
+                          imageSrc: "assets/icons/Avatar.svg",
+                          isShowHi: false,
+                          press: () {
+                            context.go('/$logInScreenRoute');
+                          },
+                        ),
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //       horizontal: defaultPadding, vertical: defaultPadding * 1.5),
+            //   child: GestureDetector(
+            //     onTap: () {},
+            //     child: const AspectRatio(
+            //       aspectRatio: 1.8,
+            //       child:
+            //           NetworkImageWithLoader("https://i.imgur.com/dz0BBom.png"),
+            //     ),
+            //   ),
+            // ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: defaultPadding, vertical: defaultPadding / 2),
-            child: Text(
-              "Account",
-              style: Theme.of(context).textTheme.titleSmall,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: defaultPadding, vertical: defaultPadding / 2),
+              child: Text(
+                "Account",
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
             ),
-          ),
-          const SizedBox(height: defaultPadding / 2),
-          ProfileMenuListTile(
-            text: "Orders",
-            svgSrc: "assets/icons/Order.svg",
-            press: () {
-              context.go('/$ordersScreenRoute');
-            },
-          ),
-          // ProfileMenuListTile(
-          //   text: "Returns",
-          //   svgSrc: "assets/icons/Return.svg",
-          //   press: () {},
-          // ),
-          // ProfileMenuListTile(
-          //   text: "Wishlist",
-          //   svgSrc: "assets/icons/Wishlist.svg",
-          //   press: () {},
-          // ),
-          ProfileMenuListTile(
-            text: "Addresses",
-            svgSrc: "assets/icons/Address.svg",
-            press: () {
-              Navigator.pushNamed(context, addressesScreenRoute);
-            },
-          ),
-          ProfileMenuListTile(
-            text: "Payment",
-            svgSrc: "assets/icons/card.svg",
-            press: () {
-              Navigator.pushNamed(context, emptyPaymentScreenRoute);
-            },
-          ),
-          // ProfileMenuListTile(
-          //   text: "Wallet",
-          //   svgSrc: "assets/icons/Wallet.svg",
-          //   press: () {
-          //     Navigator.pushNamed(context, walletScreenRoute);
-          //   },
-          // ),
-          const SizedBox(height: defaultPadding),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: defaultPadding, vertical: defaultPadding / 2),
-            child: Text(
-              "Personalization",
-              style: Theme.of(context).textTheme.titleSmall,
+            const SizedBox(height: defaultPadding / 2),
+            ProfileMenuListTile(
+              text: "Orders",
+              svgSrc: "assets/icons/Order.svg",
+              press: () {
+                context.go('/$ordersScreenRoute');
+              },
             ),
-          ),
-          DividerListTileWithTrilingText(
-            svgSrc: "assets/icons/Notification.svg",
-            title: "Notification",
-            trilingText: "Off",
-            press: () {
-              Navigator.pushNamed(context, enableNotificationScreenRoute);
-            },
-          ),
-          ProfileMenuListTile(
-            text: "Preferences",
-            svgSrc: "assets/icons/Preferences.svg",
-            press: () {
-              Navigator.pushNamed(context, preferencesScreenRoute);
-            },
-          ),
-          const SizedBox(height: defaultPadding),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(
-          //       horizontal: defaultPadding, vertical: defaultPadding / 2),
-          //   child: Text(
-          //     "Settings",
-          //     style: Theme.of(context).textTheme.titleSmall,
-          //   ),
-          // ),
-          // ProfileMenuListTile(
-          //   text: "Language",
-          //   svgSrc: "assets/icons/Language.svg",
-          //   press: () {
-          //     Navigator.pushNamed(context, selectLanguageScreenRoute);
-          //   },
-          // ),
-          // ProfileMenuListTile(
-          //   text: "Location",
-          //   svgSrc: "assets/icons/Location.svg",
-          //   press: () {},
-          // ),
-          // const SizedBox(height: defaultPadding),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: defaultPadding, vertical: defaultPadding / 2),
-            child: Text(
-              "Help & Support",
-              style: Theme.of(context).textTheme.titleSmall,
+            // ProfileMenuListTile(
+            //   text: "Returns",
+            //   svgSrc: "assets/icons/Return.svg",
+            //   press: () {},
+            // ),
+            // ProfileMenuListTile(
+            //   text: "Wishlist",
+            //   svgSrc: "assets/icons/Wishlist.svg",
+            //   press: () {},
+            // ),
+            ProfileMenuListTile(
+              text: "Addresses",
+              svgSrc: "assets/icons/Address.svg",
+              press: () {
+                Navigator.pushNamed(context, addressesScreenRoute);
+              },
             ),
-          ),
-          ProfileMenuListTile(
-            text: "Get Help",
-            svgSrc: "assets/icons/Help.svg",
-            press: () {
-              Navigator.pushNamed(context, getHelpScreenRoute);
-            },
-          ),
-          ProfileMenuListTile(
-            text: "FAQ",
-            svgSrc: "assets/icons/FAQ.svg",
-            press: () {},
-            isShowDivider: false,
-          ),
-          const SizedBox(height: defaultPadding),
+            // ProfileMenuListTile(
+            //   text: "Payment",
+            //   svgSrc: "assets/icons/card.svg",
+            //   press: () {
+            //     Navigator.pushNamed(context, emptyPaymentScreenRoute);
+            //   },
+            // ),
+            // ProfileMenuListTile(
+            //   text: "Wallet",
+            //   svgSrc: "assets/icons/Wallet.svg",
+            //   press: () {
+            //     Navigator.pushNamed(context, walletScreenRoute);
+            //   },
+            // ),
+            const SizedBox(height: defaultPadding),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: defaultPadding, vertical: defaultPadding / 2),
+              child: Text(
+                "Personalization",
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            DividerListTileWithTrilingText(
+              svgSrc: "assets/icons/Notification.svg",
+              title: "Notification",
+              trilingText: "Off",
+              press: () {
+                Navigator.pushNamed(context, enableNotificationScreenRoute);
+              },
+            ),
+            ProfileMenuListTile(
+              text: "Preferences",
+              svgSrc: "assets/icons/Preferences.svg",
+              press: () {
+                Navigator.pushNamed(context, preferencesScreenRoute);
+              },
+            ),
+            const SizedBox(height: defaultPadding),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //       horizontal: defaultPadding, vertical: defaultPadding / 2),
+            //   child: Text(
+            //     "Settings",
+            //     style: Theme.of(context).textTheme.titleSmall,
+            //   ),
+            // ),
+            // ProfileMenuListTile(
+            //   text: "Language",
+            //   svgSrc: "assets/icons/Language.svg",
+            //   press: () {
+            //     Navigator.pushNamed(context, selectLanguageScreenRoute);
+            //   },
+            // ),
+            // ProfileMenuListTile(
+            //   text: "Location",
+            //   svgSrc: "assets/icons/Location.svg",
+            //   press: () {},
+            // ),
+            // const SizedBox(height: defaultPadding),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: defaultPadding, vertical: defaultPadding / 2),
+              child: Text(
+                "Help & Support",
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            ProfileMenuListTile(
+              text: "Get Help",
+              svgSrc: "assets/icons/Help.svg",
+              press: () async {
+                if (await canLaunchUrlString(appConfig.helpLink)) {
+                  launchUrlString(
+                    appConfig.helpLink,
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
+            ),
+            ProfileMenuListTile(
+              text: "FAQ",
+              svgSrc: "assets/icons/FAQ.svg",
+              press: () async {
+                if (await canLaunchUrlString(appConfig.faqLink)) {
+                  launchUrlString(
+                    appConfig.faqLink,
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
+              isShowDivider: false,
+            ),
+            const SizedBox(height: defaultPadding),
 
-          // Log Out
-          Consumer<AuthProvider>(
-            builder: (BuildContext context, provider, Widget? child) => provider
-                    .isLoggedIn
-                ? ListTile(
-                    onTap: () {
-                      provider.logout();
-                    },
-                    minLeadingWidth: 24,
-                    leading: SvgPicture.asset(
-                      "assets/icons/Logout.svg",
-                      height: 24,
-                      width: 24,
-                      colorFilter: const ColorFilter.mode(
-                        errorColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    title: const Text(
-                      "Log Out",
-                      style:
-                          TextStyle(color: errorColor, fontSize: 14, height: 1),
-                    ),
-                  )
-                : SizedBox(),
-          )
-        ],
+            // Log Out
+            Consumer<AuthProvider>(
+              builder: (BuildContext context, provider, Widget? child) =>
+                  provider.isLoggedIn
+                      ? ListTile(
+                          onTap: () {
+                            provider.logout();
+                          },
+                          minLeadingWidth: 24,
+                          leading: SvgPicture.asset(
+                            "assets/icons/Logout.svg",
+                            height: 24,
+                            width: 24,
+                            colorFilter: const ColorFilter.mode(
+                              errorColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          title: const Text(
+                            "Log Out",
+                            style: TextStyle(
+                                color: errorColor, fontSize: 14, height: 1),
+                          ),
+                        )
+                      : SizedBox(),
+            )
+          ],
+        ),
       ),
     );
   }

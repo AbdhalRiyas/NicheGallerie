@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/config/api_contants.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/models/product.dart';
@@ -30,19 +32,6 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String? _selectedPaymentMethod;
   AddressModel? _selectedAddress;
-
-  final List<Map<String, dynamic>> paymentMethods = [
-    {
-      'title': 'Card Payment',
-      'id': 'credit_card',
-      'svg': 'https://www.svgrepo.com/show/328136/generic.svg',
-    },
-    {
-      'title': 'PayPal',
-      'id': 'paypal',
-      'svg': 'https://www.svgrepo.com/show/328122/paypal.svg',
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -118,59 +107,66 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildPaymentMethods() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Payment method',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        SizedBox(height: defaultPadding / 2),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: paymentMethods.length,
-          itemBuilder: (context, index) {
-            final paymentMethod = paymentMethods[index];
-            return ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(defaultBorderRadius),
+    return Consumer<AppConfig>(
+      builder: (BuildContext context, appConfig, Widget? child) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Payment method',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          SizedBox(height: defaultPadding / 2),
+          (appConfig.paymentMethods.isEmpty)
+              ? Center(
+                  child: Text('No payment methods available'),
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: appConfig.paymentMethods.length,
+                  itemBuilder: (context, index) {
+                    final paymentMethod = appConfig.paymentMethods[index];
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(defaultBorderRadius),
+                        ),
+                        child: SvgPicture.network(
+                          paymentMethod['svg'],
+                          width: 24,
+                          height: 24,
+                        ),
+                      ),
+                      title: Text(
+                        paymentMethod['title'],
+                        style: TextStyle(
+                          color: _selectedPaymentMethod == paymentMethod['id']
+                              ? blackColor
+                              : greyColor,
+                        ),
+                      ),
+                      trailing: Icon(
+                        _selectedPaymentMethod == paymentMethod['id']
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color: _selectedPaymentMethod == paymentMethod['id']
+                            ? primaryColor
+                            : Colors.grey,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _selectedPaymentMethod = paymentMethod['id'];
+                        });
+                      },
+                    );
+                  },
                 ),
-                child: SvgPicture.network(
-                  paymentMethod['svg'],
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              title: Text(
-                paymentMethod['title'],
-                style: TextStyle(
-                  color: _selectedPaymentMethod == paymentMethod['id']
-                      ? blackColor
-                      : greyColor,
-                ),
-              ),
-              trailing: Icon(
-                _selectedPaymentMethod == paymentMethod['id']
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_unchecked,
-                color: _selectedPaymentMethod == paymentMethod['id']
-                    ? primaryColor
-                    : Colors.grey,
-              ),
-              onTap: () {
-                setState(() {
-                  _selectedPaymentMethod = paymentMethod['id'];
-                });
-              },
-            );
-          },
-        ),
-      ],
+        ],
+      ),
     );
   }
 

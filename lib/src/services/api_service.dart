@@ -22,9 +22,8 @@ class ApiService {
             uri,
             headers: _buildHeaders(),
           )
-          .timeout(
-            const Duration(seconds: 10),
-          );
+          .timeout(const Duration(seconds: 30));
+
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
@@ -50,7 +49,6 @@ class ApiService {
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 30));
-      print(res.body);
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
@@ -157,11 +155,19 @@ class ApiService {
   }
 
   Map<String, String> _buildHeaders() {
-    final authProvider = Provider.of<AuthProvider>(
-        GlobalKeyContants().navigatorKey.currentContext!,
-        listen: false);
+    final context = GlobalKeyContants().navigatorKey.currentContext;
+    if (context != null) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.token != null) {
+        return {
+          "Authorization": "Bearer ${authProvider.token}",
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Connection": "Keep-Alive",
+        };
+      }
+    }
     return {
-      "Authorization": "Bearer ${authProvider.token}",
       "Accept": "application/json",
       "Content-Type": "application/json",
       "Connection": "Keep-Alive",

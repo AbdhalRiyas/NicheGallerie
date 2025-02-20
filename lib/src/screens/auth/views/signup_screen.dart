@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nb_utils/nb_utils.dart' show snackBar;
 import 'package:provider/provider.dart';
-import 'package:shop/src/error/app_exception.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/screens/auth/views/components/sign_up_form.dart';
 import 'package:shop/src/utils/result.dart';
