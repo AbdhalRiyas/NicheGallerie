@@ -56,7 +56,7 @@ class OrdersScreen extends StatelessWidget {
         child: SnapHelperWidget<Result>(
           future: orderRepository.fetchOrders(),
           onSuccess: (result) {
-            if (result.isSuccess) {
+            if (result.isSuccess && result.data.isNotEmpty) {
               List<Order> orders = result.data;
 
               // Render data if the result indicates success
@@ -176,10 +176,9 @@ class OrdersScreen extends StatelessWidget {
             } else {
               // Display NoDataWidget if the result indicates failure
               return NoDataWidget(
-                title: 'No Data', // Display error message
+                title:
+                    'No orders found', // Display message when no orders are available
                 imageWidget: const ErrorStateWidget(),
-                retryText: 'Reload',
-                onRetry: () {}, // Retry logic
               );
             }
           },
@@ -189,8 +188,8 @@ class OrdersScreen extends StatelessWidget {
             return NoDataWidget(
               title: error.toString(), // Display error message
               imageWidget: const ErrorStateWidget(),
-              retryText: 'Reload',
-              onRetry: () {}, // Retry logic
+              // retryText: 'Reload',
+              // onRetry: () {}, // Retry logic
             );
           },
         ),
