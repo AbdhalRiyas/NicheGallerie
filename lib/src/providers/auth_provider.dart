@@ -77,20 +77,21 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> register(String email, String password, String phoneNumber,
-      String dateOfBirth) async {
+  Future<bool> register(String email,
+      String password /*, String phoneNumber,
+      String dateOfBirth*/
+      ) async {
     try {
       final res = await ApiService().post(ApiContants().register, payload: {
         'email': email,
         'password': password,
-        'date_of_birth': dateOfBirth,
-        'phone_number': phoneNumber,
+        // 'date_of_birth': dateOfBirth,
+        // 'phone_number': phoneNumber,
       });
 
       log(res.toString());
 
       if (res['success'] == true) {
-        log(res.toString());
         await _setUserData(res);
         return true;
       }
