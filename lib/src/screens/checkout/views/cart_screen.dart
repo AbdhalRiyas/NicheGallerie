@@ -8,7 +8,6 @@ import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/screens/checkout/views/checkout_screen.dart';
 import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
-
 import 'components/cart_product.dart';
 
 class CartScreen extends StatefulWidget {
@@ -25,7 +24,7 @@ class _CartScreenState extends State<CartScreen> {
   late Future<List<Product>?> _cartProducts;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _cartProducts =
         Provider.of<CartProvider>(context, listen: false).fetchProducts();
@@ -34,41 +33,26 @@ class _CartScreenState extends State<CartScreen> {
   void _onCouponCodePressed() {
     showDialog(
       context: context,
-      builder: (context) {
-        return CouponPopup(couponController: _couponController);
-      },
+      builder: (context) => CouponPopup(couponController: _couponController),
     );
   }
 
   double calculateSubtotal(
-    Map<int, Product> productMap,
-    CartProvider cartProvider,
-  ) {
+      Map<int, Product> productMap, CartProvider cartProvider) {
     return cartProvider.cartItems.fold(0, (sum, cartItem) {
       final product = productMap[cartItem['product_id']];
-      if (product != null) {
-        return sum + product.price * cartItem['qty'];
-      }
-      return sum;
+      return product != null ? sum + product.price * cartItem['qty'] : sum;
     });
   }
 
-  double calculateVAT(double subtotal) {
-    return subtotal * 0.00;
-  }
+  double calculateVAT(double subtotal) => subtotal * 0.00;
 
-  double calculateTotal(double subtotal, double vat) {
-    return subtotal + vat;
-  }
+  double calculateTotal(double subtotal, double vat) => subtotal + vat;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.navigatedViaRoute
-          ? AppBar(
-              title: Text('Cart'),
-            )
-          : null,
+      appBar: widget.navigatedViaRoute ? AppBar(title: Text('Cart')) : null,
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
           if (!cartProvider.isBoxInitialized) {
@@ -90,59 +74,43 @@ class _CartScreenState extends State<CartScreen> {
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text("Unable to load products"),
-                );
+                return const Center(child: Text("Unable to load products"));
               }
 
               final cartItems = snapshot.data!;
-
               final productMap = {
                 for (var product in cartItems) product.id: product
               };
-
               final subtotal = calculateSubtotal(productMap, cartProvider);
               final vat = calculateVAT(subtotal);
               final total = calculateTotal(subtotal, vat);
-
-              bool isOutOfStock = cartItems
+              final isOutOfStock = cartItems
                   .any((product) => product.stockStatus == 'outofstock');
 
               return Padding(
                 padding: const EdgeInsets.all(defaultPadding),
                 child: ListView(
                   children: [
-                    Text(
-                      'Review your order',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    Text('Review your order',
+                        style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: defaultPadding / 2),
-                    ...List.generate(
-                      cartProvider.cartItems.length,
-                      (index) {
-                        final cartItem = cartProvider.cartItems[index];
-                        final product = productMap[cartItem['product_id']];
-
-                        if (product == null) return const SizedBox.shrink();
-
-                        return CartProduct(
-                          key: Key(product.id.toString()),
-                          product: product,
-                          qty: cartItem['qty'],
-                          onDecrement: () =>
-                              cartProvider.decrementQty(product.id),
-                          onIncrement: () =>
-                              cartProvider.incrementQty(product.id),
-                          onDismissed: () =>
-                              cartProvider.removeItem(product.id),
-                        );
-                      },
-                    ),
+                    ...cartProvider.cartItems.map((cartItem) {
+                      final product = productMap[cartItem['product_id']];
+                      if (product == null) return const SizedBox.shrink();
+                      return CartProduct(
+                        key: Key(product.id.toString()),
+                        product: product,
+                        qty: cartItem['qty'],
+                        onDecrement: () =>
+                            cartProvider.decrementQty(product.id),
+                        onIncrement: () =>
+                            cartProvider.incrementQty(product.id),
+                        onDismissed: () => cartProvider.removeItem(product.id),
+                      );
+                    }),
                     SizedBox(height: defaultPadding / 2),
-                    Text(
-                      'Your Coupon Code',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    Text('Your Coupon Code',
+                        style: Theme.of(context).textTheme.titleMedium),
                     Padding(
                       padding:
                           const EdgeInsets.symmetric(vertical: defaultPadding),
@@ -166,14 +134,12 @@ class _CartScreenState extends State<CartScreen> {
                                       .textTheme
                                       .bodyLarge!
                                       .color!
-                                      .withValues(alpha: 0.3),
+                                      .withOpacity(0.3),
                                   BlendMode.srcIn,
                                 ),
                               ),
                               SizedBox(width: 8),
-                              Text(
-                                'Type coupon code',
-                              ),
+                              Text('Type coupon code'),
                             ],
                           ),
                         ),
@@ -185,64 +151,18 @@ class _CartScreenState extends State<CartScreen> {
                       children: [
                         Text("Order Summary",
                             style: Theme.of(context).textTheme.titleMedium),
-                        SizedBox(
-                          height: defaultPadding,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Subtotal'),
-                            Text(
-                              'AED ${subtotal.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                        SizedBox(height: defaultPadding),
+                        _buildSummaryRow(
+                            'Subtotal', 'AED ${subtotal.toStringAsFixed(2)}'),
                         SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Shipping Fee'),
-                            Text(
-                              'Free',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                        _buildSummaryRow('Shipping Fee', 'Free',
+                            color: Colors.green),
                         SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Total (Include of VAT)'),
-                            Text(
-                              'AED ${total.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                        _buildSummaryRow('Total (Include of VAT)',
+                            'AED ${total.toStringAsFixed(2)}'),
                         SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Estimated VAT'),
-                            Text(
-                              'AED ${vat.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                        _buildSummaryRow(
+                            'Estimated VAT', 'AED ${vat.toStringAsFixed(2)}'),
                       ],
                     ),
                     SizedBox(height: 24),
@@ -259,17 +179,12 @@ class _CartScreenState extends State<CartScreen> {
                                     builder: (context) => CheckoutScreen(
                                       cartItems: cartItems,
                                       productMap: cartProvider.cartItems,
-                                      subTotal: calculateSubtotal(
-                                        productMap,
-                                        cartProvider,
-                                      ),
+                                      subTotal: subtotal,
                                     ),
                                   ),
                                 );
                               },
-                        child: Text(
-                          'Checkout',
-                        ),
+                        child: Text('Checkout'),
                       ),
                     ),
                   ],
@@ -288,35 +203,43 @@ class _CartScreenState extends State<CartScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 24,
-          ),
-          ...List.generate(
-            5,
-            (index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
-                child: Row(
-                  children: [
-                    Skeleton(height: 60, width: 60),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Skeleton(height: 20, width: 300),
-                          const SizedBox(height: defaultPadding / 2),
-                          Skeleton(height: 20, width: 100),
-                        ],
-                      ),
+          SizedBox(height: 24),
+          ...List.generate(5, (index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
+              child: Row(
+                children: [
+                  Skeleton(height: 60, width: 60),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Skeleton(height: 20, width: 300),
+                        const SizedBox(height: defaultPadding / 2),
+                        Skeleton(height: 20, width: 100),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          }),
         ],
       ),
+    );
+  }
+
+  Row _buildSummaryRow(String title, String value, {Color color = blackColor}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title),
+        Text(
+          value,
+          style: TextStyle(color: color, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
