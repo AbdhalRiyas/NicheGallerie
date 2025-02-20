@@ -128,38 +128,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     final paymentMethod = appConfig.paymentMethods[index];
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(defaultBorderRadius),
-                        ),
-                        child: SvgPicture.network(
-                          paymentMethod['svg'],
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
+                      // leading: Container(
+                      //   width: 40,
+                      //   height: 40,
+                      //   decoration: BoxDecoration(
+                      //     borderRadius:
+                      //         BorderRadius.circular(defaultBorderRadius),
+                      //   ),
+                      //   child: SvgPicture.network(
+                      //     paymentMethod['svg'],
+                      //     width: 24,
+                      //     height: 24,
+                      //   ),
+                      // ),
                       title: Text(
                         paymentMethod['title'],
                         style: TextStyle(
-                          color: _selectedPaymentMethod == paymentMethod['id']
+                          color: _selectedPaymentMethod ==
+                                  paymentMethod['gateway_id']
                               ? blackColor
                               : greyColor,
                         ),
                       ),
                       trailing: Icon(
-                        _selectedPaymentMethod == paymentMethod['id']
+                        _selectedPaymentMethod == paymentMethod['gateway_id']
                             ? Icons.radio_button_checked
                             : Icons.radio_button_unchecked,
-                        color: _selectedPaymentMethod == paymentMethod['id']
+                        color: _selectedPaymentMethod ==
+                                paymentMethod['gateway_id']
                             ? primaryColor
                             : Colors.grey,
                       ),
                       onTap: () {
                         setState(() {
-                          _selectedPaymentMethod = paymentMethod['id'];
+                          _selectedPaymentMethod = paymentMethod['gateway_id'];
                         });
                       },
                     );
@@ -298,7 +300,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final res = await ApiService().post(ApiContants().orders, payload: {
       'payment_method': _selectedPaymentMethod,
       'payment_method_title': _selectedPaymentMethod,
-      'set_paid': true,
+      'set_paid': false,
       'billing': {
         'first_name': _selectedAddress!.firstName,
         'last_name': _selectedAddress!.lastName,
