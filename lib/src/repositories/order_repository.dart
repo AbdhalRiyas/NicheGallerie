@@ -31,11 +31,11 @@ class OrderRepository {
         }
       }
 
-      return Result(data: orders);
+      return Result(data: orders, message: 'Orders fetched successfully');
     } on AppException catch (e) {
-      return Result(error: e.message);
+      return Result(message: e.message.toString());
     } catch (e) {
-      return Result(error: 'Unexpected error occured');
+      return Result(message: 'Unexpected error occured');
     }
   }
 

@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else {
               // Display NoDataWidget if the result indicates failure
               return NoDataWidget(
-                title: result.error, // Display error message
+                title: result.message, // Display error message
                 imageWidget: const ErrorStateWidget(),
                 retryText: 'Reload',
                 onRetry: _fetchData, // Retry logic

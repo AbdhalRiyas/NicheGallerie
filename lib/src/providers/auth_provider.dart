@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:shop/src/config/api_contants.dart';
+import 'package:shop/src/error/app_exception.dart';
 import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/services/hive_service.dart';
+import 'package:shop/src/utils/result.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool _isLoggedIn = false;
@@ -56,32 +58,39 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> login(String username, String password) async {
+  Future<Result> login(String email, String password) async {
     try {
+      log('logging in');
+
       final res = await ApiService().post(ApiContants().login, payload: {
-        'username': username,
+        'email': email,
         'password': password,
       });
 
       if (res['success'] == true) {
         log(res.toString());
         await _setUserData(res);
-        return true;
+        return Result(message: res['message'], data: res['data']);
       }
 
       await HiveService().clearAuth();
-      return false;
+      return Result(message: res['message']);
     } catch (e) {
       log('Login error: $e');
-      return false;
+      if (e is AppException) {
+        return Result(message: e.message.toString());
+      } else {
+        return Result(message: 'An unknown error occurred');
+      }
     }
   }
 
-  Future<bool> register(String email,
+  Future<Result> register(String email,
       String password /*, String phoneNumber,
       String dateOfBirth*/
       ) async {
     try {
+      log('registering');
       final res = await ApiService().post(ApiContants().register, payload: {
         'email': email,
         'password': password,
@@ -93,12 +102,12 @@ class AuthProvider extends ChangeNotifier {
 
       if (res['success'] == true) {
         await _setUserData(res);
-        return true;
+        return Result(message: res['message'], data: res['data']);
       }
-      return false;
+      return Result(message: res['message'], errors: res['errors']);
     } catch (e) {
       log('Register error: $e');
-      return false;
+      return Result(message: (e as AppException).message.toString());
     }
   }
 

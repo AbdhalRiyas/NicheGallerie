@@ -17,9 +17,9 @@ class ProductRepository {
         products.add(Product.fromJson(prod));
       }
 
-      return Result(data: products);
+      return Result(data: products, message: 'Products fetched successfully');
     } catch (e) {
-      return Result(error: e.toString());
+      return Result(message: e.toString());
     }
   }
 }

@@ -9,23 +9,21 @@ class SignUpForm extends StatefulWidget {
     required this.formKey,
     required this.emailController,
     required this.passwordController,
-    // required this.phoneController,
-    // required this.dateOfBirthController,
+    required this.emailError,
+    required this.passwordError,
   });
 
   final GlobalKey<FormState> formKey;
   final TextEditingController emailController;
   final TextEditingController passwordController;
-  // final TextEditingController phoneController;
-  // final TextEditingController dateOfBirthController;
+  final String? emailError;
+  final String? passwordError;
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  // DateTime _selectedDate = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -36,7 +34,12 @@ class _SignUpFormState extends State<SignUpForm> {
             onSaved: (email) {
               // Save email logic
             },
-            validator: emaildValidator.call,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'The email field is required.';
+              }
+              return null;
+            },
             textInputAction: TextInputAction.next,
             controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
@@ -44,133 +47,30 @@ class _SignUpFormState extends State<SignUpForm> {
               hintText: "Email address",
               prefixIcon:
                   FormFieldSvgIcon(iconPath: "assets/icons/Message.svg"),
+              errorText: widget.emailError,
             ),
           ),
           const SizedBox(height: defaultPadding),
-          // TextFormField(
-          //   keyboardType: TextInputType.phone,
-          //   controller: widget.phoneController,
-          //   textInputAction: TextInputAction.next,
-          //   inputFormatters: [
-          //     FilteringTextInputFormatter.digitsOnly,
-          //   ],
-          //   decoration: InputDecoration(
-          //     hintText: "Phone",
-          //     prefixIcon: Row(
-          //       mainAxisSize: MainAxisSize.min,
-          //       children: [
-          //         Padding(
-          //           padding:
-          //               const EdgeInsets.symmetric(horizontal: defaultPadding),
-          //           child: SvgPicture.asset(
-          //             "assets/icons/Phone.svg",
-          //             height: 24,
-          //             width: 24,
-          //             colorFilter: ColorFilter.mode(
-          //               Theme.of(context)
-          //                   .textTheme
-          //                   .bodyLarge!
-          //                   .color!
-          //                   .withValues(alpha: 0.3),
-          //               BlendMode.srcIn,
-          //             ),
-          //           ),
-          //         ),
-          //         CountryCodePicker(
-          //           padding: EdgeInsets.zero,
-          //           showFlag: false,
-          //           boxDecoration: BoxDecoration(
-          //             borderRadius: BorderRadius.circular(
-          //               defaultBorderRadius,
-          //             ),
-          //             color: whiteColor,
-          //           ),
-          //           dialogSize: const Size.fromHeight(400),
-          //           showDropDownButton: true,
-          //           onChanged: print,
-          //           showCountryOnly: false,
-          //           showOnlyCountryWhenClosed: false,
-          //           alignLeft: false,
-          //           initialSelection: '+971',
-          //           searchDecoration: InputDecoration(
-          //             fillColor: lightGreyColor,
-          //             border: OutlineInputBorder(
-          //               borderRadius: BorderRadius.circular(
-          //                 defaultBorderRadius,
-          //               ),
-          //             ),
-          //             hintText: 'Search country',
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // const SizedBox(height: defaultPadding),
-          // TextFormField(
-          //   controller: widget.dateOfBirthController,
-          //   onSaved: (date) {
-          //     // Save birth date logic
-          //   },
-          //   keyboardType: TextInputType.datetime,
-          //   decoration: InputDecoration(
-          //     hintText: "Birthday",
-          //     prefixIcon:
-          //         FormFieldSvgIcon(iconPath: "assets/icons/Calender.svg"),
-          //   ),
-          //   focusNode: AlwaysDisabledFocusNode(),
-          //   onTap: () {
-          //     _selectDate(context);
-          //   },
-          // ),
-          // const SizedBox(height: defaultPadding),
           TextFormField(
             onSaved: (pass) {
               // Save password logic
             },
             controller: widget.passwordController,
-            validator: passwordValidator.call,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'The password field is required.';
+              }
+              return null;
+            },
             obscureText: true,
             decoration: InputDecoration(
               hintText: "Password",
               prefixIcon: FormFieldSvgIcon(iconPath: "assets/icons/Lock.svg"),
+              errorText: widget.passwordError,
             ),
           ),
         ],
       ),
     );
   }
-
-  // Future<void> _selectDate(BuildContext context) async {
-  //   DateTime? newSelectedDate = await showDatePicker(
-  //     context: context,
-  //     initialDate: _selectedDate,
-  //     firstDate: DateTime(1950),
-  //     lastDate: DateTime.now(),
-  //     builder: (BuildContext context, Widget? child) {
-  //       return Theme(
-  //         data: Theme.of(context).copyWith(
-  //           colorScheme: ColorScheme.light(
-  //             primary: primaryColor,
-  //             onPrimary: whiteColor,
-  //           ),
-  //         ),
-  //         child: child!,
-  //       );
-  //     },
-  //   );
-
-  //   if (newSelectedDate != null) {
-  //     setState(() {
-  //       _selectedDate = newSelectedDate;
-  //       widget.dateOfBirthController.text =
-  //           DateFormat.yMd().format(_selectedDate);
-  //     });
-  //   }
-  // }
-}
-
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }
