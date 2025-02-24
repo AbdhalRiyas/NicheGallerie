@@ -128,7 +128,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 images: product.images,
                               ),
                               ProductInfo(
-                                brand: "Armani",
                                 title: product.name,
                                 isAvailable: product.stockStatus == 'instock',
                                 description: product.shortDescription,

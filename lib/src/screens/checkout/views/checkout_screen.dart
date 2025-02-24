@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
@@ -184,14 +183,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSummaryRow(
-                'Subtotal', "AED ${widget.subTotal.toStringAsFixed(2)}"),
+            _buildSummaryRow('Subtotal',
+                "${context.read<AppConfig>().preferredCurrency['code']} ${widget.subTotal.toStringAsFixed(2)}"),
             SizedBox(height: 8),
             _buildSummaryRow('Shipping Fee', 'Free', color: Colors.green),
             SizedBox(height: 8),
-            _buildSummaryRow('Total (Include of VAT)', 'AED 0'),
+            _buildSummaryRow('Total (Include of VAT)',
+                '${context.read<AppConfig>().preferredCurrency['code']} 0'),
             SizedBox(height: 8),
-            _buildSummaryRow('Estimated VAT', 'AED 0'),
+            _buildSummaryRow('Estimated VAT',
+                '${context.read<AppConfig>().preferredCurrency['code']} 0'),
           ],
         ),
       ],
@@ -257,7 +258,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   Row(
                     children: [
                       Text(
-                        'AED ${product.price.toStringAsFixed(2)}',
+                        '${context.read<AppConfig>().preferredCurrency['code']} ${product.price.toStringAsFixed(2)}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor),

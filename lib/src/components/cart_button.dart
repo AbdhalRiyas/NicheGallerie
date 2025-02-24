@@ -15,7 +15,7 @@ class CartButton extends StatelessWidget {
 
   final double price;
   final String title, subTitle;
-  final VoidCallback press;
+  final VoidCallback? press;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class CartButton extends StatelessWidget {
         child: SizedBox(
           height: 64,
           child: Material(
-            color: primaryColor,
+            color: press != null ? primaryColor : Colors.grey.shade300,
             clipBehavior: Clip.hardEdge,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(

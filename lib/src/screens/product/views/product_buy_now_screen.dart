@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -29,27 +31,31 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
     return Consumer<CartProvider>(
       builder:
           (BuildContext context, CartProvider cartProvider, Widget? child) {
+        log(widget.product.toJson().toString());
         return Scaffold(
           bottomNavigationBar: CartButton(
             price: widget.product.price * qty,
             title: "Add to cart",
             subTitle: "Total price",
-            press: () {
-              try {
-                cartProvider.addItem(
-                  widget.product.id,
-                  qty,
-                );
-                customModalBottomSheet(
-                  context,
-                  isDismissible: false,
-                  child: const AddedToCartMessageScreen(),
-                );
-              } catch (e) {
-                context.pop();
-                context.go('/$logInScreenRoute');
-              }
-            },
+            press: !widget.product.manageStock ||
+                    qty <= widget.product.stockQuantity
+                ? () {
+                    try {
+                      cartProvider.addItem(
+                        widget.product.id,
+                        qty,
+                      );
+                      customModalBottomSheet(
+                        context,
+                        isDismissible: false,
+                        child: const AddedToCartMessageScreen(),
+                      );
+                    } catch (e) {
+                      context.pop();
+                      context.go('/$logInScreenRoute');
+                    }
+                  }
+                : null,
           ),
           body: Column(
             children: [
@@ -109,18 +115,23 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
                             ),
                             ProductQuantity(
                               numOfItem: qty,
-                              onIncrement: () {
-                                setState(() {
-                                  qty++;
-                                });
-                              },
-                              onDecrement: () {
-                                if (qty > 1) {
-                                  setState(() {
-                                    qty--;
-                                  });
-                                }
-                              },
+                              onIncrement: !widget.product.manageStock ||
+                                      qty < widget.product.stockQuantity
+                                  ? () {
+                                      setState(() {
+                                        qty++;
+                                      });
+                                    }
+                                  : null,
+                              onDecrement: qty > 1
+                                  ? () {
+                                      if (qty > 1) {
+                                        setState(() {
+                                          qty--;
+                                        });
+                                      }
+                                    }
+                                  : null,
                             ),
                           ],
                         ),

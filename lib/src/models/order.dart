@@ -32,7 +32,6 @@ class Order {
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
-    print(json['payment_url']);
     return Order(
         id: json['id'] ?? 0,
         dateCreated: json['date_created'] ?? '',

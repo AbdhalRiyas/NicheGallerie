@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/src/config/app_config.dart';
 
 import '../../../../constants.dart';
 
@@ -25,13 +27,14 @@ class UnitPrice extends StatelessWidget {
         Text.rich(
           TextSpan(
             text: priceAfterDiscount == null
-                ? "AED ${price.toStringAsFixed(0)}  "
-                : "AED ${priceAfterDiscount!.toStringAsFixed(2)}  ",
+                ? "${context.read<AppConfig>().preferredCurrency['code']} ${price.toStringAsFixed(0)}  "
+                : "${context.read<AppConfig>().preferredCurrency['code']} ${priceAfterDiscount!.toStringAsFixed(2)}  ",
             style: Theme.of(context).textTheme.titleLarge,
             children: [
               if (priceAfterDiscount != null)
                 TextSpan(
-                  text: "AED ${price.toStringAsFixed(0)}",
+                  text:
+                      "${context.read<AppConfig>().preferredCurrency['code']} ${price.toStringAsFixed(0)}",
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).textTheme.bodyMedium!.color,
                       decoration: TextDecoration.lineThrough),

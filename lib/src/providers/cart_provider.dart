@@ -66,6 +66,28 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateQty(int productId, int qty) {
+    if (!_isBoxInitialized) return;
+
+    int index = cartItems.indexWhere((item) => item['product_id'] == productId);
+
+    if (index != -1) {
+      if (qty > 0) {
+        cartBox.putAt(
+          index,
+          {
+            "product_id": productId,
+            "qty": qty,
+          },
+        );
+      } else {
+        cartBox.deleteAt(index);
+      }
+
+      notifyListeners();
+    }
+  }
+
   void decrementQty(int productId) {
     if (!_isBoxInitialized) return;
 

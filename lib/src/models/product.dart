@@ -25,6 +25,10 @@ class Product {
 
   final Map<dynamic, dynamic>? metadata;
 
+  final int stockQuantity;
+
+  final bool manageStock;
+
   Product({
     required this.id,
     required this.name,
@@ -39,6 +43,8 @@ class Product {
     required this.onSale,
     required this.images,
     required this.metadata,
+    required this.stockQuantity,
+    required this.manageStock,
   });
 
   factory Product.fromJson(Map<String, dynamic> product) => Product(
@@ -56,7 +62,9 @@ class Product {
           : null,
       onSale: product['on_sale'],
       images: List<String>.from(product['images']),
-      metadata: product['metadata']);
+      metadata: product['metadata'],
+      stockQuantity: product['stock_quantity'] ?? 0,
+      manageStock: product['manage_stock']);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -72,5 +80,7 @@ class Product {
         'on_sale': onSale,
         'images': images,
         'metadata': metadata,
+        'stock_quantity': stockQuantity,
+        'manage_stock': manageStock
       };
 }

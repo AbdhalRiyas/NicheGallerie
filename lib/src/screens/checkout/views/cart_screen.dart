@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/empty_handle_widget.dart';
 import 'package:shop/src/components/skeleton/skeleton.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
@@ -97,14 +98,21 @@ class _CartScreenState extends State<CartScreen> {
                     ...cartProvider.cartItems.map((cartItem) {
                       final product = productMap[cartItem['product_id']];
                       if (product == null) return const SizedBox.shrink();
+
+                      if (cartItem['qty'] > product.stockQuantity) {
+                        cartProvider.updateQty(
+                            product.id, product.stockQuantity);
+                      }
                       return CartProduct(
                         key: Key(product.id.toString()),
                         product: product,
                         qty: cartItem['qty'],
                         onDecrement: () =>
                             cartProvider.decrementQty(product.id),
-                        onIncrement: () =>
-                            cartProvider.incrementQty(product.id),
+                        onIncrement: !product.manageStock ||
+                                cartItem['qty'] < product.stockQuantity
+                            ? () => cartProvider.incrementQty(product.id)
+                            : null,
                         onDismissed: () => cartProvider.removeItem(product.id),
                       );
                     }),
@@ -153,16 +161,19 @@ class _CartScreenState extends State<CartScreen> {
                             style: Theme.of(context).textTheme.titleMedium),
                         SizedBox(height: defaultPadding),
                         _buildSummaryRow(
-                            'Subtotal', 'AED ${subtotal.toStringAsFixed(2)}'),
+                          'Discount',
+                          '0.00',
+                        ),
                         SizedBox(height: 8),
-                        _buildSummaryRow('Shipping Fee', 'Free',
-                            color: Colors.green),
-                        SizedBox(height: 8),
-                        _buildSummaryRow('Total (Include of VAT)',
-                            'AED ${total.toStringAsFixed(2)}'),
+                        _buildSummaryRow('Subtotal',
+                            '${context.read<AppConfig>().preferredCurrency['code']} ${subtotal.toStringAsFixed(2)}'),
                         SizedBox(height: 8),
                         _buildSummaryRow(
-                            'Estimated VAT', 'AED ${vat.toStringAsFixed(2)}'),
+                          'Shipping Fee',
+                          'Calculated at checkout',
+                        ),
+                        SizedBox(height: 8),
+                        _buildSummaryRow('Total', 'Calculated at checkout'),
                       ],
                     ),
                     SizedBox(height: 24),

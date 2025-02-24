@@ -7,14 +7,14 @@ class ProductInfo extends StatelessWidget {
   const ProductInfo({
     super.key,
     required this.title,
-    required this.brand,
+    // required this.brand,
     required this.description,
     required this.rating,
     required this.numOfReviews,
     required this.isAvailable,
   });
 
-  final String title, brand, description;
+  final String title, description; // brand,
   final double rating;
   final int numOfReviews;
   final bool isAvailable;
@@ -26,11 +26,11 @@ class ProductInfo extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            brand.toUpperCase(),
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: defaultPadding / 2),
+          // Text(
+          //   brand.toUpperCase(),
+          //   style: const TextStyle(fontWeight: FontWeight.w500),
+          // ),
+          // const SizedBox(height: defaultPadding / 2),
           Text(
             title,
             maxLines: 2,
