@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/src/config/app_config.dart';
 
 import '../constants.dart';
 
@@ -45,7 +47,7 @@ class CartButton extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "AED ${price.toStringAsFixed(0)}",
+                            "${context.read<AppConfig>().preferredCurrency['code']} ${price.toStringAsFixed(0)}",
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!

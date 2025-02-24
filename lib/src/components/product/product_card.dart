@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
-import 'package:shop/src/config/app_contants.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
@@ -85,8 +85,8 @@ class ProductCard extends StatelessWidget {
                   const Spacer(),
                   Text(
                     product.salePrice != null
-                        ? "${AppContants().currency}${product.salePrice?.toStringAsFixed(product.salePrice!.remainder(1) > 0 ? 2 : 0)}"
-                        : "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
+                        ? "${context.read<AppConfig>().preferredCurrency['symbol']}${product.salePrice?.toStringAsFixed(product.salePrice!.remainder(1) > 0 ? 2 : 0)}"
+                        : "${context.read<AppConfig>().preferredCurrency['symbol']}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Color(0xFF2E3033),
@@ -97,7 +97,7 @@ class ProductCard extends StatelessWidget {
                   if (product.salePrice != null) ...[
                     const SizedBox(width: defaultPadding / 4),
                     Text(
-                      "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
+                      "${context.read<AppConfig>().preferredCurrency['symbol']}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium!.color,

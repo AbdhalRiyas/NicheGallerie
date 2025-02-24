@@ -124,7 +124,7 @@ class ProfileScreen extends StatelessWidget {
             DividerListTileWithTrilingText(
               svgSrc: "assets/icons/Currency.svg",
               title: "Currency",
-              trilingText: appConfig.preferredCurrency,
+              trilingText: appConfig.preferredCurrency['code'],
               press: () {
                 showDialog(
                   context: context,
@@ -139,7 +139,7 @@ class ProfileScreen extends StatelessWidget {
                             appConfig.currencies[i]['code'],
                             style: TextStyle(
                               color: appConfig.currencies[i]['code'] ==
-                                      appConfig.preferredCurrency
+                                      appConfig.preferredCurrency['code']
                                   ? Colors.grey.shade200
                                   : null,
                             ),
@@ -149,7 +149,7 @@ class ProfileScreen extends StatelessWidget {
                               ? null
                               : () {
                                   appConfig.setPreferredCurrency(
-                                    appConfig.currencies[i]['code'],
+                                    appConfig.currencies[i],
                                   );
                                   context.pop();
                                 },

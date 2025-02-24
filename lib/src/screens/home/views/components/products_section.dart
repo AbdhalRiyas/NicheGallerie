@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src//route/screen_export.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/services/api_service.dart';
@@ -32,7 +34,8 @@ class _ProductsSectionState extends State<ProductsSection> {
     List<Product> products = [];
 
     if (widget.dataApiEndPoint.isNotEmpty) {
-      final res = await ApiService().get(widget.dataApiEndPoint);
+      final res = await ApiService().get(
+          '${widget.dataApiEndPoint}&currency=${context.read<AppConfig>().preferredCurrency['code']}');
       for (var element in res['data']) {
         try {
           products.add(Product.fromJson(element));

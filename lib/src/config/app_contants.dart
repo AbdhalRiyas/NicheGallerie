@@ -9,6 +9,4 @@ class AppContants {
 
   String get apiBaseUrl =>
       dotenv.env['API_URL'] ?? "http://witcommerce-cp.test/api/v3";
-
-  String get currency => 'AED ';
 }
