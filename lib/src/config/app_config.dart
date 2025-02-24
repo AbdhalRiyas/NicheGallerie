@@ -6,6 +6,7 @@ import 'package:shop/src/services/api_service.dart';
 
 class AppConfig with ChangeNotifier {
   Map<String, dynamic>? _config;
+  String? _preferredCurrency;
 
   Map<String, dynamic>? get config => _config;
 
@@ -21,6 +22,19 @@ class AppConfig with ChangeNotifier {
   List<Map<String, dynamic>> get paymentMethods =>
       List<Map<String, dynamic>>.from(_config?['payment_methods'] ?? []);
 
+  List<Map<String, dynamic>> get currencies =>
+      List<Map<String, dynamic>>.from(_config?['currencies'] ??
+          [
+            {
+              "code": "AED",
+              "name": "Arab Emirates Dirham",
+              "symbol": "AED",
+            }
+          ]);
+
+  String get preferredCurrency =>
+      _preferredCurrency ?? currencies.first['code'];
+
   Future<void> initialize() async {
     // Load cached config
     final cachedConfig = await _loadCachedConfig();
@@ -28,6 +42,10 @@ class AppConfig with ChangeNotifier {
       _config = cachedConfig;
       notifyListeners(); // Notify listeners that the config has been updated
     }
+
+    // Load preferred currency
+    _preferredCurrency = getStringAsync('preferred_currency',
+        defaultValue: currencies.first['code']);
 
     // Fetch fresh config from the API
     try {
@@ -55,5 +73,11 @@ class AppConfig with ChangeNotifier {
       return json.decode(configString);
     }
     return null;
+  }
+
+  Future<void> setPreferredCurrency(String currencyCode) async {
+    _preferredCurrency = currencyCode;
+    await setValue('preferred_currency', currencyCode);
+    notifyListeners(); // Notify listeners that the preferred currency has been updated
   }
 }

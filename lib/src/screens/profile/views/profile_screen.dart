@@ -113,21 +113,60 @@ class ProfileScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
+            // DividerListTileWithTrilingText(
+            //   svgSrc: "assets/icons/Notification.svg",
+            //   title: "Notification",
+            //   trilingText: "Off",
+            //   press: () {
+            //     Navigator.pushNamed(context, enableNotificationScreenRoute);
+            //   },
+            // ),
             DividerListTileWithTrilingText(
-              svgSrc: "assets/icons/Notification.svg",
-              title: "Notification",
-              trilingText: "Off",
+              svgSrc: "assets/icons/Currency.svg",
+              title: "Currency",
+              trilingText: appConfig.preferredCurrency,
               press: () {
-                Navigator.pushNamed(context, enableNotificationScreenRoute);
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: SizedBox(
+                      width: double.maxFinite,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: appConfig.currencies.length,
+                        itemBuilder: (context, i) => ListTile(
+                          title: Text(
+                            appConfig.currencies[i]['code'],
+                            style: TextStyle(
+                              color: appConfig.currencies[i]['code'] ==
+                                      appConfig.preferredCurrency
+                                  ? Colors.grey.shade200
+                                  : null,
+                            ),
+                          ),
+                          onTap: appConfig.currencies[i]['code'] ==
+                                  appConfig.preferredCurrency
+                              ? null
+                              : () {
+                                  appConfig.setPreferredCurrency(
+                                    appConfig.currencies[i]['code'],
+                                  );
+                                  context.pop();
+                                },
+                        ),
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
-            ProfileMenuListTile(
-              text: "Preferences",
-              svgSrc: "assets/icons/Preferences.svg",
-              press: () {
-                Navigator.pushNamed(context, preferencesScreenRoute);
-              },
-            ),
+            // ProfileMenuListTile(
+            //   text: "Preferences",
+            //   svgSrc: "assets/icons/Preferences.svg",
+            //   press: () {
+            //     Navigator.pushNamed(context, preferencesScreenRoute);
+            //   },
+            // ),
             const SizedBox(height: defaultPadding),
             // Padding(
             //   padding: const EdgeInsets.symmetric(

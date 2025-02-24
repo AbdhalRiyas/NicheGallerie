@@ -34,7 +34,7 @@ class ProductCard extends StatelessWidget {
       child: Column(
         children: [
           AspectRatio(
-            aspectRatio: 1.15,
+            aspectRatio: 1.25,
             child: Stack(
               children: [
                 NetworkImageWithLoader(product.images.first,
@@ -70,7 +70,7 @@ class ProductCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: defaultPadding / 2, vertical: defaultPadding / 2),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     product.name,
@@ -83,33 +83,29 @@ class ProductCard extends StatelessWidget {
                         .copyWith(fontSize: 12),
                   ),
                   const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        product.salePrice != null
-                            ? "${AppContants().currency}${product.salePrice?.toStringAsFixed(product.salePrice!.remainder(1) > 0 ? 2 : 0)}"
-                            : "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
-                        style: const TextStyle(
-                          color: Color(0xFF2E3033),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
-                        ),
+                  Text(
+                    product.salePrice != null
+                        ? "${AppContants().currency}${product.salePrice?.toStringAsFixed(product.salePrice!.remainder(1) > 0 ? 2 : 0)}"
+                        : "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFF2E3033),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 11,
+                    ),
+                  ),
+                  if (product.salePrice != null) ...[
+                    const SizedBox(width: defaultPadding / 4),
+                    Text(
+                      "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                        fontSize: 8,
+                        decoration: TextDecoration.lineThrough,
                       ),
-                      if (product.salePrice != null) ...[
-                        const SizedBox(width: defaultPadding / 4),
-                        Text(
-                          "${AppContants().currency}${product.regularPrice.toStringAsFixed(product.regularPrice.remainder(1) > 0 ? 2 : 0)}",
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).textTheme.bodyMedium!.color,
-                            fontSize: 8,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ]
-                    ],
-                  )
+                    ),
+                  ]
                 ],
               ),
             ),
