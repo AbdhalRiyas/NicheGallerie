@@ -31,6 +31,7 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String? _selectedPaymentMethod;
   AddressModel? _selectedAddress;
+  int _currentStep = 0;
 
   @override
   void initState() {
@@ -41,8 +42,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void _checkoutDetail() async {
     var res =
         await ApiService().get('${ApiContants().checkoutDetails}?currency=AED');
-
-    print(res);
   }
 
   @override
@@ -51,49 +50,85 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       appBar: AppBar(
         title: const Text('Checkout'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(defaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AddressButton(
-                text: _selectedAddress == null
-                    ? 'Select Address'
-                    : 'Change Address',
-                onTap: () => _showSelectAddressDialog(context),
-              ),
-              SizedBox(height: defaultPadding),
-              if (_selectedAddress != null)
-                AddressCard(
-                  address: _selectedAddress!,
+      body: Stepper(
+        currentStep: _currentStep,
+        onStepContinue: _onStepContinue,
+        onStepCancel: _onStepCancel,
+        steps: [
+          Step(
+            title: const Text('Select Address'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AddressButton(
+                  text: _selectedAddress == null
+                      ? 'Select Address'
+                      : 'Change Address',
+                  onTap: () => _showSelectAddressDialog(context),
                 ),
-              SizedBox(height: defaultPadding),
-              _buildPaymentMethods(),
-              SizedBox(height: defaultPadding),
-              _buildOrderSummary(),
-              SizedBox(height: defaultPadding),
-              _buildReviewOrder(),
-              SizedBox(height: defaultPadding * 4),
-            ],
+                if (_selectedAddress != null)
+                  AddressCard(
+                    address: _selectedAddress!,
+                  ),
+              ],
+            ),
+            isActive: _currentStep >= 0,
+            state: _currentStep > 0 ? StepState.complete : StepState.indexed,
           ),
-        ),
+          Step(
+            title: const Text('Choose Payment Method'),
+            content: _buildPaymentMethods(),
+            isActive: _currentStep >= 1,
+            state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+          ),
+          Step(
+            title: const Text('Review Order'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildOrderSummary(),
+                SizedBox(height: defaultPadding),
+                _buildReviewOrder(),
+              ],
+            ),
+            isActive: _currentStep >= 2,
+            state: _currentStep > 2 ? StepState.complete : StepState.indexed,
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed:
-                _selectedPaymentMethod != null && _selectedAddress != null
-                    ? _onContinuePressed
-                    : null,
-            child: const Text('Continue'),
-          ),
-        ),
-      ),
+      floatingActionButton: _currentStep == 2
+          ? Padding(
+              padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed:
+                      _selectedPaymentMethod != null && _selectedAddress != null
+                          ? _onContinuePressed
+                          : null,
+                  child: const Text('Checkout'),
+                ),
+              ),
+            )
+          : null,
     );
+  }
+
+  void _onStepContinue() {
+    if (_currentStep < 2) {
+      setState(() {
+        _currentStep += 1;
+      });
+    }
+  }
+
+  void _onStepCancel() {
+    if (_currentStep > 0) {
+      setState(() {
+        _currentStep -= 1;
+      });
+    }
   }
 
   void _showSelectAddressDialog(BuildContext context) {
@@ -133,19 +168,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     final paymentMethod = appConfig.paymentMethods[index];
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
-                      // leading: Container(
-                      //   width: 40,
-                      //   height: 40,
-                      //   decoration: BoxDecoration(
-                      //     borderRadius:
-                      //         BorderRadius.circular(defaultBorderRadius),
-                      //   ),
-                      //   child: SvgPicture.network(
-                      //     paymentMethod['svg'],
-                      //     width: 24,
-                      //     height: 24,
-                      //   ),
-                      // ),
                       title: Text(
                         paymentMethod['title'],
                         style: TextStyle(

@@ -15,7 +15,6 @@ class SelectAddressDialog extends StatefulWidget {
 
 class _SelectAddressDialogState extends State<SelectAddressDialog> {
   final List<AddressModel> addresses = dummyData;
-  int _selectedIndex = -1;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

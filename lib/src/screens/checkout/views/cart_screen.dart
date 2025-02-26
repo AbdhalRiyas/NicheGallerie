@@ -99,10 +99,10 @@ class _CartScreenState extends State<CartScreen> {
                       final product = productMap[cartItem['product_id']];
                       if (product == null) return const SizedBox.shrink();
 
-                      if (cartItem['qty'] > product.stockQuantity) {
-                        cartProvider.updateQty(
-                            product.id, product.stockQuantity);
-                      }
+                      // if (cartItem['qty'] > product.stockQuantity) {
+                      //   cartProvider.updateQty(
+                      //       product.id, product.stockQuantity);
+                      // }
                       return CartProduct(
                         key: Key(product.id.toString()),
                         product: product,
