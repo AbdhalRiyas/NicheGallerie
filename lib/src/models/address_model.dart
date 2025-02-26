@@ -25,17 +25,17 @@ class AddressModel {
   });
 
   factory AddressModel.fromJson(Map<String, dynamic> json) => AddressModel(
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      address1: json['address_1'],
-      city: json['city'],
-      state: json['state'],
-      postcode: json['postcode'],
-      country: json['country'],
-      email: json['email'],
-      phone: json['phone'],
-      company: json['company'],
-      address2: json['address_2']);
+      firstName: json['first_name'] ?? '',
+      lastName: json['last_name'] ?? '',
+      address1: json['address_1'] ?? '',
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
+      postcode: json['postcode'] ?? '',
+      country: json['country'] ?? '',
+      email: json['email'] ?? '',
+      phone: json['phone'] ?? '',
+      company: json['company'] ?? '',
+      address2: json['address_2'] ?? '');
 
   AddressModel copyWith(String? firstName) => AddressModel(
       firstName: firstName ?? this.firstName,

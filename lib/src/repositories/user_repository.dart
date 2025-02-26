@@ -14,4 +14,16 @@ class UserRepository {
       return Result(message: 'Unexpected error occured');
     }
   }
+
+  Future<Result> updateBillingAddress(Map<String, dynamic> data) async {
+    try {
+      final res =
+          await ApiService().post(ApiContants().billingAddress, payload: data);
+      return Result(data: res, message: 'Address updated successfully');
+    } on AppException catch (e) {
+      return Result(message: e.message.toString());
+    } catch (e) {
+      return Result(message: 'Unexpected error occured');
+    }
+  }
 }

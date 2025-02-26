@@ -10,7 +10,7 @@ import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
-import 'package:shop/src/screens/checkout/views/components/select_address_dialog.dart';
+import 'package:shop/src/screens/address/views/components/select_address_dialog.dart';
 import 'package:shop/src/services/api_service.dart';
 
 class CheckoutScreen extends StatefulWidget {

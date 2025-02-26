@@ -15,8 +15,11 @@ class AddressForm extends StatefulWidget {
   final TextEditingController cityController;
   final TextEditingController postcodeController;
   final TextEditingController phoneController;
+  final TextEditingController emailController;
   final TextEditingController stateController;
   final TextEditingController countryController;
+  final VoidCallback validateForm;
+  final Map<String, dynamic>? errors;
 
   const AddressForm({
     required this.formKey,
@@ -30,6 +33,9 @@ class AddressForm extends StatefulWidget {
     required this.phoneController,
     required this.stateController,
     required this.countryController,
+    required this.emailController,
+    required this.validateForm,
+    this.errors,
     super.key,
   });
 
@@ -43,54 +49,66 @@ class _AddressFormState extends State<AddressForm> {
   @override
   void initState() {
     super.initState();
-    widget.firstNameController.addListener(_validateForm);
-    widget.lastNameController.addListener(_validateForm);
-    widget.address1Controller.addListener(_validateForm);
-    widget.cityController.addListener(_validateForm);
-    widget.postcodeController.addListener(_validateForm);
-    widget.phoneController.addListener(_validateForm);
+    widget.firstNameController.addListener(widget.validateForm);
+    widget.lastNameController.addListener(widget.validateForm);
+    widget.address1Controller.addListener(widget.validateForm);
+    widget.cityController.addListener(widget.validateForm);
+    widget.postcodeController.addListener(widget.validateForm);
+    widget.phoneController.addListener(widget.validateForm);
+    widget.emailController.addListener(widget.validateForm);
   }
 
-  void _validateForm() {
-    setState(() {
-      isFormValid = widget.formKey.currentState?.validate() ?? false;
-    });
+  String? getError(String field) {
+    if (widget.errors != null && widget.errors!.containsKey(field)) {
+      return widget.errors![field][0];
+    }
+    return null;
   }
 
   String? nameValidator(String? value) {
-    if (value == null ||
-        value.isEmpty ||
-        value.length < 3 ||
-        value.length > 20) {
-      return 'Enter valid name';
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
     }
     return null;
   }
 
   String? address1Validator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Address is required';
+      return 'This field is required';
     }
     return null;
   }
 
   String? cityValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'City is required';
+      return 'This field is required';
     }
     return null;
   }
 
   String? postCodeValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Postcode is required';
+      return 'This field is required';
     }
     return null;
   }
 
   String? phoneValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Phone number is required';
+      return 'This field is required';
+    }
+    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Please enter a valid phone number';
+    }
+    return null;
+  }
+
+  String? emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Please enter a valid email address';
     }
     return null;
   }
@@ -107,7 +125,8 @@ class _AddressFormState extends State<AddressForm> {
                 child: TextFormField(
                   controller: widget.firstNameController,
                   onSaved: (fName) {},
-                  validator: (value) => nameValidator(value),
+                  validator: (value) =>
+                      getError('first_name') ?? nameValidator(value),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.text,
                   inputFormatters: [
@@ -116,20 +135,21 @@ class _AddressFormState extends State<AddressForm> {
                     ),
                   ],
                   decoration: InputDecoration(
-                      hintText: "First name",
-                      prefixIcon: FormFieldSvgIcon(
-                        iconPath: "assets/icons/Profile.svg",
-                      )),
+                    hintText: "First name",
+                    errorText: getError('first_name'),
+                    prefixIcon: FormFieldSvgIcon(
+                      iconPath: "assets/icons/Profile.svg",
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: defaultPadding),
               Expanded(
                 child: TextFormField(
                   controller: widget.lastNameController,
-                  onSaved: (lName) {
-                    // Last Name
-                  },
-                  validator: (value) => nameValidator(value),
+                  onSaved: (lName) {},
+                  validator: (value) =>
+                      getError('last_name') ?? nameValidator(value),
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                   inputFormatters: [
@@ -139,6 +159,7 @@ class _AddressFormState extends State<AddressForm> {
                   ],
                   decoration: InputDecoration(
                     hintText: "Last name",
+                    errorText: getError('last_name'),
                   ),
                 ),
               ),
@@ -147,14 +168,12 @@ class _AddressFormState extends State<AddressForm> {
           const SizedBox(height: defaultPadding),
           TextFormField(
             controller: widget.companyNameController,
-            onSaved: (companyName) {
-              // Company Name
-            },
+            onSaved: (companyName) {},
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
-            inputFormatters: [],
             decoration: InputDecoration(
               hintText: "Company name (optional)",
+              errorText: getError('company_name'),
               prefixIcon: FormFieldSvgIcon(
                 iconPath: "assets/icons/Company.svg",
               ),
@@ -168,15 +187,14 @@ class _AddressFormState extends State<AddressForm> {
           const SizedBox(height: defaultPadding),
           TextFormField(
             controller: widget.address1Controller,
-            onSaved: (address1) {
-              // House number and street name
-            },
-            validator: (value) => address1Validator(value),
+            onSaved: (address1) {},
+            validator: (value) =>
+                getError('address1') ?? address1Validator(value),
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
-            inputFormatters: [],
             decoration: InputDecoration(
               hintText: "House number and street name",
+              errorText: getError('address1'),
               prefixIcon: FormFieldSvgIcon(
                 iconPath: "assets/icons/House.svg",
               ),
@@ -185,14 +203,12 @@ class _AddressFormState extends State<AddressForm> {
           const SizedBox(height: defaultPadding),
           TextFormField(
             controller: widget.address2Controller,
-            onSaved: (apartment) {
-              // Apartment, suite, unit, etc.
-            },
+            onSaved: (apartment) {},
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
-            inputFormatters: [],
             decoration: InputDecoration(
-              hintText: "Apatment, suite, unit, etc. (optional)",
+              hintText: "Apartment, suite, unit, etc. (optional)",
+              errorText: getError('address2'),
               prefixIcon: FormFieldSvgIcon(
                 iconPath: "assets/icons/CityApartment.svg",
               ),
@@ -201,15 +217,13 @@ class _AddressFormState extends State<AddressForm> {
           const SizedBox(height: defaultPadding),
           TextFormField(
             controller: widget.cityController,
-            onSaved: (city) {
-              // Town/ City
-            },
-            validator: (value) => cityValidator(value),
+            onSaved: (city) {},
+            validator: (value) => getError('city') ?? cityValidator(value),
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
-            inputFormatters: [],
             decoration: InputDecoration(
-              hintText: "Town/ City",
+              hintText: "Town / City",
+              errorText: getError('city'),
               prefixIcon: FormFieldSvgIcon(
                 iconPath: "assets/icons/Location.svg",
               ),
@@ -218,17 +232,14 @@ class _AddressFormState extends State<AddressForm> {
           const SizedBox(height: defaultPadding),
           TextFormField(
             controller: widget.postcodeController,
-            onSaved: (value) {
-              // Postcode/ ZIP
-            },
-            validator: (value) => postCodeValidator(value),
+            onSaved: (postcode) {},
+            validator: (value) =>
+                getError('postcode') ?? postCodeValidator(value),
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
             decoration: InputDecoration(
-              hintText: "Postcode/ ZIP",
+              hintText: "Postcode / ZIP",
+              errorText: getError('postcode'),
               prefixIcon: FormFieldSvgIcon(
                 iconPath: "assets/icons/PostCard.svg",
               ),
@@ -237,64 +248,52 @@ class _AddressFormState extends State<AddressForm> {
           const SizedBox(height: defaultPadding),
           TextFormField(
             controller: widget.phoneController,
-            validator: (value) => phoneValidator(value),
+            onSaved: (phone) {},
+            validator: (value) => getError('phone') ?? phoneValidator(value),
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
             decoration: InputDecoration(
               hintText: "Phone",
-              prefixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: defaultPadding),
-                    child: FormFieldSvgIcon(iconPath: "assets/icons/Phone.svg"),
+              errorText: getError('phone'),
+              prefixIcon: CountryCodePicker(
+                padding: EdgeInsets.zero,
+                showFlag: false,
+                boxDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(defaultBorderRadius),
+                  color: whiteColor,
+                ),
+                dialogSize: const Size.fromHeight(400),
+                showDropDownButton: true,
+                onChanged: print,
+                showCountryOnly: false,
+                showOnlyCountryWhenClosed: false,
+                alignLeft: false,
+                initialSelection: '+971',
+                searchDecoration: InputDecoration(
+                  fillColor: lightGreyColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(defaultBorderRadius),
                   ),
-                  CountryCodePicker(
-                    padding: EdgeInsets.zero,
-                    showFlag: false,
-                    boxDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        defaultBorderRadius,
-                      ),
-                      color: whiteColor,
-                    ),
-                    dialogSize: Size.fromHeight(400),
-                    showDropDownButton: true,
-                    onChanged: print,
-                    showCountryOnly: false,
-                    showOnlyCountryWhenClosed: false,
-                    alignLeft: false,
-                    initialSelection: '+971',
-                    searchDecoration: InputDecoration(
-                      fillColor: lightGreyColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          defaultBorderRadius,
-                        ),
-                      ),
-                      hintText: 'Search country',
-                    ),
-                  ),
-                ],
+                  hintText: 'Search country',
+                ),
               ),
             ),
           ),
           const SizedBox(height: defaultPadding),
-          ElevatedButton(
-            onPressed: isFormValid
-                ? () {
-                    if (widget.formKey.currentState?.validate() ?? false) {
-                      widget.formKey.currentState?.save();
-                      // Handle form submission
-                    }
-                  }
-                : null,
-            child: Text('Save'),
+          TextFormField(
+            controller: widget.emailController,
+            validator: (value) => getError('email') ?? emailValidator(value),
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
+            decoration: InputDecoration(
+              hintText: "Email",
+              errorText: getError('email'),
+              prefixIcon: FormFieldSvgIcon(
+                iconPath: "assets/icons/Email.svg",
+              ),
+            ),
           ),
+          const SizedBox(height: defaultPadding),
         ],
       ),
     );

@@ -1,18 +1,23 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/address_model.dart';
+import 'package:shop/src/repositories/user_repository.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
+import 'package:shop/src/utils/result.dart';
 
 class AddressDialog extends StatefulWidget {
-  const AddressDialog({super.key});
+  const AddressDialog({super.key, this.addressModel});
+
+  final AddressModel? addressModel;
 
   @override
   State<AddressDialog> createState() => _AddressDialogState();
 }
 
 class _AddressDialogState extends State<AddressDialog> {
+  final UserRepository _userRepository = UserRepository();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -22,8 +27,78 @@ class _AddressDialogState extends State<AddressDialog> {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _postcodeController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
+
+  bool _isLoading = false;
+  bool _isFormValid = false;
+  Map<String, dynamic> _errors = {};
+
+  @override
+  void initState() {
+    if (widget.addressModel != null) {
+      AddressModel address = widget.addressModel!;
+      _firstNameController.text = address.firstName;
+      _lastNameController.text = address.lastName;
+      _companyNameController.text = address.company;
+      _address1Controller.text = address.address1;
+      _address2Controller.text = address.address2;
+      _cityController.text = address.city;
+      _postcodeController.text = address.postcode;
+      _phoneController.text = address.phone;
+      _emailController.text = address.email;
+      _stateController.text = address.state;
+      _countryController.text = address.country;
+    }
+    super.initState();
+  }
+
+  void _validateForm() {
+    setState(() {
+      _isFormValid = _formKey.currentState?.validate() ?? false;
+    });
+  }
+
+  Future<void> _updateBillingAddress() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _errors.clear();
+    });
+
+    Map<String, dynamic> data = {
+      'first_name': _firstNameController.text,
+      'last_name': _lastNameController.text,
+      'company': _companyNameController.text,
+      'address_1': _address1Controller.text,
+      'address_2': _address2Controller.text,
+      'city': _cityController.text,
+      'postcode': _postcodeController.text,
+      'phone': _phoneController.text,
+      'email': _emailController.text,
+      'state': _stateController.text,
+      'country': _countryController.text,
+    };
+
+    Result result = await _userRepository.updateBillingAddress(data);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (result.data != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message)),
+      );
+      context.pop();
+    } else if (result.errors != null) {
+      setState(() {
+        _errors = result.errors;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +116,9 @@ class _AddressDialogState extends State<AddressDialog> {
         ),
         title: Center(
           child: Text(
-            'Add New Address',
+            widget.addressModel == null || widget.addressModel?.firstName == ''
+                ? 'Add New Address'
+                : 'Edit Address',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -64,20 +141,31 @@ class _AddressDialogState extends State<AddressDialog> {
               phoneController: _phoneController,
               stateController: _stateController,
               countryController: _countryController,
+              emailController: _emailController,
+              validateForm: _validateForm,
+              errors: _errors,
             ),
           ),
         ),
         actions: <Widget>[
           Center(
-            child: TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text(
-                'Cancel',
-              ),
+            child: ElevatedButton(
+              onPressed:
+                  _isLoading || !_isFormValid ? null : _updateBillingAddress,
+              child:
+                  _isLoading ? CircularProgressIndicator() : const Text('Save'),
             ),
-          )
+          ),
+          Center(
+            child: TextButton(
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      context.pop();
+                    },
+              child: const Text('Cancel'),
+            ),
+          ),
         ],
       ),
     );
