@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_searchable_dropdown/flutter_searchable_dropdown.dart';
 import 'package:shop/src/constants.dart';
-import 'package:shop/src/screens/address/views/components/country_state_picker.dart';
 import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
 
 class AddressForm extends StatefulWidget {
@@ -112,6 +112,35 @@ class _AddressFormState extends State<AddressForm> {
     return null;
   }
 
+  final List<Map<String, String>> woocommerceCountries = [
+    {'code': 'US', 'name': 'United States'},
+    {'code': 'CA', 'name': 'Canada'},
+    {'code': 'GB', 'name': 'United Kingdom'},
+    // Add more countries as needed
+  ];
+
+  final Map<String, List<Map<String, String>>> woocommerceStates = {
+    'US': [
+      {'code': 'AL', 'name': 'Alabama'},
+      {'code': 'AK', 'name': 'Alaska'},
+      {'code': 'AZ', 'name': 'Arizona'},
+      // Add more states as needed
+    ],
+    'CA': [
+      {'code': 'AB', 'name': 'Alberta'},
+      {'code': 'BC', 'name': 'British Columbia'},
+      {'code': 'MB', 'name': 'Manitoba'},
+      // Add more provinces as needed
+    ],
+    'GB': [
+      {'code': 'ENG', 'name': 'England'},
+      {'code': 'SCT', 'name': 'Scotland'},
+      {'code': 'WLS', 'name': 'Wales'},
+      // Add more regions as needed
+    ],
+    // Add more countries and their states/provinces as needed
+  };
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -179,10 +208,64 @@ class _AddressFormState extends State<AddressForm> {
             ),
           ),
           const SizedBox(height: defaultPadding),
-          CountryStatePicker(
-            stateController: widget.stateController,
-            countryController: widget.countryController,
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: SearchableDropdown<String>(
+              items: woocommerceCountries.map((country) {
+                return DropdownMenuItem<String>(
+                  value: country['code'],
+                  child: Text(country['name']!),
+                );
+              }).toList(),
+              value: widget.countryController.text.isEmpty
+                  ? null
+                  : widget.countryController.text,
+              onChanged: (value) {
+                setState(() {
+                  widget.countryController.text = value!;
+                  widget.stateController.text =
+                      ''; // Reset state when country changes
+                });
+              },
+              hint: "Select Country",
+              searchHint: "Search for a country",
+              isExpanded: true,
+            ),
           ),
+          const SizedBox(height: defaultPadding),
+          if (woocommerceStates.containsKey(widget.countryController.text))
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: SearchableDropdown<String>(
+                items: woocommerceStates[widget.countryController.text]!
+                    .map((state) {
+                  return DropdownMenuItem<String>(
+                    value: state['code'],
+                    child: Text(state['name']!),
+                  );
+                }).toList(),
+                value: widget.stateController.text.isEmpty
+                    ? null
+                    : widget.stateController.text,
+                onChanged: (value) {
+                  setState(() {
+                    widget.stateController.text = value!;
+                  });
+                },
+                hint: "Select State",
+                searchHint: "Search for a state",
+                isExpanded: true,
+              ),
+            ),
+          const SizedBox(height: defaultPadding),
           const SizedBox(height: defaultPadding),
           TextFormField(
             controller: widget.address1Controller,
