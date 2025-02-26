@@ -67,7 +67,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               if (_selectedAddress != null)
                 AddressCard(
                   address: _selectedAddress!,
-                  showMenu: false,
                 ),
               SizedBox(height: defaultPadding),
               _buildPaymentMethods(),

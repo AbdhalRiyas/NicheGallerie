@@ -253,31 +253,11 @@ class _AddressFormState extends State<AddressForm> {
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
-              hintText: "Phone",
-              errorText: getError('phone'),
-              prefixIcon: CountryCodePicker(
-                padding: EdgeInsets.zero,
-                showFlag: false,
-                boxDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(defaultBorderRadius),
-                  color: whiteColor,
-                ),
-                dialogSize: const Size.fromHeight(400),
-                showDropDownButton: true,
-                onChanged: print,
-                showCountryOnly: false,
-                showOnlyCountryWhenClosed: false,
-                alignLeft: false,
-                initialSelection: '+971',
-                searchDecoration: InputDecoration(
-                  fillColor: lightGreyColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(defaultBorderRadius),
-                  ),
-                  hintText: 'Search country',
-                ),
-              ),
-            ),
+                hintText: "Phone",
+                errorText: getError('phone'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/Phone.svg",
+                )),
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(

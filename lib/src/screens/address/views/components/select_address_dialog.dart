@@ -60,13 +60,6 @@ class _SelectAddressDialogState extends State<SelectAddressDialog> {
                       const EdgeInsets.symmetric(vertical: defaultPadding / 2),
                   child: AddressCard(
                     address: addresses[index],
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                      widget.onAddressSelected(addresses[index]);
-                      Navigator.of(context).pop();
-                    },
                   ),
                 );
               },

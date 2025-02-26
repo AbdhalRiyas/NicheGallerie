@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/address_model.dart';
-import 'package:shop/src/screens/address/views/components/address_popup_menu.dart';
 
 class AddressCard extends StatelessWidget {
   final AddressModel address;
-  final bool? showMenu;
   final VoidCallback? onTap;
 
   const AddressCard({
     super.key,
     required this.address,
-    this.showMenu = true,
     this.onTap,
   });
 
@@ -51,27 +48,24 @@ class AddressCard extends StatelessWidget {
                         color: blackColor90,
                         fontStyle: FontStyle.italic,
                       )),
-                Text(address.city,
+                Text("${address.city}, ${address.state} ${address.postcode}",
                     style: TextStyle(
                       color: blackColor90,
                       fontStyle: FontStyle.italic,
                     )),
-                Text("${address.state} ${address.postcode}",
-                    style: TextStyle(
-                      color: blackColor90,
-                      fontStyle: FontStyle.italic,
-                    )),
-                Text(address.phone,
-                    style: TextStyle(
-                      color: blackColor90,
-                      fontStyle: FontStyle.italic,
-                    )),
-                const SizedBox(width: 8),
                 Text(
                   address.country,
                   style: TextStyle(
                     color: blackColor90,
                     fontStyle: FontStyle.italic,
+                  ),
+                ),
+                SizedBox(height: 8),
+                GestureDetector(
+                  onTap: onTap,
+                  child: Text(
+                    'Edit Billing Address',
+                    style: TextStyle(color: sandDuneColor),
                   ),
                 ),
               ],

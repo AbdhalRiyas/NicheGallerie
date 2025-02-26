@@ -32,11 +32,11 @@ class _AddressScreenState extends State<AddressScreen> {
     _address = _userRepository.getBillingAddress();
   }
 
-  void _addNewAddress() async {
+  void _addEditAddress(AddressModel address) async {
     final result = await showDialog<Result>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AddressDialog(),
+      builder: (context) => AddressDialog(addressModel: address),
     );
 
     if (result != null && result.isSuccess) {
@@ -76,15 +76,13 @@ class _AddressScreenState extends State<AddressScreen> {
                       padding: EdgeInsets.all(defaultPadding),
                       child: AddressButton(
                         text: 'Add new address',
-                        onTap: _addNewAddress,
+                        onTap: () =>
+                            _addEditAddress(AddressModel.fromJson(data)),
                       ),
                     )
                   : AddressCard(
                       address: AddressModel.fromJson(data),
-                      showMenu: true,
-                      onTap: () {
-                        // Handle address card tap
-                      },
+                      onTap: () => _addEditAddress(AddressModel.fromJson(data)),
                     );
             } else {
               return NoDataWidget(
