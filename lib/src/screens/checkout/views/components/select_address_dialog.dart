@@ -59,14 +59,7 @@ class _SelectAddressDialogState extends State<SelectAddressDialog> {
                   padding:
                       const EdgeInsets.symmetric(vertical: defaultPadding / 2),
                   child: AddressCard(
-                    title:
-                        '${addresses[index].firstName} ${addresses[index].lastName}',
-                    name: addresses[index].lastName,
-                    address: addresses[index].address1,
-                    phone: addresses[index].phone,
-                    countryCode: addresses[index].country,
-                    fromSelect: true,
-                    isSelected: _selectedIndex == index,
+                    address: addresses[index],
                     onTap: () {
                       setState(() {
                         _selectedIndex = index;

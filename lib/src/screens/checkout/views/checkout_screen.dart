@@ -33,6 +33,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   AddressModel? _selectedAddress;
 
   @override
+  void initState() {
+    _checkoutDetail();
+    super.initState();
+  }
+
+  void _checkoutDetail() async {
+    var res =
+        await ApiService().get('${ApiContants().checkoutDetails}?currency=AED');
+
+    print(res);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -53,14 +66,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               SizedBox(height: defaultPadding),
               if (_selectedAddress != null)
                 AddressCard(
-                  title:
-                      '${_selectedAddress!.firstName} ${_selectedAddress!.lastName}',
-                  name: _selectedAddress!.lastName,
-                  address: _selectedAddress!.address1,
-                  phone: _selectedAddress!.phone,
-                  countryCode: _selectedAddress!.country,
+                  address: _selectedAddress!,
                   showMenu: false,
-                  isSelected: true,
                 ),
               SizedBox(height: defaultPadding),
               _buildPaymentMethods(),

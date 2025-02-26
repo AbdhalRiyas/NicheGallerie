@@ -84,10 +84,10 @@ class ProfileScreen extends StatelessWidget {
             //   press: () {},
             // ),
             ProfileMenuListTile(
-              text: "Addresses",
+              text: "Address",
               svgSrc: "assets/icons/Address.svg",
               press: () {
-                Navigator.pushNamed(context, addressesScreenRoute);
+                context.go('/$addressScreenRoute');
               },
             ),
             // ProfileMenuListTile(

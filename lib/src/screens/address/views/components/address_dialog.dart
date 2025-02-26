@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
 
@@ -67,32 +68,16 @@ class _AddressDialogState extends State<AddressDialog> {
           ),
         ),
         actions: <Widget>[
-          Column(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  log('Saved');
-                  log(_firstNameController.text);
-                  log(_lastNameController.text);
-                  log(_companyNameController.text);
-                  log(_address1Controller.text);
-                  log(_address2Controller.text);
-                  log(_cityController.text);
-                  log(_postcodeController.text);
-                  log(_phoneController.text);
-                  log(_stateController.text);
-                  log(_countryController.text);
-                },
-                child: const Text('Save'),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text(
+                'Cancel',
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-            ],
-          ),
+            ),
+          )
         ],
       ),
     );

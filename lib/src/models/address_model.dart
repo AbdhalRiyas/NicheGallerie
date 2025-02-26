@@ -1,8 +1,8 @@
 class AddressModel {
   final String firstName, lastName;
-  final String? company;
+  final String company;
   final String address1;
-  final String? address2;
+  final String address2;
   final String city;
   final String state;
   final String postcode;
@@ -13,9 +13,9 @@ class AddressModel {
   AddressModel({
     required this.firstName,
     required this.lastName,
-    this.company,
+    required this.company,
     required this.address1,
-    this.address2,
+    required this.address2,
     required this.city,
     required this.state,
     required this.postcode,
@@ -33,7 +33,9 @@ class AddressModel {
       postcode: json['postcode'],
       country: json['country'],
       email: json['email'],
-      phone: json['phone']);
+      phone: json['phone'],
+      company: json['company'],
+      address2: json['address_2']);
 
   AddressModel copyWith(String? firstName) => AddressModel(
       firstName: firstName ?? this.firstName,
@@ -44,12 +46,16 @@ class AddressModel {
       postcode: postcode,
       country: country,
       email: email,
-      phone: phone);
+      phone: phone,
+      company: company,
+      address2: address2);
 
   Map<String, dynamic> toJson() => {
         'first_name': firstName,
         'last_name': lastName,
+        'company': company,
         'address_1': address1,
+        'address_2': address2,
         'city': city,
         'state': state,
         'postcode': postcode,
@@ -78,7 +84,7 @@ List<AddressModel> dummyData = [
     lastName: 'Smith',
     company: 'Widgets Inc',
     address1: '456 Elm St',
-    address2: null,
+    address2: 'null',
     city: 'Othertown',
     state: 'Otherstate',
     postcode: '67890',
@@ -89,9 +95,9 @@ List<AddressModel> dummyData = [
   AddressModel(
     firstName: 'Alice',
     lastName: 'Jones',
-    company: null,
+    company: 'null',
     address1: '789 Oak St',
-    address2: null,
+    address2: 'null',
     city: 'Thirdtown',
     state: 'Thirdstate',
     postcode: '13579',

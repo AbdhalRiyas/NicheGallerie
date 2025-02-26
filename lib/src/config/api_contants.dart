@@ -11,4 +11,7 @@ class ApiContants {
   final String login = '/auth/login';
   final String register = '/auth/register';
   final String validate = '/auth/validate';
+  final String checkoutDetails = '/checkout/details';
+  final String checkout = '/checkout';
+  final String billingAddress = '/users/billing-address';
 }

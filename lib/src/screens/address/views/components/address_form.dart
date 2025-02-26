@@ -5,7 +5,7 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/country_state_picker.dart';
 import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
 
-class AddressForm extends StatelessWidget {
+class AddressForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
@@ -32,6 +32,30 @@ class AddressForm extends StatelessWidget {
     required this.countryController,
     super.key,
   });
+
+  @override
+  State<AddressForm> createState() => _AddressFormState();
+}
+
+class _AddressFormState extends State<AddressForm> {
+  bool isFormValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.firstNameController.addListener(_validateForm);
+    widget.lastNameController.addListener(_validateForm);
+    widget.address1Controller.addListener(_validateForm);
+    widget.cityController.addListener(_validateForm);
+    widget.postcodeController.addListener(_validateForm);
+    widget.phoneController.addListener(_validateForm);
+  }
+
+  void _validateForm() {
+    setState(() {
+      isFormValid = widget.formKey.currentState?.validate() ?? false;
+    });
+  }
 
   String? nameValidator(String? value) {
     if (value == null ||
@@ -74,14 +98,14 @@ class AddressForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: widget.formKey,
       child: Column(
         children: [
           Row(
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: firstNameController,
+                  controller: widget.firstNameController,
                   onSaved: (fName) {},
                   validator: (value) => nameValidator(value),
                   textInputAction: TextInputAction.next,
@@ -101,7 +125,7 @@ class AddressForm extends StatelessWidget {
               const SizedBox(width: defaultPadding),
               Expanded(
                 child: TextFormField(
-                  controller: lastNameController,
+                  controller: widget.lastNameController,
                   onSaved: (lName) {
                     // Last Name
                   },
@@ -122,7 +146,7 @@ class AddressForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            controller: companyNameController,
+            controller: widget.companyNameController,
             onSaved: (companyName) {
               // Company Name
             },
@@ -138,12 +162,12 @@ class AddressForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           CountryStatePicker(
-            stateController: stateController,
-            countryController: countryController,
+            stateController: widget.stateController,
+            countryController: widget.countryController,
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            controller: address1Controller,
+            controller: widget.address1Controller,
             onSaved: (address1) {
               // House number and street name
             },
@@ -160,7 +184,7 @@ class AddressForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            controller: address2Controller,
+            controller: widget.address2Controller,
             onSaved: (apartment) {
               // Apartment, suite, unit, etc.
             },
@@ -176,7 +200,7 @@ class AddressForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            controller: cityController,
+            controller: widget.cityController,
             onSaved: (city) {
               // Town/ City
             },
@@ -193,7 +217,7 @@ class AddressForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            controller: postcodeController,
+            controller: widget.postcodeController,
             onSaved: (value) {
               // Postcode/ ZIP
             },
@@ -212,7 +236,7 @@ class AddressForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            controller: phoneController,
+            controller: widget.phoneController,
             validator: (value) => phoneValidator(value),
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
@@ -260,6 +284,17 @@ class AddressForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: defaultPadding),
+          ElevatedButton(
+            onPressed: isFormValid
+                ? () {
+                    if (widget.formKey.currentState?.validate() ?? false) {
+                      widget.formKey.currentState?.save();
+                      // Handle form submission
+                    }
+                  }
+                : null,
+            child: Text('Save'),
+          ),
         ],
       ),
     );

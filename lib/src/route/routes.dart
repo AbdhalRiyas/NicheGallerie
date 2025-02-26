@@ -64,6 +64,15 @@ class AppRouter {
                 return const MaterialPage(child: OrdersScreen());
               },
             ),
+            GoRoute(
+              path: addressScreenRoute,
+              name: addressScreenRoute,
+              // Redirect is handled here
+              redirect: (context, state) => _authCheck(context, state),
+              pageBuilder: (context, state) {
+                return const MaterialPage(child: AddressScreen());
+              },
+            ),
           ],
           pageBuilder: (context, state) => MaterialPage(child: EntryPoint()),
         ),
