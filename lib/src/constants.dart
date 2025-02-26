@@ -34,6 +34,7 @@ const MaterialColor primaryMaterialColor =
 });
 
 const Color blackColor = Color(0xFF16161E);
+const Color blackColor90 = Color(0xFF2E3033);
 const Color blackColor80 = Color(0xFF45454B);
 const Color blackColor60 = Color(0xFF737378);
 const Color blackColor40 = Color(0xFFA2A2A5);

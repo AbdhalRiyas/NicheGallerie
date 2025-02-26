@@ -17,64 +17,61 @@ class AddressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget cardContent = Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 2,
-          color: primaryColor,
-        ),
-        borderRadius: BorderRadius.circular(defaultBorderRadius),
-      ),
-      child: Stack(
+    Widget cardContent = Padding(
+      padding: const EdgeInsets.all(defaultPadding),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(defaultPadding),
-            child: Row(
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${address.firstName} ${address.lastName}",
-                        style: TextStyle(color: blackColor60),
-                      ),
-                      Text(
-                        address.company,
-                        style: TextStyle(color: blackColor60),
-                      ),
-                      Text(
-                        address.address1,
-                        style: TextStyle(color: blackColor60),
-                      ),
-                      Text(
-                        address.address2,
-                        style: TextStyle(color: blackColor60),
-                      ),
-                      Text(
-                        address.city,
-                        style: TextStyle(color: blackColor60),
-                      ),
-                      Text(
-                        "${address.state} ${address.postcode}",
-                        style: TextStyle(color: blackColor60),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text(
-                            address.phone,
-                            style: TextStyle(color: blackColor60),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            address.country,
-                            style: TextStyle(color: blackColor60),
-                          ),
-                        ],
-                      ),
-                    ],
+                Text(
+                    'The following addresses will be used on the checkout page by default.'),
+                SizedBox(height: 8),
+                Text("${address.firstName} ${address.lastName}",
+                    style: TextStyle(
+                      color: blackColor90,
+                      fontStyle: FontStyle.italic,
+                    )),
+                if (address.company != '')
+                  Text(address.company,
+                      style: TextStyle(
+                        color: blackColor90,
+                        fontStyle: FontStyle.italic,
+                      )),
+                Text(address.address1,
+                    style: TextStyle(
+                      color: blackColor90,
+                      fontStyle: FontStyle.italic,
+                    )),
+                if (address.address2 != '')
+                  Text(address.address2,
+                      style: TextStyle(
+                        color: blackColor90,
+                        fontStyle: FontStyle.italic,
+                      )),
+                Text(address.city,
+                    style: TextStyle(
+                      color: blackColor90,
+                      fontStyle: FontStyle.italic,
+                    )),
+                Text("${address.state} ${address.postcode}",
+                    style: TextStyle(
+                      color: blackColor90,
+                      fontStyle: FontStyle.italic,
+                    )),
+                Text(address.phone,
+                    style: TextStyle(
+                      color: blackColor90,
+                      fontStyle: FontStyle.italic,
+                    )),
+                const SizedBox(width: 8),
+                Text(
+                  address.country,
+                  style: TextStyle(
+                    color: blackColor90,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
               ],
