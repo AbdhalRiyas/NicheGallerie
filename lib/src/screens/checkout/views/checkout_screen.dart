@@ -7,12 +7,15 @@ import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/address_model.dart';
+import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/repositories/user_repository.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
+import 'package:shop/src/screens/checkout/views/payment_webview_screen.dart';
 import 'package:shop/src/services/api_service.dart';
+import 'package:shop/src/utils/currency_formatter.dart';
 import 'package:shop/src/utils/result.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -372,8 +375,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSummaryRow('Subtotal',
-                "${context.read<AppConfig>().preferredCurrency['code']} ${widget.subTotal.toStringAsFixed(2)}"),
+            _buildSummaryRow(
+                'Subtotal',
+                formatCurrency(
+                    widget.subTotal,
+                    Currency.fromJson(
+                        context.read<AppConfig>().preferredCurrency))),
             SizedBox(height: 8),
             _buildSummaryRow('Shipping Fee', 'Free', color: Colors.green),
             SizedBox(height: 8),
@@ -439,7 +446,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Row(
                 children: [
                   Text(
-                    '${context.read<AppConfig>().preferredCurrency['code']} ${product.price.toStringAsFixed(2)}',
+                    formatCurrency(
+                        product.price,
+                        Currency.fromJson(
+                            context.read<AppConfig>().preferredCurrency)),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor),
@@ -461,63 +471,70 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Future<void> _onContinuePressed() async {
-    if (_selectedAddress == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please select address'),
-        ),
-      );
-      return;
-    }
-    if (_selectedPaymentMethod == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please select payment method'),
-        ),
-      );
-      return;
-    }
-    final res = await ApiService().post(ApiContants().orders, payload: {
-      'payment_method': _selectedPaymentMethod,
-      'payment_method_title': _selectedPaymentMethod,
-      'set_paid': false,
-      'billing': {
-        'first_name': _selectedAddress?.firstName ?? '',
-        'last_name': _selectedAddress?.lastName ?? '',
-        'address_1': _selectedAddress?.address1 ?? '',
-        'address_2': _selectedAddress?.address2 ?? '',
-        'city': _selectedAddress?.city ?? '',
-        'state': _selectedAddress?.state ?? '',
-        'postcode': _selectedAddress?.postcode ?? '',
-        'country': _selectedAddress?.country ?? '',
-        'email': _selectedAddress?.email ?? '',
-        'phone': _selectedAddress?.phone ?? '',
-      },
-      'shipping': {
-        'first_name': _selectedAddress?.firstName ?? '',
-        'last_name': _selectedAddress?.lastName ?? '',
-        'address_1': _selectedAddress?.address1 ?? '',
-        'address_2': _selectedAddress?.address2 ?? '',
-        'city': _selectedAddress?.city ?? '',
-        'state': _selectedAddress?.state ?? '',
-        'postcode': _selectedAddress?.postcode ?? '',
-        'country': _selectedAddress?.country ?? '',
-      },
-      'line_items': widget.cartItems
-          .map((e) => {
-                'product_id': e.id,
-                'quantity': widget.productMap.firstWhere(
-                    (element) => element['product_id'] == e.id)['qty'],
-              })
-          .toList(),
-      'shipping_lines': [
-        {
-          'method_id': 'flat_rate',
-          'method_title': 'Flat Rate',
-          'total': '0',
-        }
-      ],
-    });
-    log(res.toString());
+    String result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PaymentWebViewScreen(
+            checkoutUrl:
+                'https://staging19.nichegallerie.com/checkout/order-pay/47005/?pay_for_order=true&key=wc_order_gI1mgHtfHJoaM')));
+
+    print(result);
+    // if (_selectedAddress == null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('Please select address'),
+    //     ),
+    //   );
+    //   return;
+    // }
+    // if (_selectedPaymentMethod == null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('Please select payment method'),
+    //     ),
+    //   );
+    //   return;
+    // }
+    // final res =
+    //     await ApiService().post(ApiContants().calculateShipping, payload: {
+    //   'payment_method': _selectedPaymentMethod,
+    //   'payment_method_title': _selectedPaymentMethod,
+    //   'set_paid': false,
+    //   'billing': {
+    //     'first_name': _selectedAddress?.firstName ?? '',
+    //     'last_name': _selectedAddress?.lastName ?? '',
+    //     'address_1': _selectedAddress?.address1 ?? '',
+    //     'address_2': _selectedAddress?.address2 ?? '',
+    //     'city': _selectedAddress?.city ?? '',
+    //     'state': _selectedAddress?.state ?? '',
+    //     'postcode': _selectedAddress?.postcode ?? '',
+    //     'country': _selectedAddress?.country ?? '',
+    //     'email': _selectedAddress?.email ?? '',
+    //     'phone': _selectedAddress?.phone ?? '',
+    //   },
+    //   'shipping': {
+    //     'first_name': _selectedAddress?.firstName ?? '',
+    //     'last_name': _selectedAddress?.lastName ?? '',
+    //     'address_1': _selectedAddress?.address1 ?? '',
+    //     'address_2': _selectedAddress?.address2 ?? '',
+    //     'city': _selectedAddress?.city ?? '',
+    //     'state': _selectedAddress?.state ?? '',
+    //     'postcode': _selectedAddress?.postcode ?? '',
+    //     'country': _selectedAddress?.country ?? '',
+    //   },
+    //   'line_items': widget.cartItems
+    //       .map((e) => {
+    //             'product_id': e.id,
+    //             'quantity': widget.productMap.firstWhere(
+    //                 (element) => element['product_id'] == e.id)['qty'],
+    //           })
+    //       .toList(),
+    //   'shipping_lines': [
+    //     {
+    //       'method_id': 'flat_rate',
+    //       'method_title': 'Flat Rate',
+    //       'total': '0',
+    //     }
+    //   ],
+    // });
+    // log(res.toString());
   }
 }

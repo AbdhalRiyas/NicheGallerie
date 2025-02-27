@@ -13,6 +13,8 @@ class ApiContants {
   final String validate = '/auth/validate';
   final String checkoutDetails = '/checkout/details';
   final String checkout = '/checkout';
+  final String calculateShipping = '/checkout/shipping-cost';
+
   final String billingAddress = '/users/billing-address';
   final String countries = '/countries';
 }

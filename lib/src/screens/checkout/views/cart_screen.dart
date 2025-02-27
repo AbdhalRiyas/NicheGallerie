@@ -5,10 +5,12 @@ import 'package:shop/src/components/empty_handle_widget.dart';
 import 'package:shop/src/components/skeleton/skeleton.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/screens/checkout/views/checkout_screen.dart';
 import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
+import 'package:shop/src/utils/currency_formatter.dart';
 import 'components/cart_product.dart';
 
 class CartScreen extends StatefulWidget {
@@ -158,8 +160,13 @@ class _CartScreenState extends State<CartScreen> {
                         Text("Order Summary",
                             style: Theme.of(context).textTheme.titleMedium),
                         SizedBox(height: defaultPadding),
-                        _buildSummaryRow('Subtotal',
-                            '${context.read<AppConfig>().preferredCurrency['code']} ${subtotal.toStringAsFixed(2)}'),
+                        _buildSummaryRow(
+                            'Subtotal',
+                            formatCurrency(
+                                subtotal,
+                                Currency.fromJson(context
+                                    .read<AppConfig>()
+                                    .preferredCurrency))),
                         SizedBox(height: 8),
                         _buildSummaryRow(
                           'Shipping Fee',
