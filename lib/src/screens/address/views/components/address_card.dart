@@ -5,11 +5,13 @@ import 'package:shop/src/models/address_model.dart';
 class AddressCard extends StatelessWidget {
   final AddressModel address;
   final VoidCallback? onTap;
+  final bool onAddressScreen;
 
   const AddressCard({
     super.key,
     required this.address,
     this.onTap,
+    this.onAddressScreen = true,
   });
 
   @override
@@ -23,9 +25,11 @@ class AddressCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                    'The following addresses will be used on the checkout page by default.'),
-                SizedBox(height: 8),
+                if (onAddressScreen) ...[
+                  Text(
+                      'The following addresses will be used on the checkout page by default.'),
+                  SizedBox(height: 8),
+                ],
                 Text("${address.firstName} ${address.lastName}",
                     style: TextStyle(
                       color: blackColor90,
@@ -60,14 +64,16 @@ class AddressCard extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-                SizedBox(height: 8),
-                GestureDetector(
-                  onTap: onTap,
-                  child: Text(
-                    'Edit Billing Address',
-                    style: TextStyle(color: sandDuneColor),
+                if (onAddressScreen) ...[
+                  SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: onTap,
+                    child: Text(
+                      'Edit Billing Address',
+                      style: TextStyle(color: sandDuneColor),
+                    ),
                   ),
-                ),
+                ]
               ],
             ),
           ),

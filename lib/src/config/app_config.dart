@@ -27,8 +27,18 @@ class AppConfig with ChangeNotifier {
           [
             {
               "code": "AED",
-              "name": "Arab Emirates Dirham",
               "symbol": "AED",
+              "decimal": 0,
+              "pos": "right",
+            }
+          ]);
+
+  List<Map<String, dynamic>> get countries =>
+      List<Map<String, dynamic>>.from(_config?['countries'] ??
+          [
+            {
+              "code": "AE",
+              "name": "United Arab Emirates",
             }
           ]);
 

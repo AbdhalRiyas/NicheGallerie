@@ -19,7 +19,7 @@ class UserRepository {
     try {
       final res =
           await ApiService().post(ApiContants().billingAddress, payload: data);
-      return Result(data: res, message: 'Address updated successfully');
+      return Result(data: res['data'], message: res['message']);
     } on AppException catch (e) {
       return Result(message: e.message.toString());
     } catch (e) {

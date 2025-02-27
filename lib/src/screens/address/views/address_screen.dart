@@ -33,16 +33,15 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   void _addEditAddress(AddressModel address) async {
-    final result = await showDialog<Result>(
+    await showDialog<Result>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AddressDialog(addressModel: address),
     );
 
-    if (result != null && result.isSuccess) {
+    setState(() {
       _fetchData();
-      setState(() {});
-    }
+    });
   }
 
   @override

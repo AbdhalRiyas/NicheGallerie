@@ -14,4 +14,5 @@ class ApiContants {
   final String checkoutDetails = '/checkout/details';
   final String checkout = '/checkout';
   final String billingAddress = '/users/billing-address';
+  final String countries = '/countries';
 }

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_searchable_dropdown/flutter_searchable_dropdown.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/src/config/api_contants.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/address/views/components/form_field_svg_icon.dart';
+import 'package:shop/src/services/api_service.dart';
 
 class AddressForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -50,6 +54,7 @@ class _AddressFormState extends State<AddressForm> {
     super.initState();
     widget.firstNameController.addListener(widget.validateForm);
     widget.lastNameController.addListener(widget.validateForm);
+    widget.companyNameController.addListener(widget.validateForm);
     widget.address1Controller.addListener(widget.validateForm);
     widget.cityController.addListener(widget.validateForm);
     widget.postcodeController.addListener(widget.validateForm);
@@ -112,251 +117,242 @@ class _AddressFormState extends State<AddressForm> {
     return null;
   }
 
-  final List<Map<String, String>> woocommerceCountries = [
-    {'code': 'US', 'name': 'United States'},
-    {'code': 'CA', 'name': 'Canada'},
-    {'code': 'GB', 'name': 'United Kingdom'},
-    // Add more countries as needed
-  ];
-
-  final Map<String, List<Map<String, String>>> woocommerceStates = {
-    'US': [
-      {'code': 'AL', 'name': 'Alabama'},
-      {'code': 'AK', 'name': 'Alaska'},
-      {'code': 'AZ', 'name': 'Arizona'},
-      // Add more states as needed
-    ],
-    'CA': [
-      {'code': 'AB', 'name': 'Alberta'},
-      {'code': 'BC', 'name': 'British Columbia'},
-      {'code': 'MB', 'name': 'Manitoba'},
-      // Add more provinces as needed
-    ],
-    'GB': [
-      {'code': 'ENG', 'name': 'England'},
-      {'code': 'SCT', 'name': 'Scotland'},
-      {'code': 'WLS', 'name': 'Wales'},
-      // Add more regions as needed
-    ],
-    // Add more countries and their states/provinces as needed
-  };
+  final Map<String, List<Map<String, dynamic>>> woocommerceStates = {};
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: widget.formKey,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: widget.firstNameController,
-                  onSaved: (fName) {},
-                  validator: (value) =>
-                      getError('first_name') ?? nameValidator(value),
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.text,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                      RegExp(r'[a-zA-Z]'),
-                    ),
-                  ],
-                  decoration: InputDecoration(
-                    hintText: "First name",
-                    errorText: getError('first_name'),
-                    prefixIcon: FormFieldSvgIcon(
-                      iconPath: "assets/icons/Profile.svg",
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Form(
+        key: widget.formKey,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: widget.firstNameController,
+                    onSaved: (fName) {},
+                    validator: (value) =>
+                        getError('first_name') ?? nameValidator(value),
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z]'),
+                      ),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: "First name",
+                      errorText: getError('first_name'),
+                      prefixIcon: FormFieldSvgIcon(
+                        iconPath: "assets/icons/Profile.svg",
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: defaultPadding),
-              Expanded(
-                child: TextFormField(
-                  controller: widget.lastNameController,
-                  onSaved: (lName) {},
-                  validator: (value) =>
-                      getError('last_name') ?? nameValidator(value),
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                      RegExp(r'[a-zA-Z]'),
+                const SizedBox(width: defaultPadding),
+                Expanded(
+                  child: TextFormField(
+                    controller: widget.lastNameController,
+                    onSaved: (lName) {},
+                    validator: (value) =>
+                        getError('last_name') ?? nameValidator(value),
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z]'),
+                      ),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: "Last name",
+                      errorText: getError('last_name'),
                     ),
-                  ],
-                  decoration: InputDecoration(
-                    hintText: "Last name",
-                    errorText: getError('last_name'),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.companyNameController,
+              onSaved: (companyName) {},
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                hintText: "Company name (optional)",
+                errorText: getError('company_name'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/Company.svg",
+                ),
               ),
-            ],
-          ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            controller: widget.companyNameController,
-            onSaved: (companyName) {},
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              hintText: "Company name (optional)",
-              errorText: getError('company_name'),
-              prefixIcon: FormFieldSvgIcon(
-                iconPath: "assets/icons/Company.svg",
-              ),
             ),
-          ),
-          const SizedBox(height: defaultPadding),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: SearchableDropdown<String>(
-              items: woocommerceCountries.map((country) {
-                return DropdownMenuItem<String>(
-                  value: country['code'],
-                  child: Text(country['name']!),
-                );
-              }).toList(),
-              value: widget.countryController.text.isEmpty
-                  ? null
-                  : widget.countryController.text,
-              onChanged: (value) {
-                setState(() {
-                  widget.countryController.text = value!;
-                  widget.stateController.text =
-                      ''; // Reset state when country changes
-                });
-              },
-              hint: "Select Country",
-              searchHint: "Search for a country",
-              isExpanded: true,
-            ),
-          ),
-          const SizedBox(height: defaultPadding),
-          if (woocommerceStates.containsKey(widget.countryController.text))
+            const SizedBox(height: defaultPadding),
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: SearchableDropdown<String>(
-                items: woocommerceStates[widget.countryController.text]!
-                    .map((state) {
-                  return DropdownMenuItem<String>(
-                    value: state['code'],
-                    child: Text(state['name']!),
-                  );
-                }).toList(),
-                value: widget.stateController.text.isEmpty
-                    ? null
-                    : widget.stateController.text,
-                onChanged: (value) {
-                  setState(() {
-                    widget.stateController.text = value!;
-                  });
-                },
-                hint: "Select State",
-                searchHint: "Search for a state",
-                isExpanded: true,
+              child: Consumer<AppConfig>(
+                builder: (BuildContext context, value, Widget? child) =>
+                    SearchableDropdown<String>(
+                  items: value.countries.map((country) {
+                    return DropdownMenuItem<String>(
+                      value: country['code'],
+                      child: Text(country['name']!),
+                    );
+                  }).toList(),
+                  value: widget.countryController.text.isEmpty
+                      ? null
+                      : widget.countryController.text,
+                  onChanged: (value) async {
+                    setState(() {
+                      widget.countryController.text = value!;
+                      widget.stateController.text =
+                          ''; // Reset state when country changes
+                    });
+
+                    // Call the API to fetch states
+                    final response = await ApiService().get(
+                        "${ApiContants().countries}/${widget.countryController.text}/states");
+                    if (response != null) {
+                      setState(() {
+                        woocommerceStates[widget.countryController.text] =
+                            List<Map<String, dynamic>>.from(response);
+                      });
+                    }
+                  },
+                  hint: "Select Country",
+                  searchHint: "Search for a country",
+                  isExpanded: true,
+                ),
               ),
             ),
-          const SizedBox(height: defaultPadding),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            controller: widget.address1Controller,
-            onSaved: (address1) {},
-            validator: (value) =>
-                getError('address1') ?? address1Validator(value),
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              hintText: "House number and street name",
-              errorText: getError('address1'),
-              prefixIcon: FormFieldSvgIcon(
-                iconPath: "assets/icons/House.svg",
+            const SizedBox(height: defaultPadding),
+            if (woocommerceStates.containsKey(widget.countryController.text) &&
+                woocommerceStates[widget.countryController.text]!.isNotEmpty)
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: SearchableDropdown<String>(
+                  items: woocommerceStates[widget.countryController.text]!
+                      .map((state) {
+                    return DropdownMenuItem<String>(
+                      value: state['code'],
+                      child: Text(state['name']!),
+                    );
+                  }).toList(),
+                  value: widget.stateController.text.isEmpty
+                      ? null
+                      : widget.stateController.text,
+                  onChanged: (value) {
+                    setState(() {
+                      widget.stateController.text = value!;
+                    });
+                  },
+                  hint: "Select State",
+                  searchHint: "Search for a state",
+                  isExpanded: true,
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            controller: widget.address2Controller,
-            onSaved: (apartment) {},
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              hintText: "Apartment, suite, unit, etc. (optional)",
-              errorText: getError('address2'),
-              prefixIcon: FormFieldSvgIcon(
-                iconPath: "assets/icons/CityApartment.svg",
-              ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            controller: widget.cityController,
-            onSaved: (city) {},
-            validator: (value) => getError('city') ?? cityValidator(value),
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              hintText: "Town / City",
-              errorText: getError('city'),
-              prefixIcon: FormFieldSvgIcon(
-                iconPath: "assets/icons/Location.svg",
-              ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            controller: widget.postcodeController,
-            onSaved: (postcode) {},
-            validator: (value) =>
-                getError('postcode') ?? postCodeValidator(value),
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              hintText: "Postcode / ZIP",
-              errorText: getError('postcode'),
-              prefixIcon: FormFieldSvgIcon(
-                iconPath: "assets/icons/PostCard.svg",
-              ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            controller: widget.phoneController,
-            onSaved: (phone) {},
-            validator: (value) => getError('phone') ?? phoneValidator(value),
-            keyboardType: TextInputType.phone,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-                hintText: "Phone",
-                errorText: getError('phone'),
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.address1Controller,
+              onSaved: (address1) {},
+              validator: (value) =>
+                  getError('address1') ?? address1Validator(value),
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                hintText: "House number and street name",
+                errorText: getError('address1'),
                 prefixIcon: FormFieldSvgIcon(
-                  iconPath: "assets/icons/Phone.svg",
-                )),
-          ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            controller: widget.emailController,
-            validator: (value) => getError('email') ?? emailValidator(value),
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              hintText: "Email",
-              errorText: getError('email'),
-              prefixIcon: FormFieldSvgIcon(
-                iconPath: "assets/icons/Email.svg",
+                  iconPath: "assets/icons/House.svg",
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: defaultPadding),
-        ],
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.address2Controller,
+              onSaved: (apartment) {},
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                hintText: "Apartment, suite, unit, etc. (optional)",
+                errorText: getError('address2'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/CityApartment.svg",
+                ),
+              ),
+            ),
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.cityController,
+              onSaved: (city) {},
+              validator: (value) => getError('city') ?? cityValidator(value),
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                hintText: "Town / City",
+                errorText: getError('city'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/Location.svg",
+                ),
+              ),
+            ),
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.postcodeController,
+              onSaved: (postcode) {},
+              validator: (value) =>
+                  getError('postcode') ?? postCodeValidator(value),
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                hintText: "Postcode / ZIP",
+                errorText: getError('postcode'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/PostCard.svg",
+                ),
+              ),
+            ),
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.phoneController,
+              onSaved: (phone) {},
+              validator: (value) => getError('phone') ?? phoneValidator(value),
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                  hintText: "Phone",
+                  errorText: getError('phone'),
+                  prefixIcon: FormFieldSvgIcon(
+                    iconPath: "assets/icons/Phone.svg",
+                  )),
+            ),
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.emailController,
+              validator: (value) => getError('email') ?? emailValidator(value),
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                hintText: "Email",
+                errorText: getError('email'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/Email.svg",
+                ),
+              ),
+            ),
+            const SizedBox(height: defaultPadding),
+          ],
+        ),
       ),
     );
   }
