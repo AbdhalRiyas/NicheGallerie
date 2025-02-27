@@ -5,7 +5,7 @@ import 'package:shop/src/components/empty_error_state_widget.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/repositories/order_repository.dart';
-import 'package:shop/src/screens/checkout/payment_webview_screen.dart';
+import 'package:shop/src/screens/checkout/views/payment_webview_screen.dart';
 import 'package:shop/src/screens/home/views/components/home_skeleton.dart';
 import 'package:shop/src/utils/result.dart';
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_config.dart';
+import 'package:shop/src/models/currency.dart';
+import 'package:shop/src/utils/currency_formatter.dart';
 
 import '../constants.dart';
 
@@ -9,12 +11,13 @@ class CartButton extends StatelessWidget {
     super.key,
     required this.price,
     this.title = "Buy Now",
-    this.subTitle = "Unit price",
+    this.subTitle,
     required this.press,
   });
 
   final double price;
-  final String title, subTitle;
+  final String title;
+  final String? subTitle;
   final VoidCallback? press;
 
   @override
@@ -47,18 +50,23 @@ class CartButton extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${context.read<AppConfig>().preferredCurrency['code']} ${price.toStringAsFixed(0)}",
+                            formatCurrency(
+                              price,
+                              Currency.fromJson(
+                                  context.read<AppConfig>().preferredCurrency),
+                            ),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
                                 .copyWith(color: Colors.white),
                           ),
-                          Text(
-                            subTitle,
-                            style: const TextStyle(
-                                color: Colors.white54,
-                                fontWeight: FontWeight.w500),
-                          )
+                          if (subTitle != null)
+                            Text(
+                              subTitle.toString(),
+                              style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontWeight: FontWeight.w500),
+                            )
                         ],
                       ),
                     ),

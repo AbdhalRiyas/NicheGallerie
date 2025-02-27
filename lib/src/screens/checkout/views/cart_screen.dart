@@ -83,8 +83,6 @@ class _CartScreenState extends State<CartScreen> {
                 for (var product in cartItems) product.id: product
               };
               final subtotal = calculateSubtotal(productMap, cartProvider);
-              final vat = calculateVAT(subtotal);
-              final total = calculateTotal(subtotal, vat);
               final isOutOfStock = cartItems
                   .any((product) => product.stockStatus == 'outofstock');
 

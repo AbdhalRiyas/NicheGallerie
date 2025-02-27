@@ -11,9 +11,7 @@ import 'package:shop/src/models/product.dart';
 import 'package:shop/src/repositories/user_repository.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
-import 'package:shop/src/screens/address/views/components/address_dialog.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
-import 'package:shop/src/screens/address/views/components/select_address_dialog.dart';
 import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/result.dart';
 
@@ -177,8 +175,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       body: Stepper(
         currentStep: _currentStep,
-        onStepContinue: _onStepContinue,
-        onStepCancel: _onStepCancel,
+        onStepContinue: (_currentStep == 0 && _selectedAddress == null) ||
+                (_currentStep == 1 && _selectedPaymentMethod == null)
+            ? null
+            : _onStepContinue,
+        onStepCancel: _currentStep == 0 ? null : _onStepCancel,
         steps: [
           Step(
             title: const Text('Select Address'),
@@ -272,49 +273,61 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Widget _buildPaymentMethods() {
     return Consumer<AppConfig>(
-      builder: (BuildContext context, appConfig, Widget? child) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          (appConfig.paymentMethods.isEmpty)
-              ? Center(
-                  child: Text('No payment methods available'),
-                )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: appConfig.paymentMethods.length,
-                  itemBuilder: (context, index) {
-                    final paymentMethod = appConfig.paymentMethods[index];
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        paymentMethod['title'],
-                        style: TextStyle(
+      builder: (BuildContext context, appConfig, Widget? child) {
+        log(appConfig.paymentMethods.toString());
+        List<Map<String, dynamic>> paymentMethods =
+            appConfig.paymentMethods.where((method) {
+          // Check if the method has currencies and if any of them match the specified currency code
+          return method['currencies'] != null &&
+              method['currencies'].any((currency) =>
+                  currency['code'] ==
+                  context.read<AppConfig>().preferredCurrency['code']);
+        }).toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            (paymentMethods.isEmpty)
+                ? Center(
+                    child: Text('No payment methods available'),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: paymentMethods.length,
+                    itemBuilder: (context, index) {
+                      final paymentMethod = paymentMethods[index];
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          paymentMethod['title'],
+                          style: TextStyle(
+                            color: _selectedPaymentMethod ==
+                                    paymentMethod['gateway_id']
+                                ? blackColor
+                                : greyColor,
+                          ),
+                        ),
+                        trailing: Icon(
+                          _selectedPaymentMethod == paymentMethod['gateway_id']
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
                           color: _selectedPaymentMethod ==
                                   paymentMethod['gateway_id']
-                              ? blackColor
-                              : greyColor,
+                              ? primaryColor
+                              : Colors.grey,
                         ),
-                      ),
-                      trailing: Icon(
-                        _selectedPaymentMethod == paymentMethod['gateway_id']
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_unchecked,
-                        color: _selectedPaymentMethod ==
-                                paymentMethod['gateway_id']
-                            ? primaryColor
-                            : Colors.grey,
-                      ),
-                      onTap: () {
-                        setState(() {
-                          _selectedPaymentMethod = paymentMethod['gateway_id'];
-                        });
-                      },
-                    );
-                  },
-                ),
-        ],
-      ),
+                        onTap: () {
+                          setState(() {
+                            _selectedPaymentMethod =
+                                paymentMethod['gateway_id'];
+                          });
+                        },
+                      );
+                    },
+                  ),
+          ],
+        );
+      },
     );
   }
 
