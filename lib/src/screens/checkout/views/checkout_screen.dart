@@ -175,6 +175,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       body: Stepper(
         currentStep: _currentStep,
+        controlsBuilder: (context, details) => Row(
+          children: [
+            if (_currentStep != 0)
+              TextButton(
+                onPressed: details.onStepCancel,
+                child: const Text('Back'),
+              ),
+            if (_currentStep != 4)
+              TextButton(
+                onPressed: details.onStepContinue,
+                child: const Text('Next'),
+              ),
+          ],
+        ),
         onStepContinue: (_currentStep == 0 && _selectedAddress == null) ||
                 (_currentStep == 1 && _selectedPaymentMethod == null)
             ? null
@@ -216,7 +230,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             state: _currentStep > 0 ? StepState.complete : StepState.indexed,
           ),
           Step(
-            title: const Text('Choose Payment Method'),
+            title: const Text('Payment Method'),
             content: _buildPaymentMethods(),
             isActive: _currentStep >= 1,
             state: _currentStep > 1 ? StepState.complete : StepState.indexed,
@@ -226,18 +240,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildOrderSummary(),
-                SizedBox(height: defaultPadding),
                 _buildReviewOrder(),
               ],
             ),
             isActive: _currentStep >= 2,
             state: _currentStep > 2 ? StepState.complete : StepState.indexed,
           ),
+          Step(
+            title: const Text('Shipping Method'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildOrderSummary(),
+              ],
+            ),
+            isActive: _currentStep >= 3,
+            state: _currentStep > 3 ? StepState.complete : StepState.indexed,
+          ),
+          Step(
+            title: const Text('Order Summary'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildOrderSummary(),
+              ],
+            ),
+            isActive: _currentStep >= 4,
+            state: _currentStep > 4 ? StepState.complete : StepState.indexed,
+          ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _currentStep == 2
+      floatingActionButton: _currentStep == 4
           ? Padding(
               padding: EdgeInsets.symmetric(horizontal: defaultPadding),
               child: SizedBox(
@@ -247,7 +281,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       _selectedPaymentMethod != null && _selectedAddress != null
                           ? _onContinuePressed
                           : null,
-                  child: const Text('Checkout'),
+                  child: const Text('PLACE ORDER'),
                 ),
               ),
             )
@@ -256,7 +290,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void _onStepContinue() {
-    if (_currentStep < 2) {
+    if (_currentStep < 4) {
       setState(() {
         _currentStep += 1;
       });
@@ -335,11 +369,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Order Summary',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        SizedBox(height: defaultPadding / 2),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -376,68 +405,58 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildReviewOrder() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Review your order',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        SizedBox(height: defaultPadding / 2),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: widget.cartItems.length,
-          itemBuilder: (context, index) {
-            final Product product = widget.cartItems[index];
-            return ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(defaultBorderRadius),
-                child: CachedNetworkImage(
-                  imageUrl: product.images[0],
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                  errorWidget: (context, url, error) => Container(
-                    width: 60,
-                    height: 60,
-                    color: Colors.grey[200],
-                    child: Icon(Icons.image, color: Colors.grey),
-                  ),
-                ),
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: widget.cartItems.length,
+      itemBuilder: (context, index) {
+        final Product product = widget.cartItems[index];
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(defaultBorderRadius),
+            child: CachedNetworkImage(
+              imageUrl: product.images[0],
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+              errorWidget: (context, url, error) => Container(
+                width: 60,
+                height: 60,
+                color: Colors.grey[200],
+                child: Icon(Icons.image, color: Colors.grey),
               ),
-              title: Text(
-                product.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+          title: Text(
+            product.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        '${context.read<AppConfig>().preferredCurrency['code']} ${product.price.toStringAsFixed(2)}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor),
-                      ),
-                    ],
+                  Text(
+                    '${context.read<AppConfig>().preferredCurrency['code']} ${product.price.toStringAsFixed(2)}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor),
                   ),
                 ],
               ),
-              trailing: Text(
-                'x${widget.productMap[index]['qty'].toString()}',
-                style: TextStyle(
-                  color: blackColor60,
-                  fontSize: 14,
-                ),
-              ),
-            );
-          },
-        ),
-      ],
+            ],
+          ),
+          trailing: Text(
+            'x${widget.productMap[index]['qty'].toString()}',
+            style: TextStyle(
+              color: blackColor60,
+              fontSize: 14,
+            ),
+          ),
+        );
+      },
     );
   }
 

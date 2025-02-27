@@ -115,54 +115,49 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     }),
                     SizedBox(height: defaultPadding / 2),
-                    Text('Your Coupon Code',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: defaultPadding),
-                      child: InkWell(
-                        onTap: _onCouponCodePressed,
-                        child: Container(
-                          padding: EdgeInsets.all(defaultPadding),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius:
-                                BorderRadius.circular(defaultBorderRadius),
-                          ),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                "assets/icons/Tag.svg",
-                                height: 24,
-                                width: 24,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .color!
-                                      .withOpacity(0.3),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              Text('Type coupon code'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: defaultPadding / 2),
+                    // Text('Your Coupon Code',
+                    //     style: Theme.of(context).textTheme.titleMedium),
+                    // Padding(
+                    //   padding:
+                    //       const EdgeInsets.symmetric(vertical: defaultPadding),
+                    //   child: InkWell(
+                    //     onTap: _onCouponCodePressed,
+                    //     child: Container(
+                    //       padding: EdgeInsets.all(defaultPadding),
+                    //       decoration: BoxDecoration(
+                    //         color: Colors.grey[100],
+                    //         borderRadius:
+                    //             BorderRadius.circular(defaultBorderRadius),
+                    //       ),
+                    //       child: Row(
+                    //         children: [
+                    //           SvgPicture.asset(
+                    //             "assets/icons/Tag.svg",
+                    //             height: 24,
+                    //             width: 24,
+                    //             colorFilter: ColorFilter.mode(
+                    //               Theme.of(context)
+                    //                   .textTheme
+                    //                   .bodyLarge!
+                    //                   .color!
+                    //                   .withOpacity(0.3),
+                    //               BlendMode.srcIn,
+                    //             ),
+                    //           ),
+                    //           SizedBox(width: 8),
+                    //           Text('Type coupon code'),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(height: defaultPadding / 2),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Order Summary",
                             style: Theme.of(context).textTheme.titleMedium),
                         SizedBox(height: defaultPadding),
-                        _buildSummaryRow(
-                          'Discount',
-                          '0.00',
-                        ),
-                        SizedBox(height: 8),
                         _buildSummaryRow('Subtotal',
                             '${context.read<AppConfig>().preferredCurrency['code']} ${subtotal.toStringAsFixed(2)}'),
                         SizedBox(height: 8),
