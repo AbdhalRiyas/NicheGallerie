@@ -1,0 +1,28 @@
+{
+  "buildFiles": [
+    "/home/rikaz/snap/flutter/common/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/rikaz/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/rikaz/Projects/NicheGallerie/Witcommerce-Flutter/android/app/.cxx/Debug/w6k1v1hc/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/rikaz/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/rikaz/Projects/NicheGallerie/Witcommerce-Flutter/android/app/.cxx/Debug/w6k1v1hc/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {},
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/rikaz/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/rikaz/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": []
+}

@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'niche-gallerie.firebasestorage.app',
     iosBundleId: 'com.nichegallerie.app',
   );
+
 }
