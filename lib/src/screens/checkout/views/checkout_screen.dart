@@ -9,6 +9,7 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/models/shipping_model.dart';
 import 'package:shop/src/repositories/user_repository.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
@@ -34,11 +35,16 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  final UserRepository _userRepository = UserRepository();
   AddressModel? _selectedAddress;
-
   String? _selectedPaymentMethod;
+
+  List<ShippingModel> _shippingMethods = [];
+  ShippingModel? _selectedShippingMethod;
+
+  final UserRepository _userRepository = UserRepository();
   int _currentStep = 0;
+
+  bool _isFetchingShippingMethods = false;
 
   // Controllers for the address form
   final _formKey = GlobalKey<FormState>();
@@ -61,6 +67,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     _getDefaultAddress();
     super.initState();
+  }
+
+  void _fetchShippingMethods() async {
+    setState(() {
+      _shippingMethods.clear();
+      _isFetchingShippingMethods = true;
+    });
+
+    final res = await ApiService().get(
+        "${ApiContants().shippingMethods}?country=${_selectedAddress?.country}");
+    if (res != null) {
+      setState(() {
+        _shippingMethods = res
+            .map<ShippingModel>((method) => ShippingModel.fromJson(method))
+            .toList();
+      });
+    }
+
+    setState(() {
+      _isFetchingShippingMethods = false;
+    });
   }
 
   @override
@@ -193,7 +220,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ],
         ),
         onStepContinue: (_currentStep == 0 && _selectedAddress == null) ||
-                (_currentStep == 1 && _selectedPaymentMethod == null)
+                (_currentStep == 1 && _selectedPaymentMethod == null) ||
+                (_currentStep == 3 && _selectedShippingMethod == null)
             ? null
             : _onStepContinue,
         onStepCancel: _currentStep == 0 ? null : _onStepCancel,
@@ -251,12 +279,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
           Step(
             title: const Text('Shipping Method'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildOrderSummary(),
-              ],
-            ),
+            content: _isFetchingShippingMethods
+                ? CircularProgressIndicator.adaptive()
+                : _shippingMethods.isEmpty
+                    ? Text("No shipping methods available for this address.")
+                    : _buildShippinhMethods(),
             isActive: _currentStep >= 3,
             state: _currentStep > 3 ? StepState.complete : StepState.indexed,
           ),
@@ -298,6 +325,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _currentStep += 1;
       });
     }
+
+    if (_currentStep == 3) {
+      _fetchShippingMethods();
+    }
   }
 
   void _onStepCancel() {
@@ -306,6 +337,42 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _currentStep -= 1;
       });
     }
+  }
+
+  Widget _buildShippinhMethods() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _shippingMethods.length,
+      itemBuilder: (context, index) {
+        final shippingMethod = _shippingMethods[index];
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(
+            shippingMethod.title,
+            style: TextStyle(
+              color:
+                  shippingMethod.methodId == _selectedShippingMethod?.methodId
+                      ? blackColor
+                      : greyColor,
+            ),
+          ),
+          trailing: Icon(
+            shippingMethod.methodId == _selectedShippingMethod?.methodId
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked,
+            color: shippingMethod.methodId == _selectedShippingMethod?.methodId
+                ? primaryColor
+                : Colors.grey,
+          ),
+          onTap: () {
+            setState(() {
+              _selectedShippingMethod = shippingMethod;
+            });
+          },
+        );
+      },
+    );
   }
 
   Widget _buildPaymentMethods() {
