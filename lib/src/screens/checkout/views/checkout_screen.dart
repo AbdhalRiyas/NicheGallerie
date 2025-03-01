@@ -18,6 +18,7 @@ import 'package:shop/src/screens/checkout/views/payment_webview_screen.dart';
 import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
 import 'package:shop/src/utils/result.dart';
+import 'package:shop/src/utils/shipping_calculator.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen(
@@ -45,6 +46,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   int _currentStep = 0;
 
   bool _isFetchingShippingMethods = false;
+
+  double? shippingFee;
 
   // Controllers for the address form
   final _formKey = GlobalKey<FormState>();
@@ -346,6 +349,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       itemCount: _shippingMethods.length,
       itemBuilder: (context, index) {
         final shippingMethod = _shippingMethods[index];
+        shippingFee = calculateCost(
+            shippingMethod.toJson(),
+            widget.productMap
+                .map((item) => item['qty'])
+                .reduce((a, b) => a + b));
         return ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(
@@ -356,6 +364,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ? blackColor
                       : greyColor,
             ),
+          ),
+          subtitle: Text(
+            shippingFee == 0.0
+                ? 'Free'
+                : formatCurrency(
+                    shippingFee!,
+                    Currency.fromJson(
+                        context.read<AppConfig>().preferredCurrency)),
           ),
           trailing: Icon(
             shippingMethod.methodId == _selectedShippingMethod?.methodId
@@ -449,13 +465,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Currency.fromJson(
                         context.read<AppConfig>().preferredCurrency))),
             SizedBox(height: 8),
-            _buildSummaryRow('Shipping Fee', 'Free', color: Colors.green),
+            _buildSummaryRow(
+                'Shipping Fee',
+                formatCurrency(
+                    shippingFee ?? 0.0,
+                    Currency.fromJson(
+                        context.read<AppConfig>().preferredCurrency))),
             SizedBox(height: 8),
-            _buildSummaryRow('Total (Include of VAT)',
-                '${context.read<AppConfig>().preferredCurrency['code']} 0'),
+            _buildSummaryRow(
+                'Estimated VAT',
+                formatCurrency(
+                    0.0,
+                    Currency.fromJson(
+                        context.read<AppConfig>().preferredCurrency))),
             SizedBox(height: 8),
-            _buildSummaryRow('Estimated VAT',
-                '${context.read<AppConfig>().preferredCurrency['code']} 0'),
+            _buildSummaryRow(
+                'Total (Include of VAT)',
+                formatCurrency(
+                    (shippingFee ?? 0.00) + widget.subTotal,
+                    Currency.fromJson(
+                        context.read<AppConfig>().preferredCurrency))),
           ],
         ),
       ],
@@ -538,70 +567,75 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Future<void> _onContinuePressed() async {
-    String result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PaymentWebViewScreen(
-            checkoutUrl:
-                'https://staging19.nichegallerie.com/checkout/order-pay/47005/?pay_for_order=true&key=wc_order_gI1mgHtfHJoaM')));
+    if (_selectedAddress == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter the address'),
+        ),
+      );
+      return;
+    }
+    if (_selectedPaymentMethod == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please select a payment method'),
+        ),
+      );
+      return;
+    }
 
-    print(result);
-    // if (_selectedAddress == null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Please select address'),
-    //     ),
-    //   );
-    //   return;
-    // }
-    // if (_selectedPaymentMethod == null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Please select payment method'),
-    //     ),
-    //   );
-    //   return;
-    // }
-    // final res =
-    //     await ApiService().post(ApiContants().calculateShipping, payload: {
-    //   'payment_method': _selectedPaymentMethod,
-    //   'payment_method_title': _selectedPaymentMethod,
-    //   'set_paid': false,
-    //   'billing': {
-    //     'first_name': _selectedAddress?.firstName ?? '',
-    //     'last_name': _selectedAddress?.lastName ?? '',
-    //     'address_1': _selectedAddress?.address1 ?? '',
-    //     'address_2': _selectedAddress?.address2 ?? '',
-    //     'city': _selectedAddress?.city ?? '',
-    //     'state': _selectedAddress?.state ?? '',
-    //     'postcode': _selectedAddress?.postcode ?? '',
-    //     'country': _selectedAddress?.country ?? '',
-    //     'email': _selectedAddress?.email ?? '',
-    //     'phone': _selectedAddress?.phone ?? '',
-    //   },
-    //   'shipping': {
-    //     'first_name': _selectedAddress?.firstName ?? '',
-    //     'last_name': _selectedAddress?.lastName ?? '',
-    //     'address_1': _selectedAddress?.address1 ?? '',
-    //     'address_2': _selectedAddress?.address2 ?? '',
-    //     'city': _selectedAddress?.city ?? '',
-    //     'state': _selectedAddress?.state ?? '',
-    //     'postcode': _selectedAddress?.postcode ?? '',
-    //     'country': _selectedAddress?.country ?? '',
-    //   },
-    //   'line_items': widget.cartItems
-    //       .map((e) => {
-    //             'product_id': e.id,
-    //             'quantity': widget.productMap.firstWhere(
-    //                 (element) => element['product_id'] == e.id)['qty'],
-    //           })
-    //       .toList(),
-    //   'shipping_lines': [
-    //     {
-    //       'method_id': 'flat_rate',
-    //       'method_title': 'Flat Rate',
-    //       'total': '0',
-    //     }
-    //   ],
-    // });
-    // log(res.toString());
+    if (_selectedShippingMethod == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please select a shipping method'),
+        ),
+      );
+      return;
+    }
+
+    final res = await ApiService().post(
+        "${ApiContants().orders}?currency=${Currency.fromJson(context.read<AppConfig>().preferredCurrency).code}",
+        payload: {
+          'payment_method': _selectedPaymentMethod,
+          'payment_method_title': _selectedPaymentMethod,
+          'set_paid': false,
+          'billing': {
+            'first_name': _selectedAddress?.firstName ?? '',
+            'last_name': _selectedAddress?.lastName ?? '',
+            'address_1': _selectedAddress?.address1 ?? '',
+            'address_2': _selectedAddress?.address2 ?? '',
+            'city': _selectedAddress?.city ?? '',
+            'state': _selectedAddress?.state ?? '',
+            'postcode': _selectedAddress?.postcode ?? '',
+            'country': _selectedAddress?.country ?? '',
+            'email': _selectedAddress?.email ?? '',
+            'phone': _selectedAddress?.phone ?? '',
+          },
+          'shipping': {
+            'first_name': _selectedAddress?.firstName ?? '',
+            'last_name': _selectedAddress?.lastName ?? '',
+            'address_1': _selectedAddress?.address1 ?? '',
+            'address_2': _selectedAddress?.address2 ?? '',
+            'city': _selectedAddress?.city ?? '',
+            'state': _selectedAddress?.state ?? '',
+            'postcode': _selectedAddress?.postcode ?? '',
+            'country': _selectedAddress?.country ?? '',
+          },
+          'line_items': widget.cartItems
+              .map((e) => {
+                    'product_id': e.id,
+                    'quantity': widget.productMap.firstWhere(
+                        (element) => element['product_id'] == e.id)['qty'],
+                  })
+              .toList(),
+          'shipping_lines': [
+            {
+              'method_id': _selectedShippingMethod?.methodId,
+              'method_title': _selectedShippingMethod?.title,
+              'total': shippingFee.toString(),
+            }
+          ],
+        });
+    log(res.toString());
   }
 }

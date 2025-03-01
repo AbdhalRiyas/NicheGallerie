@@ -42,7 +42,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
           onHttpError: (HttpResponseError error) {},
           onWebResourceError: (WebResourceError error) {},
           onNavigationRequest: (NavigationRequest request) async {
-            if (request.url.contains("/order-received/")) {
+            if (request.url.contains("/thank-you/")) {
               // Handle successful payment (redirect user)
               Navigator.pop(context, "success");
               return NavigationDecision.prevent;

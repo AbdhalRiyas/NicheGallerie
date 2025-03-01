@@ -228,6 +228,26 @@ class _AddressFormState extends State<AddressForm> {
                   hint: "Select Country",
                   searchHint: "Search for a country",
                   isExpanded: true,
+                  searchFn: (String keyword, items) {
+                    List<int> ret = [];
+                    if (keyword.isEmpty) {
+                      for (int i = 0; i < items.length; i++) {
+                        ret.add(i);
+                      }
+                    } else {
+                      keyword = keyword.toLowerCase();
+                      for (int i = 0; i < items.length; i++) {
+                        if (items[i]
+                            .child
+                            .data
+                            .toLowerCase()
+                            .contains(keyword)) {
+                          ret.add(i);
+                        }
+                      }
+                    }
+                    return (ret);
+                  },
                 ),
               ),
             ),
