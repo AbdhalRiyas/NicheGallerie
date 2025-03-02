@@ -1,7 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nb_utils/nb_utils.dart' show toast;
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
@@ -10,11 +14,13 @@ import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/models/shipping_model.dart';
+import 'package:shop/src/providers/cart_provider.dart';
+import 'package:shop/src/repositories/order_repository.dart';
 import 'package:shop/src/repositories/user_repository.dart';
+import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
-import 'package:shop/src/screens/checkout/views/payment_webview_screen.dart';
 import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
 import 'package:shop/src/utils/result.dart';
@@ -37,12 +43,13 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   AddressModel? _selectedAddress;
-  String? _selectedPaymentMethod;
+  Map<String, dynamic>? _selectedPaymentMethod;
 
   List<ShippingModel> _shippingMethods = [];
   ShippingModel? _selectedShippingMethod;
 
   final UserRepository _userRepository = UserRepository();
+  final OrderRepository _orderRepository = OrderRepository();
   int _currentStep = 0;
 
   bool _isFetchingShippingMethods = false;
@@ -349,11 +356,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       itemCount: _shippingMethods.length,
       itemBuilder: (context, index) {
         final shippingMethod = _shippingMethods[index];
-        shippingFee = calculateCost(
-            shippingMethod.toJson(),
-            widget.productMap
-                .map((item) => item['qty'])
-                .reduce((a, b) => a + b));
+        if (widget.productMap.isNotEmpty) {
+          shippingFee = calculateCost(
+              shippingMethod.toJson(),
+              widget.productMap
+                  .map((item) => item['qty'])
+                  .reduce((a, b) => a + b));
+        } else {
+          shippingFee = 0;
+        }
         return ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(
@@ -421,25 +432,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         title: Text(
                           paymentMethod['title'],
                           style: TextStyle(
-                            color: _selectedPaymentMethod ==
+                            color: _selectedPaymentMethod?['gateway_id'] ==
                                     paymentMethod['gateway_id']
                                 ? blackColor
                                 : greyColor,
                           ),
                         ),
                         trailing: Icon(
-                          _selectedPaymentMethod == paymentMethod['gateway_id']
+                          _selectedPaymentMethod?['gateway_id'] ==
+                                  paymentMethod['gateway_id']
                               ? Icons.radio_button_checked
                               : Icons.radio_button_unchecked,
-                          color: _selectedPaymentMethod ==
+                          color: _selectedPaymentMethod?['gateway_id'] ==
                                   paymentMethod['gateway_id']
                               ? primaryColor
                               : Colors.grey,
                         ),
                         onTap: () {
                           setState(() {
-                            _selectedPaymentMethod =
-                                paymentMethod['gateway_id'];
+                            _selectedPaymentMethod = paymentMethod;
                           });
                         },
                       );
@@ -554,13 +565,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
             ],
           ),
-          trailing: Text(
-            'x${widget.productMap[index]['qty'].toString()}',
-            style: TextStyle(
-              color: blackColor60,
-              fontSize: 14,
-            ),
-          ),
+          trailing: widget.productMap.isNotEmpty
+              ? Text(
+                  'x${widget.productMap[index]['qty'].toString()}',
+                  style: TextStyle(
+                    color: blackColor60,
+                    fontSize: 14,
+                  ),
+                )
+              : SizedBox(),
         );
       },
     );
@@ -568,74 +581,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Future<void> _onContinuePressed() async {
     if (_selectedAddress == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enter the address'),
-        ),
-      );
+      toast('Please enter the address');
       return;
     }
     if (_selectedPaymentMethod == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please select a payment method'),
-        ),
-      );
+      toast('Please select a payment method');
       return;
     }
 
     if (_selectedShippingMethod == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please select a shipping method'),
-        ),
-      );
+      toast('Please select a shipping method');
       return;
     }
 
-    final res = await ApiService().post(
-        "${ApiContants().orders}?currency=${Currency.fromJson(context.read<AppConfig>().preferredCurrency).code}",
-        payload: {
-          'payment_method': _selectedPaymentMethod,
-          'payment_method_title': _selectedPaymentMethod,
-          'set_paid': false,
-          'billing': {
-            'first_name': _selectedAddress?.firstName ?? '',
-            'last_name': _selectedAddress?.lastName ?? '',
-            'address_1': _selectedAddress?.address1 ?? '',
-            'address_2': _selectedAddress?.address2 ?? '',
-            'city': _selectedAddress?.city ?? '',
-            'state': _selectedAddress?.state ?? '',
-            'postcode': _selectedAddress?.postcode ?? '',
-            'country': _selectedAddress?.country ?? '',
-            'email': _selectedAddress?.email ?? '',
-            'phone': _selectedAddress?.phone ?? '',
-          },
-          'shipping': {
-            'first_name': _selectedAddress?.firstName ?? '',
-            'last_name': _selectedAddress?.lastName ?? '',
-            'address_1': _selectedAddress?.address1 ?? '',
-            'address_2': _selectedAddress?.address2 ?? '',
-            'city': _selectedAddress?.city ?? '',
-            'state': _selectedAddress?.state ?? '',
-            'postcode': _selectedAddress?.postcode ?? '',
-            'country': _selectedAddress?.country ?? '',
-          },
-          'line_items': widget.cartItems
-              .map((e) => {
-                    'product_id': e.id,
-                    'quantity': widget.productMap.firstWhere(
-                        (element) => element['product_id'] == e.id)['qty'],
-                  })
-              .toList(),
-          'shipping_lines': [
-            {
-              'method_id': _selectedShippingMethod?.methodId,
-              'method_title': _selectedShippingMethod?.title,
-              'total': shippingFee.toString(),
-            }
-          ],
-        });
-    log(res.toString());
+    final Result result = await _orderRepository.createOrder(
+      currencyCode: context.read<AppConfig>().preferredCurrency['code'],
+      selectedPaymentMethod: _selectedPaymentMethod!,
+      selectedAddress: _selectedAddress!,
+      cartItems: widget.cartItems,
+      shippingFee: shippingFee.toString(),
+      productMap: widget.productMap,
+      selectedShippingMethod: _selectedShippingMethod!,
+    );
+
+    if (result.isSuccess) {
+      // Clear cart items from CartProvider
+      context.read<CartProvider>().clearCart();
+
+      // Replace all screens except root and push to orderDetailScreen route
+      while (context.canPop()) {
+        context.pop();
+      }
+
+      context.pushReplacementNamed(
+        paymentScreen,
+        pathParameters: {
+          'id': result.data['id'].toString(),
+          'url': result.data['payment_url'],
+        },
+      );
+    } else {
+      toast(result.message);
+    }
   }
 }

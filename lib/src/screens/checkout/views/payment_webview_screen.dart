@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PaymentWebViewScreen extends StatefulWidget {
   final String checkoutUrl;
@@ -52,7 +51,6 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
               Navigator.pop(context, "cancel");
               return NavigationDecision.prevent;
             } else if (request.url.contains("whatsapp.com")) {
-              print(request.url);
               // Open WhatsApp links in external app
               if (await canLaunchUrlString(request.url)) {
                 await launchUrlString(request.url,

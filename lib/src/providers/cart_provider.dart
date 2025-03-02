@@ -138,4 +138,12 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // clear cart
+  void clearCart() {
+    if (!_isBoxInitialized) return;
+
+    cartBox.clear();
+    notifyListeners();
+  }
 }

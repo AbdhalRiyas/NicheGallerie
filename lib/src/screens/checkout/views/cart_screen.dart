@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/empty_handle_widget.dart';
 import 'package:shop/src/components/skeleton/skeleton.dart';

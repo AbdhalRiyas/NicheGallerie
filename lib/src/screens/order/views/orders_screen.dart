@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shop/src/components/empty_error_state_widget.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/repositories/order_repository.dart';
-import 'package:shop/src/screens/checkout/views/payment_webview_screen.dart';
+import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/home/views/components/home_skeleton.dart';
 import 'package:shop/src/utils/result.dart';
 
@@ -79,7 +80,11 @@ class OrdersScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          context.goNamed(viewOrderScreen, pathParameters: {
+                            'id': orders[index].id.toString(),
+                          });
+                        },
                         child: Column(
                           children: [
                             Row(
@@ -125,49 +130,49 @@ class OrdersScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: defaultPadding),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Cancel",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 2),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Order Again",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                          if (orders[index].status == 'pending')
-                            SizedBox(width: 2),
-                          if (orders[index].status == 'pending')
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          PaymentWebViewScreen(
-                                              checkoutUrl: orders[index]
-                                                  .paymentUrl
-                                                  .toString())));
-                                },
-                                child: Text(
-                                  "Pay",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
+                      // SizedBox(height: defaultPadding),
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: ElevatedButton(
+                      //         onPressed: () {},
+                      //         child: Text(
+                      //           "Cancel",
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     SizedBox(width: 2),
+                      //     Expanded(
+                      //       child: ElevatedButton(
+                      //         onPressed: () {},
+                      //         child: Text(
+                      //           "Order Again",
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     if (orders[index].status == 'pending')
+                      //       SizedBox(width: 2),
+                      //     if (orders[index].status == 'pending')
+                      //       Expanded(
+                      //         child: ElevatedButton(
+                      //           onPressed: () {
+                      //             Navigator.of(context).push(MaterialPageRoute(
+                      //                 builder: (context) =>
+                      //                     PaymentWebViewScreen(
+                      //                         checkoutUrl: orders[index]
+                      //                             .paymentUrl
+                      //                             .toString())));
+                      //           },
+                      //           child: Text(
+                      //             "Pay",
+                      //             style: TextStyle(fontSize: 12),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),

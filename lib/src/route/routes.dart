@@ -5,6 +5,8 @@ import 'package:shop/entry_point.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/screens/auth/views/my_account_screen.dart';
+import 'package:shop/src/screens/checkout/views/payment_webview_screen.dart';
+import 'package:shop/src/screens/order/views/order_detail_screen.dart';
 import 'screen_export.dart';
 
 class AppRouter {
@@ -60,6 +62,30 @@ class AppRouter {
               name: 'orders',
               // Redirect is handled here
               redirect: (context, state) => _authCheck(context, state),
+              routes: [
+                GoRoute(
+                    path: 'view-order/:id',
+                    name: viewOrderScreen,
+                    pageBuilder: (context, state) {
+                      final id = state.pathParameters['id'] as String;
+
+                      return MaterialPage(
+                        child: OrderDetailScreen(orderId: id),
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                        path: 'payment/:url',
+                        name: paymentScreen,
+                        pageBuilder: (context, state) {
+                          final url = state.pathParameters['url'] as String;
+                          return MaterialPage(
+                            child: PaymentWebViewScreen(checkoutUrl: url),
+                          );
+                        },
+                      ),
+                    ]),
+              ],
               pageBuilder: (context, state) {
                 return const MaterialPage(child: OrdersScreen());
               },

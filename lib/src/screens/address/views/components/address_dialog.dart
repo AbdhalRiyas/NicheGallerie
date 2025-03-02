@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nb_utils/nb_utils.dart' hide blackColor;
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/address_model.dart';
 import 'package:shop/src/repositories/user_repository.dart';
@@ -89,10 +89,8 @@ class _AddressDialogState extends State<AddressDialog> {
     });
 
     if (result.data != null && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message)),
-      );
-      context.pop();
+      toast(result.message);
+      pop();
     } else if (result.errors != null) {
       setState(() {
         _errors = result.errors;
@@ -161,7 +159,7 @@ class _AddressDialogState extends State<AddressDialog> {
               onPressed: _isLoading
                   ? null
                   : () {
-                      context.pop();
+                      pop();
                     },
               child: const Text('Cancel'),
             ),
