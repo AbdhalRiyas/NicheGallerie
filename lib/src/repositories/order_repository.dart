@@ -109,6 +109,12 @@ class OrderRepository {
             'total': shippingFee.toString(),
           }
         ],
+        'fee_lines': [
+          {
+            'name': 'VAT 5%',
+            'total': 23.toString(), // Pass VAT as a string
+          }
+        ],
       });
 
       if (res.containsKey('payment_url')) {
