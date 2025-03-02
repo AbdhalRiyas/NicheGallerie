@@ -28,8 +28,8 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    _cartProducts =
-        Provider.of<CartProvider>(context, listen: false).fetchProducts();
+    _cartProducts = Provider.of<CartProvider>(context, listen: false)
+        .fetchProducts(context.read<AppConfig>().preferredCurrency['code']);
   }
 
   void _onCouponCodePressed() {

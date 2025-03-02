@@ -21,10 +21,10 @@ class WishlistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Product>?> fetchProducts() async {
+  Future<List<Product>?> fetchProducts(String currencyCode) async {
     if (wishlistItems.isNotEmpty) {
-      final Result res =
-          await _productRepository.fetchProductById(wishlistItems);
+      final Result res = await _productRepository.fetchProductById(
+          wishlistItems, currencyCode);
       return res.data;
     }
     return null;

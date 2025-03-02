@@ -5,11 +5,13 @@ import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/result.dart';
 
 class ProductRepository {
-  Future<Result> fetchProductById(List<dynamic> productIds) async {
+  Future<Result> fetchProductById(
+      List<dynamic> productIds, String currencyCode) async {
     try {
       log(productIds.toString());
-      final res = await ApiService()
-          .get("${ApiContants().products}?include=${productIds.join(',')}");
+      final res = await ApiService().get(
+          "${ApiContants().products}?include=${productIds.join(',')}&currency=$currencyCode");
+      log(res.toString());
 
       List<Product> products = [];
 

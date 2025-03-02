@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nb_utils/nb_utils.dart' show toast;
+import 'package:nb_utils/nb_utils.dart' show pop, toast;
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
@@ -25,6 +25,7 @@ import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
 import 'package:shop/src/utils/result.dart';
 import 'package:shop/src/utils/shipping_calculator.dart';
+import 'package:shop/src/utils/show_loader.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen(
@@ -356,15 +357,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       itemCount: _shippingMethods.length,
       itemBuilder: (context, index) {
         final shippingMethod = _shippingMethods[index];
+        double shippingFeeCalculated = 0.0;
         if (widget.productMap.isNotEmpty) {
-          shippingFee = calculateCost(
+          shippingFeeCalculated = calculateCost(
               shippingMethod.toJson(),
               widget.productMap
                   .map((item) => item['qty'])
                   .reduce((a, b) => a + b));
         } else {
-          shippingFee = 0;
+          shippingFeeCalculated = 0;
         }
+
+        final currency =
+            Currency.fromJson(context.read<AppConfig>().preferredCurrency);
+        shippingFeeCalculated = shippingFeeCalculated * currency.rate;
+        if (currency.exchangeFeeType == 'percentage') {
+          shippingFeeCalculated +=
+              ((shippingFeeCalculated / 100) * currency.exchangeFee);
+        } else {
+          shippingFeeCalculated += currency.exchangeFee;
+        }
+
+        shippingFee = shippingFeeCalculated;
         return ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(
@@ -594,12 +608,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return;
     }
 
+    showLoader(context, message: 'Placing order...');
+
     final Result result = await _orderRepository.createOrder(
-      currencyCode: context.read<AppConfig>().preferredCurrency['code'],
+      currency: Currency.fromJson(context.read<AppConfig>().preferredCurrency),
       selectedPaymentMethod: _selectedPaymentMethod!,
       selectedAddress: _selectedAddress!,
       cartItems: widget.cartItems,
-      shippingFee: shippingFee.toString(),
+      shippingFee: shippingFee ?? 0.0,
       productMap: widget.productMap,
       selectedShippingMethod: _selectedShippingMethod!,
     );
@@ -621,6 +637,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         },
       );
     } else {
+      pop();
       toast(result.message);
     }
   }

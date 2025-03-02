@@ -30,6 +30,9 @@ class AppConfig with ChangeNotifier {
               "symbol": "AED",
               "decimal": 0,
               "pos": "right",
+              "rate": 1,
+              "exchange_fee_type": "fixed",
+              "exchange_fee": 0.0
             }
           ]);
 

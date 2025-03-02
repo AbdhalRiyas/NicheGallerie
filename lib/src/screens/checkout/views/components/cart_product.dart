@@ -4,8 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/screens/product/views/components/product_quantity.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/utils/currency_formatter.dart';
 
 class CartProduct extends StatelessWidget {
   final Product product;
@@ -70,7 +72,10 @@ class CartProduct extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${context.read<AppConfig>().preferredCurrency['code']} ${(product.price * qty).toStringAsFixed(2)}',
+                        formatCurrency(
+                            product.price * qty,
+                            Currency.fromJson(
+                                context.read<AppConfig>().preferredCurrency)),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor),

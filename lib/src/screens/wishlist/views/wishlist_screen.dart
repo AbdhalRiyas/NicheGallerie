@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/product/product_card.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/wishlist_provider.dart';
@@ -19,7 +20,8 @@ class WishlistScreen extends StatelessWidget {
                   child: Text("No Bookmarks"),
                 )
               : FutureBuilder(
-                  future: wishlistProvider.fetchProducts(),
+                  future: wishlistProvider.fetchProducts(
+                      context.read<AppConfig>().preferredCurrency['code']),
                   builder: (BuildContext context,
                           AsyncSnapshot<List<Product>?> snapshot) =>
                       !snapshot.hasData

@@ -25,10 +25,10 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Product>?> fetchProducts() async {
+  Future<List<Product>?> fetchProducts(String currencyCode) async {
     if (cartItems.isNotEmpty) {
       final Result res = await _productRepository.fetchProductById(
-          cartItems.map((item) => item['product_id']).toList());
+          cartItems.map((item) => item['product_id']).toList(), currencyCode);
       return res.data;
     }
     return null;

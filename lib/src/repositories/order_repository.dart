@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/error/app_exception.dart';
 import 'package:shop/src/models/address_model.dart';
+import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/models/shipping_model.dart';
 import 'package:shop/src/services/api_service.dart';
@@ -59,17 +60,17 @@ class OrderRepository {
   }
 
   Future<Result> createOrder({
-    required String currencyCode,
+    required Currency currency,
     required Map<String, dynamic> selectedPaymentMethod,
     required AddressModel selectedAddress,
     required List<dynamic> cartItems,
-    required String shippingFee,
+    required double shippingFee,
     required List<Map<dynamic, dynamic>> productMap,
     required ShippingModel selectedShippingMethod,
   }) async {
     try {
       final res = await ApiService()
-          .post("${ApiContants().orders}?currency=$currencyCode", payload: {
+          .post("${ApiContants().orders}?currency=${currency.code}", payload: {
         'payment_method': selectedPaymentMethod['gateway_id'],
         'payment_method_title': selectedPaymentMethod['title'],
         'billing': {
@@ -105,7 +106,7 @@ class OrderRepository {
           {
             'method_id': selectedShippingMethod.methodId,
             'method_title': selectedShippingMethod.title,
-            'total': shippingFee,
+            'total': shippingFee.toString(),
           }
         ],
       });
