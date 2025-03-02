@@ -14,6 +14,7 @@ class PaymentWebViewScreen extends StatefulWidget {
 class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   late WebViewController _controller;
   bool _isLoading = true;
+  bool _showOverlay = true;
 
   @override
   void initState() {
@@ -32,11 +33,13 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
             });
           },
           onPageFinished: (String url) {
-            setState(() {
-              _isLoading = false;
-            });
             _controller.runJavaScript(
                 "document.querySelectorAll('[data-elementor-type=\"footer\"], [data-elementor-type=\"header\"]').forEach(el => el.remove());");
+
+            setState(() {
+              _showOverlay = false;
+              _isLoading = false;
+            });
           },
           onHttpError: (HttpResponseError error) {},
           onWebResourceError: (WebResourceError error) {},
@@ -74,6 +77,13 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
           WebViewWidget(
             controller: _controller,
           ),
+          if (_showOverlay)
+            Container(
+              color: Colors.white,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
           if (_isLoading)
             Center(
               child: CircularProgressIndicator(),
