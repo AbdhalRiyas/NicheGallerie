@@ -191,76 +191,81 @@ class _AddressFormState extends State<AddressForm> {
             ),
             const SizedBox(height: defaultPadding),
             Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(5.0),
-              ),
+              color: lightGreyColor,
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Consumer<AppConfig>(
-                builder: (BuildContext context, value, Widget? child) =>
-                    SearchableDropdown<String>(
-                  items: value.countries.map((country) {
-                    return DropdownMenuItem<String>(
-                      value: country['code'],
-                      child: Text(country['name']!),
-                    );
-                  }).toList(),
-                  value: widget.countryController.text.isEmpty
-                      ? null
-                      : widget.countryController.text,
-                  onChanged: (value) async {
-                    setState(() {
-                      widget.countryController.text = value!;
-                      widget.stateController.text =
-                          ''; // Reset state when country changes
-                    });
+              child: Row(
+                children: [
+                  FormFieldSvgIcon(
+                    iconPath: "assets/icons/Country.svg",
+                  ),
+                  Expanded(
+                    child: Consumer<AppConfig>(
+                      builder: (BuildContext context, value, Widget? child) =>
+                          SearchableDropdown<String>(
+                        menuBackgroundColor: Colors.white,
+                        items: value.countries.map((country) {
+                          return DropdownMenuItem<String>(
+                            value: country['code'],
+                            child: Text(country['name']!),
+                          );
+                        }).toList(),
+                        value: widget.countryController.text.isEmpty
+                            ? null
+                            : widget.countryController.text,
+                        onChanged: (value) async {
+                          setState(() {
+                            widget.countryController.text = value!;
+                            widget.stateController.text =
+                                ''; // Reset state when country changes
+                          });
 
-                    // Call the API to fetch states
-                    final response = await ApiService().get(
-                        "${ApiContants().countries}/${widget.countryController.text}/states");
-                    if (response != null) {
-                      setState(() {
-                        woocommerceStates[widget.countryController.text] =
-                            List<Map<String, dynamic>>.from(response);
-                      });
-                    }
-                  },
-                  hint: "Select Country",
-                  searchHint: "Search for a country",
-                  isExpanded: true,
-                  searchFn: (String keyword, items) {
-                    List<int> ret = [];
-                    if (keyword.isEmpty) {
-                      for (int i = 0; i < items.length; i++) {
-                        ret.add(i);
-                      }
-                    } else {
-                      keyword = keyword.toLowerCase();
-                      for (int i = 0; i < items.length; i++) {
-                        if (items[i]
-                            .child
-                            .data
-                            .toLowerCase()
-                            .contains(keyword)) {
-                          ret.add(i);
-                        }
-                      }
-                    }
-                    return (ret);
-                  },
-                ),
+                          // Call the API to fetch states
+                          final response = await ApiService().get(
+                              "${ApiContants().countries}/${widget.countryController.text}/states");
+                          if (response != null) {
+                            setState(() {
+                              woocommerceStates[widget.countryController.text] =
+                                  List<Map<String, dynamic>>.from(response);
+                            });
+                          }
+                        },
+                        hint: "Select Country",
+                        searchHint: "Search for a country",
+                        isExpanded: true,
+                        searchFn: (String keyword, items) {
+                          List<int> ret = [];
+                          if (keyword.isEmpty) {
+                            for (int i = 0; i < items.length; i++) {
+                              ret.add(i);
+                            }
+                          } else {
+                            keyword = keyword.toLowerCase();
+                            for (int i = 0; i < items.length; i++) {
+                              if (items[i]
+                                  .child
+                                  .data
+                                  .toLowerCase()
+                                  .contains(keyword)) {
+                                ret.add(i);
+                              }
+                            }
+                          }
+                          return (ret);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: defaultPadding),
             if (woocommerceStates.containsKey(widget.countryController.text) &&
                 woocommerceStates[widget.countryController.text]!.isNotEmpty)
               Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
+                color: lightGreyColor,
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: SearchableDropdown<String>(
+                  menuBackgroundColor: Colors.white,
                   items: woocommerceStates[widget.countryController.text]!
                       .map((state) {
                     return DropdownMenuItem<String>(
