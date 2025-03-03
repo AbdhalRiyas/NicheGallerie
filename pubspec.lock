@@ -222,14 +222,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
-  country_code_picker:
-    dependency: "direct main"
-    description:
-      name: country_code_picker
-      sha256: fdc2ae84d0342d4a7c6ebc83fbe002a70c8231ff5734505676292fc2c2cc4433
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
   crypto:
     dependency: transitive
     description:
@@ -238,15 +230,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.6"
-  csc_picker:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "6cc8dc6"
-      resolved-ref: "6cc8dc623ffe86f32d3940ca3f4326fb758ca539"
-      url: "https://github.com/Witsberry/csc_picker.git"
-    source: git
-    version: "0.2.7"
   csslib:
     dependency: transitive
     description:
@@ -372,14 +355,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
-  flutter_rating_bar:
-    dependency: "direct main"
-    description:
-      name: flutter_rating_bar
-      sha256: d2af03469eac832c591a1eba47c91ecc871fe5708e69967073c043b2d775ed93
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   flutter_searchable_dropdown:
     dependency: "direct main"
     description:
