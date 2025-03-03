@@ -67,6 +67,7 @@ class OrderRepository {
     required double shippingFee,
     required List<Map<dynamic, dynamic>> productMap,
     required ShippingModel selectedShippingMethod,
+    required List<Map<String, String>> feeLines,
   }) async {
     try {
       final res = await ApiService()
@@ -100,6 +101,7 @@ class OrderRepository {
                   'product_id': e.id,
                   'quantity': productMap.firstWhere(
                       (element) => element['product_id'] == e.id)['qty'],
+                  'price': e.price,
                 })
             .toList(),
         'shipping_lines': [
@@ -109,12 +111,7 @@ class OrderRepository {
             'total': shippingFee.toString(),
           }
         ],
-        'fee_lines': [
-          {
-            'name': 'VAT 5%',
-            'total': 23.toString(), // Pass VAT as a string
-          }
-        ],
+        'fee_lines': feeLines,
       });
 
       if (res.containsKey('payment_url')) {

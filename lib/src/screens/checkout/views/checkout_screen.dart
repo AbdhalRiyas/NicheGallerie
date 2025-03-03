@@ -57,6 +57,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   double? shippingFee;
 
+  double total = 0.0;
+
+  final List<Map<String, String>> _fees = [];
+
   // Controllers for the address form
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
@@ -340,6 +344,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (_currentStep == 3) {
       _fetchShippingMethods();
     }
+
+    if (_currentStep > 3) {
+      _fees.clear();
+
+      total = (shippingFee ?? 0.00) + widget.subTotal;
+
+      for (var fee in _selectedPaymentMethod!['fees']) {
+        double calculatedFee = fee['type'] == 'fixed'
+            ? ((shippingFee ?? 0.00) + widget.subTotal) +
+                double.parse(fee['amount'])
+            : (((shippingFee ?? 0.00) + widget.subTotal) *
+                double.parse(fee['amount']) /
+                100);
+        _fees.add({
+          'name': fee['name'],
+          'total': calculatedFee.toString(),
+        });
+
+        total += calculatedFee;
+      }
+    }
   }
 
   void _onStepCancel() {
@@ -419,7 +444,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget _buildPaymentMethods() {
     return Consumer<AppConfig>(
       builder: (BuildContext context, appConfig, Widget? child) {
-        log(appConfig.paymentMethods.toString());
         List<Map<String, dynamic>> paymentMethods =
             appConfig.paymentMethods.where((method) {
           // Check if the method has currencies and if any of them match the specified currency code
@@ -497,17 +521,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Currency.fromJson(
                         context.read<AppConfig>().preferredCurrency))),
             SizedBox(height: 8),
+            ...List.generate(_fees.length, (index) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: _buildSummaryRow(
+                    _fees[index]['name']!,
+                    formatCurrency(
+                        double.parse(_fees[index]['total']!),
+                        Currency.fromJson(
+                            context.read<AppConfig>().preferredCurrency))),
+              );
+            }),
             _buildSummaryRow(
-                'Estimated VAT',
+                'Total',
                 formatCurrency(
-                    0.0,
-                    Currency.fromJson(
-                        context.read<AppConfig>().preferredCurrency))),
-            SizedBox(height: 8),
-            _buildSummaryRow(
-                'Total (Include of VAT)',
-                formatCurrency(
-                    (shippingFee ?? 0.00) + widget.subTotal,
+                    total,
                     Currency.fromJson(
                         context.read<AppConfig>().preferredCurrency))),
           ],
@@ -618,6 +646,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       shippingFee: shippingFee ?? 0.0,
       productMap: widget.productMap,
       selectedShippingMethod: _selectedShippingMethod!,
+      feeLines: _fees,
     );
 
     if (result.isSuccess) {
