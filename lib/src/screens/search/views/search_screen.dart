@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shop/src/components/empty_handle_widget.dart';
+import 'package:shop/src/models/product.dart';
 import 'package:shop/src/repositories/search_repository.dart';
 
 import 'components/search_form.dart';
@@ -16,7 +17,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final SearchRepository _repository = SearchRepository();
   final ScrollController _scrollController = ScrollController();
-  final List<dynamic> _results = [];
+  List<Product> _products = [];
   int _page = 1;
   bool _isLoading = false;
   Timer? _debounce;
@@ -47,7 +48,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _debounce = Timer(const Duration(seconds: 1), () {
       if (query.length > 3) {
         _page = 1;
-        _results.clear();
+        _products.clear();
         _fetchResults(query: query);
       }
     });
@@ -60,15 +61,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
     final response = await _repository.searchProducts(query);
 
-    // if (response.statusCode == 200) {
-    //   final data = json.decode(response.body);
-    //   setState(() {
-    //     _results.addAll(data['results']);
-    //     _page++;
-    //   });
-    // } else {
-    //   // Handle error
-    // }
+    if (response.isSuccess) {
+      setState(() {
+        _products = response.data;
+      });
+
+      _page++;
+    } else {
+      // Handle error
+    }
 
     setState(() {
       _isLoading = false;
@@ -85,23 +86,22 @@ class _SearchScreenState extends State<SearchScreen> {
           onChanged: _onSearchChanged,
         ),
       ),
-      body: _results.isEmpty
+      body: _products.isEmpty
           ? EmptyHandleWidget(
               iconSrc: "assets/icons/Search.svg",
               title: "Start typing to search for the products you need.",
             )
           : ListView.builder(
               controller: _scrollController,
-              itemCount: _results.length + 1,
+              itemCount: _products.length + 1,
               itemBuilder: (context, index) {
-                if (index == _results.length) {
+                if (index == _products.length) {
                   return _isLoading
                       ? Center(child: CircularProgressIndicator())
                       : SizedBox.shrink();
                 }
                 return ListTile(
-                  title: Text(_results[index]['name']),
-                  subtitle: Text(_results[index]['description']),
+                  title: Text(_products[index].name),
                 );
               },
             ),

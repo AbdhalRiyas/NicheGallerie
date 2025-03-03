@@ -102,7 +102,6 @@ class ApiService {
   }
 
   dynamic _processResponse(http.Response response) {
-    print(response.body);
     var responseJson = json.decode(utf8.decode(response.bodyBytes));
 
     switch (response.statusCode) {
