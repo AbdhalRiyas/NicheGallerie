@@ -18,20 +18,20 @@ class AccordProgressBar extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15),
       child: Row(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: NetworkImage(
-                  'https://nichegallerie.com/wp-content/uploads/2023/04/fresh-spicy-perfume-accords-niche-gallery.jpg', // Replace with actual image URL
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
+          // Container(
+          //   width: 40,
+          //   height: 40,
+          //   decoration: BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     image: DecorationImage(
+          //       image: NetworkImage(
+          //         'https://nichegallerie.com/wp-content/uploads/2023/04/fresh-spicy-perfume-accords-niche-gallery.jpg', // Replace with actual image URL
+          //       ),
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(width: 12),
           Expanded(
             child: Stack(
               children: [

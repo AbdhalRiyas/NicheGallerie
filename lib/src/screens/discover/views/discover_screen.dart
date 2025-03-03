@@ -29,7 +29,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               padding: const EdgeInsets.symmetric(
                   horizontal: defaultPadding, vertical: defaultPadding / 2),
               child: Text(
-                "Categories",
+                "Discover By Categories",
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),

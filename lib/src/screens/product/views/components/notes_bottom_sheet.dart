@@ -68,20 +68,20 @@ class NotesBottomSheet extends StatelessWidget {
                     width: 80,
                     child: Column(
                       children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                'https://nichegallerie.com/wp-content/uploads/2023/04/cinnamon.jpg',
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
+                        // Container(
+                        //   width: 50,
+                        //   height: 50,
+                        //   decoration: BoxDecoration(
+                        //     shape: BoxShape.circle,
+                        //     image: DecorationImage(
+                        //       image: NetworkImage(
+                        //         'https://nichegallerie.com/wp-content/uploads/2023/04/cinnamon.jpg',
+                        //       ),
+                        //       fit: BoxFit.cover,
+                        //     ),
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 8),
                         Text(
                           noteName,
                           textAlign: TextAlign.center,

@@ -162,14 +162,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   );
                                 },
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(defaultPadding),
-                                child: Text(
-                                  "You may also like",
-                                  style:
-                                      Theme.of(context).textTheme.titleSmall!,
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(defaultPadding),
+                              //   child: Text(
+                              //     "You may also like",
+                              //     style:
+                              //         Theme.of(context).textTheme.titleSmall!,
+                              //   ),
+                              // ),
                             ],
                           ),
               ),

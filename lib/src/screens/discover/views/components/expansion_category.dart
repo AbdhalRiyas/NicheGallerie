@@ -22,15 +22,15 @@ class ExpansionCategory extends StatelessWidget {
     return subCategory.isEmpty
         ? ListTile(
             iconColor: Theme.of(context).textTheme.bodyLarge!.color,
-            leading: SvgPicture.network(
-              svgSrc,
-              height: 24,
-              width: 24,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).iconTheme.color!,
-                BlendMode.srcIn,
-              ),
-            ),
+            // leading: SvgPicture.network(
+            //   svgSrc,
+            //   height: 24,
+            //   width: 24,
+            //   colorFilter: ColorFilter.mode(
+            //     Theme.of(context).iconTheme.color!,
+            //     BlendMode.srcIn,
+            //   ),
+            // ),
             title: Text(
               title,
               style: const TextStyle(fontSize: 14),

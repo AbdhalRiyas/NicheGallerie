@@ -70,17 +70,17 @@ class _EntryPointState extends State<EntryPoint> {
                 Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, notificationsScreenRoute);
-          },
-          icon: SvgPicture.asset(
-            "assets/icons/Notification.svg",
-            height: 24,
-            colorFilter: ColorFilter.mode(
-                Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn),
-          ),
-        ),
+        // IconButton(
+        //   onPressed: () {
+        //     Navigator.pushNamed(context, notificationsScreenRoute);
+        //   },
+        //   icon: SvgPicture.asset(
+        //     "assets/icons/Notification.svg",
+        //     height: 24,
+        //     colorFilter: ColorFilter.mode(
+        //         Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn),
+        //   ),
+        // ),
       ],
     );
   }

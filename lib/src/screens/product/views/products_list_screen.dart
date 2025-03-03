@@ -89,24 +89,24 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: defaultPadding, vertical: defaultPadding / 2),
-              child: SearchForm(
-                suffixIcon: "assets/icons/Setting.svg",
-                onTabFilter: () {
-                  showModalBottomSheet(
-                    context: context,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(defaultBorderRadius)),
-                    ),
-                    isScrollControlled: true,
-                    builder: (context) => CustomBottomSheet(),
-                  );
-                },
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //       horizontal: defaultPadding, vertical: defaultPadding / 2),
+            //   child: SearchForm(
+            //     suffixIcon: "assets/icons/Setting.svg",
+            //     onTabFilter: () {
+            //       showModalBottomSheet(
+            //         context: context,
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.vertical(
+            //               top: Radius.circular(defaultBorderRadius)),
+            //         ),
+            //         isScrollControlled: true,
+            //         builder: (context) => CustomBottomSheet(),
+            //       );
+            //     },
+            //   ),
+            // ),
             Expanded(
               child: CustomScrollView(
                 controller: _scrollController,

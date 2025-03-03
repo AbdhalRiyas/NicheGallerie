@@ -11,13 +11,9 @@ class SearchRepository {
       final res =
           await ApiService().get('${ApiContants().products}?search=$query');
 
-      print(res);
-
       // Map the response to a list of Product objects
       final products =
           (res['data'] as List).map((json) => Product.fromJson(json)).toList();
-
-      print(products);
 
       // Return the list of products wrapped in a Right
       return Result(message: "Products fetched", data: products);
