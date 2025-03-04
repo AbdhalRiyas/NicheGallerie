@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:shop/src/components/Banner/M/banner_m_style_1.dart';
+import 'package:shop/src/components/Banner/M/banner_m_with_counter.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/constants.dart';
@@ -10,9 +14,30 @@ import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 Widget buildWidget(Map<dynamic, dynamic> json) {
   if (json['widget_name'] == 'carousel') {
-    return const SliverToBoxAdapter(
+    List<Widget> children = [];
+
+    for (var element in json['children']) {
+      if (element['type'] == 'normal') {
+        children.add(BannerMStyle1(
+          image: element['image'],
+          ctaText: element['cta_text'] == '' ? null : element['cta_text'],
+          press: element['cta_url'] == '' ? () {} : () {},
+        ));
+      } else if (element['type'] == 'with_counter') {
+        children.add(BannerMWithCounter(
+          duration: Duration(seconds: element['duration_in_seconds']),
+          title: element['title'],
+          subtitle: element['subtitle'],
+          ctaText: element['cta_text'],
+          press: () {},
+        ));
+      }
+    }
+
+    return SliverToBoxAdapter(
       child: OffersCarousel(
         key: Key('carousel'),
+        offers: children,
       ),
     );
   }

@@ -8,9 +8,12 @@ import 'package:shop/src/components/dot_indicators.dart';
 import '../../../../constants.dart';
 
 class OffersCarousel extends StatefulWidget {
-  const OffersCarousel({
+  OffersCarousel({
     super.key,
+    required this.offers,
   });
+
+  final List offers;
 
   @override
   State<OffersCarousel> createState() => _OffersCarouselState();
@@ -21,26 +24,11 @@ class _OffersCarouselState extends State<OffersCarousel> {
   late PageController _pageController;
   late Timer _timer;
 
-  // Offers List
-  List offers = [
-    BannerMStyle1(
-      ctaText: "COLDPLAY GIVEAWAY",
-      press: () {},
-    ),
-    BannerMWithCounter(
-      duration: const Duration(hours: 8),
-      title: "PRE BLACK FRIDAY SALE",
-      subtitle: "Hurry Up! Sales Ends In",
-      ctaText: "VIEW SALE ITEMS",
-      press: () {},
-    ),
-  ];
-
   @override
   void initState() {
     _pageController = PageController(initialPage: 0);
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-      if (_selectedIndex < offers.length - 1) {
+      if (_selectedIndex < widget.offers.length - 1) {
         _selectedIndex++;
       } else {
         _selectedIndex = 0;
@@ -71,13 +59,13 @@ class _OffersCarouselState extends State<OffersCarousel> {
         children: [
           PageView.builder(
             controller: _pageController,
-            itemCount: offers.length,
+            itemCount: widget.offers.length,
             onPageChanged: (int index) {
               setState(() {
                 _selectedIndex = index;
               });
             },
-            itemBuilder: (context, index) => offers[index],
+            itemBuilder: (context, index) => widget.offers[index],
           ),
           FittedBox(
             child: Padding(
@@ -86,7 +74,7 @@ class _OffersCarouselState extends State<OffersCarousel> {
                 height: 16,
                 child: Row(
                   children: List.generate(
-                    offers.length,
+                    widget.offers.length,
                     (index) {
                       return Padding(
                         padding:
