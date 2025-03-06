@@ -88,8 +88,37 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _isFetchingShippingMethods = true;
     });
 
-    final res = await ApiService().get(
-        "${ApiContants().shippingMethods}?country=${_selectedAddress?.country}");
+    final res = await ApiService().post(
+        "${ApiContants().shippingMethods}?country=${_selectedAddress?.country}",
+        payload: {
+          'products': widget.productMap.map((product) {
+            final Product? productDetails = widget.cartItems
+                .firstWhere((item) => item.id == product['product_id']);
+
+            if (productDetails == null) {
+              return null;
+            }
+
+            return {
+              'product_name': productDetails.name,
+              'product_quantity': product['qty'].toString(),
+              'price': productDetails.price.toString(),
+              'width': '',
+              'height': '',
+              'depth': '',
+              'weight': productDetails.weight,
+              'product_id': productDetails.id.toString(),
+            };
+          }).toList(),
+          'receiver_address': {
+            'r_address_1': _selectedAddress?.address1,
+            'r_address_2': _selectedAddress?.address2,
+            'r_country': _selectedAddress?.country,
+            'r_state': _selectedAddress?.state,
+            'r_city': _selectedAddress?.city,
+            'r_zip': _selectedAddress?.postcode,
+          }
+        });
     if (res != null) {
       setState(() {
         _shippingMethods = res

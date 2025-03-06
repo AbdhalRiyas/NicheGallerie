@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:shop/src/components/Banner/M/banner_m_style_1.dart';
 import 'package:shop/src/components/Banner/M/banner_m_with_counter.dart';

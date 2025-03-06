@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 double calculateCost(Map<String, dynamic> data, int qty) {
   double cost = data['cost'] != null ? double.parse(data['cost']) : 0.0;
   if (data.containsKey("class_costs") &&
+      data['class_costs'] is Map &&
       data["class_costs"].containsKey("no_class_cost")) {
     String costExpression = data["class_costs"]["no_class_cost"];
 

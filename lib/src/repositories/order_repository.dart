@@ -108,7 +108,7 @@ class OrderRepository {
           {
             'method_id': selectedShippingMethod.methodId,
             'method_title': selectedShippingMethod.title,
-            'total': shippingFee.toString(),
+            'total': shippingFee.round().toString(),
           }
         ],
         'fee_lines': feeLines,
