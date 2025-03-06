@@ -246,6 +246,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         title: const Text('Checkout'),
       ),
       body: Stepper(
+        connectorColor: WidgetStateProperty.all(primaryColor),
         currentStep: _currentStep,
         controlsBuilder: (context, details) => Row(
           children: [
