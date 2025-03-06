@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shop/src/components/Banner/M/banner_m_style_1.dart';
-import 'package:shop/src/components/Banner/M/banner_m_with_counter.dart';
 import 'package:shop/src/components/dot_indicators.dart';
 
 import '../../../../constants.dart';
 
 class OffersCarousel extends StatefulWidget {
-  OffersCarousel({
+  const OffersCarousel({
     super.key,
     required this.offers,
   });
