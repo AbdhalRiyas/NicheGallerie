@@ -78,8 +78,9 @@ class OrderDetailScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 12)),
               trailing: Text(formatCurrency(
                   item.price,
-                  Currency.fromJson(
-                      context.read<AppConfig>().preferredCurrency))),
+                  Currency.fromJson(context
+                      .read<AppConfig>()
+                      .getCurrencyByCode(order.currency)!))),
             ))
       ],
     );
@@ -106,8 +107,9 @@ class OrderDetailScreen extends StatelessWidget {
           Expanded(
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      PaymentWebViewScreen(checkoutUrl: order.paymentUrl!))),
+                  builder: (context) => PaymentWebViewScreen(
+                      checkoutUrl:
+                          "${order.paymentUrl}&wmc-currency=${order.currency}"))),
               child: Text("Pay"),
             ),
           ),

@@ -48,6 +48,11 @@ class AppConfig with ChangeNotifier {
   Map<dynamic, dynamic> get preferredCurrency =>
       _preferredCurrency ?? currencies.first;
 
+  // find currency by code
+  Map<String, dynamic>? getCurrencyByCode(String code) {
+    return currencies.firstWhere((currency) => currency['code'] == code);
+  }
+
   Future<void> initialize() async {
     // Load cached config
     final cachedConfig = await _loadCachedConfig();

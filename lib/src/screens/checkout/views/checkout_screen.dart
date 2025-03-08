@@ -690,7 +690,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         paymentScreen,
         pathParameters: {
           'id': result.data['id'].toString(),
-          'url': result.data['payment_url'],
+          'url':
+              "${result.data['payment_url']}&wmc-currency=${context.read<AppConfig>().preferredCurrency['code']}",
         },
       );
     } else {
