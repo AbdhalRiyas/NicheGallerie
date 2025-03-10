@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/cart_provider.dart';
+import 'package:shop/src/providers/product_search_provider.dart';
 import 'package:shop/src/repositories/home_repository.dart';
 import 'package:shop/src/route/screen_export.dart';
 
@@ -61,6 +62,10 @@ class _EntryPointState extends State<EntryPoint> {
       actions: [
         IconButton(
           onPressed: () {
+            final provider =
+                Provider.of<ProductSearchProvider>(context, listen: false);
+
+            provider.reset();
             context.go('/$searchScreenRoute');
           },
           icon: SvgPicture.asset(

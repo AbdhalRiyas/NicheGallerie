@@ -1,9 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/components/empty_handle_widget.dart';
-import 'package:shop/src/models/product.dart';
-import 'package:shop/src/repositories/search_repository.dart';
+import 'package:shop/src/components/product/product_card.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
+import 'package:shop/src/constants.dart';
+import 'package:shop/src/providers/product_search_provider.dart';
+import 'package:shop/src/route/route_constants.dart';
 
 import 'components/search_form.dart';
 
@@ -15,12 +18,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final SearchRepository _repository = SearchRepository();
   final ScrollController _scrollController = ScrollController();
-  List<Product> _products = [];
-  int _page = 1;
-  bool _isLoading = false;
-  Timer? _debounce;
 
   @override
   void initState() {
@@ -31,49 +29,18 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
-    _debounce?.cancel();
     super.dispose();
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
-        !_isLoading) {
-      _fetchResults();
-    }
-  }
-
-  void _onSearchChanged(query) {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(seconds: 1), () {
-      if (query.length > 3) {
-        _page = 1;
-        _products.clear();
-        _fetchResults(query: query);
+        _scrollController.position.maxScrollExtent) {
+      final provider =
+          Provider.of<ProductSearchProvider>(context, listen: false);
+      if (!provider.isLoading) {
+        provider.loadMore();
       }
-    });
-  }
-
-  Future<void> _fetchResults({String query = ''}) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final response = await _repository.searchProducts(query);
-
-    if (response.isSuccess) {
-      setState(() {
-        _products = response.data;
-      });
-
-      _page++;
-    } else {
-      // Handle error
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -83,28 +50,55 @@ class _SearchScreenState extends State<SearchScreen> {
         title: SearchForm(
           autofocus: true,
           hintText: 'Search for products...',
-          onChanged: _onSearchChanged,
+          onChanged: (query) {
+            Provider.of<ProductSearchProvider>(context, listen: false)
+                .search(query!);
+          },
         ),
       ),
-      body: _products.isEmpty
-          ? EmptyHandleWidget(
+      body: Consumer<ProductSearchProvider>(
+        builder: (context, provider, child) {
+          if (provider.products.isEmpty) {
+            return EmptyHandleWidget(
               iconSrc: "assets/icons/Search.svg",
-              title: "Start typing to search for the products you need.",
-            )
-          : ListView.builder(
+              title: provider.productSearchMsg,
+            );
+          } else {
+            return CustomScrollView(
               controller: _scrollController,
-              itemCount: _products.length + 1,
-              itemBuilder: (context, index) {
-                if (index == _products.length) {
-                  return _isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : SizedBox.shrink();
-                }
-                return ListTile(
-                  title: Text(_products[index].name),
-                );
-              },
-            ),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: defaultPadding, vertical: defaultPadding),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 200.0,
+                      mainAxisSpacing: defaultPadding,
+                      crossAxisSpacing: defaultPadding,
+                      childAspectRatio: 0.66,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return ProductCard(
+                          product: provider.products[index],
+                          press: () {
+                            context.go(
+                                '/$productScreenRoute/${provider.products[index].slug}');
+                          },
+                        );
+                      },
+                      childCount: provider.products.length,
+                    ),
+                  ),
+                ),
+                if (provider.isLoading)
+                  SliverToBoxAdapter(child: ProductsSkelton())
+              ],
+            );
+          }
+        },
+      ),
     );
   }
 }

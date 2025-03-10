@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop/src/components/product/product_card.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/route/route_constants.dart';
@@ -135,12 +136,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   ),
                   if (_isLoadingMore)
                     const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.all(defaultPadding),
-                        child: Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        ),
-                      ),
+                      child: ProductsSkelton(),
                     ),
                 ],
               ),
