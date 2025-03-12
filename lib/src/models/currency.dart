@@ -18,7 +18,7 @@ class Currency {
       symbol: json["symbol"],
       decimals: json["decimals"] ?? 0,
       pos: json["pos"],
-      rate: double.tryParse(json["rate"]) ?? 1.0,
+      rate: double.tryParse(json["rate"].toString()) ?? 1.0,
       exchangeFeeType: json["exchange_fee_type"],
       exchangeFee: double.tryParse(json["exchange_fee"]) ?? 0.00);
 

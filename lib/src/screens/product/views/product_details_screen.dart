@@ -83,35 +83,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               floating: true,
               actions: [
-                Consumer<WishlistProvider>(
-                  builder: (context, wishlistProvider, child) {
-                    bool isInWishlist = wishlistProvider.wishlistItems
-                        .contains(_product.value?.id);
-                    return IconButton(
-                      onPressed: () {
-                        if (isInWishlist) {
-                          wishlistProvider.removeItem(_product.value!.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            customSnackBar('Removed from wishlist'),
-                          );
-                        } else {
-                          wishlistProvider.addItem(_product.value!.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            customSnackBar('Added to wishlist'),
-                          );
-                        }
-                      },
-                      icon: SvgPicture.asset(
-                        isInWishlist
-                            ? "assets/icons/Heart-Filled.svg"
-                            : "assets/icons/Heart.svg",
-                        colorFilter: isInWishlist
-                            ? const ColorFilter.mode(
-                                Colors.red, BlendMode.srcIn)
-                            : null,
-                      ),
-                    );
-                  },
+                ValueListenableBuilder(
+                  valueListenable: _product,
+                  builder: (BuildContext context, value, Widget? child) =>
+                      Consumer<WishlistProvider>(
+                    builder: (context, wishlistProvider, child) {
+                      bool isInWishlist =
+                          wishlistProvider.wishlistItems.contains(value?.id);
+                      return IconButton(
+                        onPressed: () {
+                          if (isInWishlist) {
+                            wishlistProvider.removeItem(_product.value!.id);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              customSnackBar('Removed from wishlist'),
+                            );
+                          } else {
+                            wishlistProvider.addItem(_product.value!.id);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              customSnackBar('Added to wishlist'),
+                            );
+                          }
+                        },
+                        icon: SvgPicture.asset(
+                          isInWishlist
+                              ? "assets/icons/Heart-Filled.svg"
+                              : "assets/icons/Heart.svg",
+                          colorFilter: isInWishlist
+                              ? const ColorFilter.mode(
+                                  Colors.red, BlendMode.srcIn)
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
