@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shop/src/config/app_config.dart';
+import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/repositories/order_repository.dart';
@@ -9,22 +11,46 @@ import 'package:shop/src/utils/currency_formatter.dart';
 import 'package:shop/src/utils/result.dart';
 import 'package:provider/provider.dart';
 
-class OrderDetailScreen extends StatelessWidget {
+class OrderDetailScreen extends StatefulWidget {
   final String orderId;
   final String? paymentUrl;
   const OrderDetailScreen({super.key, required this.orderId, this.paymentUrl});
 
   @override
-  Widget build(BuildContext context) {
-    final OrderRepository orderRepository = OrderRepository();
+  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+}
 
+class _OrderDetailScreenState extends State<OrderDetailScreen> {
+  final OrderRepository orderRepository = OrderRepository();
+  late Future<Result> _orderFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _orderFuture = orderRepository.fetchOrderById(widget.orderId);
+  }
+
+  void _updateOrderStatus() {
+    // Called when the current route has been popped off, and the current route shows up
+    setState(() {
+      _orderFuture = orderRepository.fetchOrderById(widget.orderId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Order #$orderId")),
+      appBar: AppBar(title: Text("Order #${widget.orderId}")),
       body: FutureBuilder<Result>(
-        future: orderRepository.fetchOrderById(orderId),
+        future: _orderFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: LoadingAnimationWidget.flickr(
+              leftDotColor: Colors.white,
+              rightDotColor: sandDuneColor,
+              size: 30,
+            ));
           } else if (snapshot.hasError || !snapshot.data!.isSuccess) {
             return Center(child: Text("Failed to load order details"));
           }
@@ -108,6 +134,7 @@ class OrderDetailScreen extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => PaymentWebViewScreen(
+                      onPaymentSuccess: _updateOrderStatus,
                       checkoutUrl:
                           "${order.paymentUrl}&wmc-currency=${order.currency}"))),
               child: Text("Pay"),
