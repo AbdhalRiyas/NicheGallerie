@@ -28,11 +28,13 @@ class ProfileScreen extends StatelessWidget {
                           name: provider.displayName.toString(),
                           email: provider.email.toString(),
                           imageSrc: "assets/icons/Avatar.svg",
+                          isShowArrow: false,
                           // proLableText: "Sliver",
                           // isPro: true, if the user is pro
-                          press: () {
-                            // Navigator.pushNamed(context, userInfoScreenRoute);
-                          },
+                          press: null,
+                          // press: () {
+                          //   Navigator.pushNamed(context, userInfoScreenRoute);
+                          // },
                         )
                       : ProfileCard(
                           name: 'Login',
