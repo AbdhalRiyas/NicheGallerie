@@ -22,19 +22,25 @@ class AppConfig with ChangeNotifier {
   List<Map<String, dynamic>> get paymentMethods =>
       List<Map<String, dynamic>>.from(_config?['payment_methods'] ?? []);
 
-  List<Map<String, dynamic>> get currencies =>
-      List<Map<String, dynamic>>.from(_config?['currencies'] ??
-          [
-            {
-              "code": "AED",
-              "symbol": "AED",
-              "decimal": 0,
-              "pos": "right",
-              "rate": 1,
-              "exchange_fee_type": "fixed",
-              "exchange_fee": 0.0
-            }
-          ]);
+  List<Map<String, dynamic>> get currencies {
+    var defaultCurrency = [
+      {
+        "code": "AED",
+        "symbol": "AED",
+        "decimal": 0,
+        "pos": "right",
+        "rate": 1,
+        "exchange_fee_type": "fixed",
+        "exchange_fee": 0.0
+      }
+    ];
+    var currencyList = List<Map<String, dynamic>>.from(
+        _config?['currencies'] ?? defaultCurrency);
+    if (currencyList.isEmpty) {
+      currencyList = defaultCurrency;
+    }
+    return currencyList;
+  }
 
   List<Map<String, dynamic>> get countries =>
       List<Map<String, dynamic>>.from(_config?['countries'] ??
