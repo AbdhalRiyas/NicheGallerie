@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/empty_handle_widget.dart';
 import 'package:shop/src/components/skeleton/skeleton.dart';
@@ -6,7 +7,9 @@ import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/currency.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/providers/cart_provider.dart';
+import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/checkout/views/checkout_screen.dart';
 import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
@@ -55,8 +58,8 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: widget.navigatedViaRoute ? AppBar(title: Text('Cart')) : null,
-      body: Consumer<CartProvider>(
-        builder: (context, cartProvider, child) {
+      body: Consumer2<CartProvider, AuthProvider>(
+        builder: (context, cartProvider, authProvider, child) {
           if (!cartProvider.isBoxInitialized) {
             return _buildShimmer();
           }
@@ -183,16 +186,11 @@ class _CartScreenState extends State<CartScreen> {
                         onPressed: isOutOfStock
                             ? null
                             : () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CheckoutScreen(
-                                      cartItems: cartItems,
-                                      productMap: cartProvider.cartItems,
-                                      subTotal: subtotal,
-                                    ),
-                                  ),
-                                );
+                                context.goNamed(checkoutScreenRoute, extra: {
+                                  'cartItems': cartItems,
+                                  'subTotal': subtotal,
+                                  'productsMap': cartProvider.cartItems,
+                                });
                               },
                         child: Text('Checkout'),
                       ),

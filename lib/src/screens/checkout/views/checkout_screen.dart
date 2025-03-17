@@ -700,3 +700,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 }
+
+class CheckoutScreenArguments {
+  final List cartItems;
+  final List<Map<dynamic, dynamic>> productMap;
+  final double subTotal;
+
+  CheckoutScreenArguments(
+      {required this.cartItems,
+      required this.productMap,
+      required this.subTotal});
+}

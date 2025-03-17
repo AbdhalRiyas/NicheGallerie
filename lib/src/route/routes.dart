@@ -5,6 +5,7 @@ import 'package:shop/entry_point.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/screens/auth/views/my_account_screen.dart';
+import 'package:shop/src/screens/checkout/views/checkout_screen.dart';
 import 'package:shop/src/screens/checkout/views/payment_webview_screen.dart';
 import 'package:shop/src/screens/order/views/order_detail_screen.dart';
 import 'screen_export.dart';
@@ -47,6 +48,26 @@ class AppRouter {
               pageBuilder: (context, state) {
                 return const MaterialPage(
                     child: CartScreen(navigatedViaRoute: true));
+              },
+            ),
+            GoRoute(
+              path: checkoutScreenRoute,
+              name: checkoutScreenRoute,
+              // Redirect is handled here
+              redirect: (context, state) => _authCheck(context, state),
+              pageBuilder: (context, state) {
+                final args =
+                    state.extra as Map<String, dynamic>?; // Extract arguments
+                final cartItems = args?['cartItems'] ?? [];
+                final subtotal = args?['subTotal'] ?? 0;
+                final productsMap = args?['productsMap'] ?? [];
+
+                return MaterialPage(
+                    child: CheckoutScreen(
+                  cartItems: cartItems,
+                  subTotal: subtotal,
+                  productMap: productsMap,
+                ));
               },
             ),
             GoRoute(
