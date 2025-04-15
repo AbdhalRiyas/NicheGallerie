@@ -10,7 +10,6 @@ import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
-import 'package:shop/src/screens/checkout/views/checkout_screen.dart';
 import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
 import 'components/cart_product.dart';
