@@ -88,8 +88,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _isFetchingShippingMethods = true;
     });
 
-    final res2 = await ApiService().get('/checkout/shipping-cost');
-
     final res = await ApiService().post(
         "${ApiContants().shippingMethods}?country=${_selectedAddress?.country}",
         payload: {
