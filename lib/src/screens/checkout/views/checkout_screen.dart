@@ -88,6 +88,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _isFetchingShippingMethods = true;
     });
 
+    final res2 = await ApiService().get('/checkout/shipping-cost');
+
     final res = await ApiService().post(
         "${ApiContants().shippingMethods}?country=${_selectedAddress?.country}",
         payload: {
@@ -262,7 +264,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
           ],
         ),
-        onStepContinue: (_currentStep == 0 && _selectedAddress == null) ||
+        onStepContinue: (_currentStep == 0 &&
+                    (_selectedAddress == null ||
+                        _selectedAddress?.firstName == '')) ||
                 (_currentStep == 1 && _selectedPaymentMethod == null) ||
                 (_currentStep == 3 && _selectedShippingMethod == null)
             ? null
@@ -275,7 +279,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AddressButton(
-                  text: _selectedAddress == null
+                  text: _selectedAddress == null ||
+                          _selectedAddress?.firstName == ''
                       ? 'Enter Address'
                       : 'Change Address',
                   onTap: () => _addEditAddress(_selectedAddress ??
@@ -293,7 +298,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         phone: '',
                       )),
                 ),
-                if (_selectedAddress != null)
+                if (_selectedAddress != null &&
+                    _selectedAddress?.firstName != '')
                   AddressCard(
                     address: _selectedAddress!,
                     onAddressScreen: false,

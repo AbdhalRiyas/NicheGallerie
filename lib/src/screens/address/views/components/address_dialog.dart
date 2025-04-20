@@ -82,6 +82,8 @@ class _AddressDialogState extends State<AddressDialog> {
       'country': _countryController.text,
     };
 
+    final navigator = Navigator.of(context);
+
     Result result = await _userRepository.updateBillingAddress(data);
 
     setState(() {
@@ -90,7 +92,7 @@ class _AddressDialogState extends State<AddressDialog> {
 
     if (result.data != null && context.mounted) {
       toast(result.message);
-      pop();
+      navigator.pop();
     } else if (result.errors != null) {
       setState(() {
         _errors = result.errors;
@@ -159,7 +161,7 @@ class _AddressDialogState extends State<AddressDialog> {
               onPressed: _isLoading
                   ? null
                   : () {
-                      pop();
+                      context.pop();
                     },
               child: const Text('Cancel'),
             ),

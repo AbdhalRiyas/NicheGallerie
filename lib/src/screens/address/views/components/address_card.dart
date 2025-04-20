@@ -16,6 +16,7 @@ class AddressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(address.toJson());
     Widget cardContent = Padding(
       padding: const EdgeInsets.all(defaultPadding),
       child: Row(
