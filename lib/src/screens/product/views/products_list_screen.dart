@@ -1,13 +1,69 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/route/route_constants.dart';
+import 'package:shop/src/screens/product/views/components/custom_bottom_sheet.dart';
 import 'package:shop/src/services/api_service.dart';
+
+class CustomSearchDelegate extends SearchDelegate {
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Center(
+      child: Text('Search results for "$query"'),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestions = query.isEmpty
+        ? []
+        : ['Product 1', 'Product 2', 'Product 3']
+            .where((product) =>
+                product.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(suggestions[index]),
+          onTap: () {
+            query = suggestions[index];
+            showResults(context);
+          },
+        );
+      },
+    );
+  }
+}
 
 class ProductsListScreen extends StatefulWidget {
   const ProductsListScreen(
@@ -83,6 +139,45 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title.toUpperCase()),
+        actions: [
+          IconButton(
+            onPressed: () {
+              // create search
+              showSearch(
+                context: context,
+                delegate: CustomSearchDelegate(),
+              );
+            },
+            icon: SvgPicture.asset(
+              "assets/icons/Search.svg",
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).textTheme.bodyLarge!.color!,
+                  BlendMode.srcIn),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              // create filter
+              showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(defaultBorderRadius)),
+                ),
+                isScrollControlled: true,
+                builder: (context) => const CustomBottomSheet(),
+              );
+            },
+            icon: SvgPicture.asset(
+              "assets/icons/Sort.svg",
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).textTheme.bodyLarge!.color!,
+                  BlendMode.srcIn),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
