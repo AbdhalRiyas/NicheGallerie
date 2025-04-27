@@ -55,8 +55,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             MaterialPageRoute(
                               builder: (context) => ProductsListScreen(
                                 title: result.data[index].name,
-                                apiEndPoint:
-                                    '${ApiContants().products}?category=${result.data[index].id}',
+                                categoryId: result.data[index].id.toString(),
+                                apiEndPoint: ApiContants().products,
                               ),
                             ),
                           );

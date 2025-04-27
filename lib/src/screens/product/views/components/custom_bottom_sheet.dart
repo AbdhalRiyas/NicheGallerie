@@ -2,17 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-  const CustomBottomSheet({super.key});
+  final RangeValues? initialRangeValues;
+  final Set<String>? initialSelectedCategories;
+  final String? initialSelectedSort;
+  final Function(Map<String, dynamic>)? onChanged;
+
+  const CustomBottomSheet({
+    super.key,
+    this.initialRangeValues,
+    this.initialSelectedCategories,
+    this.initialSelectedSort,
+    this.onChanged,
+  });
 
   @override
   State<CustomBottomSheet> createState() => _CustomBottomSheetState();
 }
 
-RangeValues _currentRangeValues = const RangeValues(99, 10000);
-Set<String> selectedCategories = {};
-String selectedSort = '';
-
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
+  late RangeValues _currentRangeValues;
+  late Set<String> selectedCategories;
+  late String selectedSort;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentRangeValues =
+        widget.initialRangeValues ?? const RangeValues(99, 10000);
+    selectedCategories = widget.initialSelectedCategories ?? {};
+    selectedSort = widget.initialSelectedSort ?? 'Newest Arrival';
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -26,7 +46,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
               indicatorColor: primaryColor,
-              tabs: [
+              tabs: const [
                 Tab(text: 'Sort'),
                 Tab(text: 'Filter'),
               ],
@@ -40,16 +60,22 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     child: Column(
                       children: [
                         ...[
-                          'Newest Arrival',
-                          'Most Popular',
-                          'Price : High to Low',
-                          'Price : Low to High',
-                          'Name : A to Z',
-                          'Name : Z to A'
-                        ].map((option) => RadioListTile(
+                          {'label': 'Newest Arrival', 'value': 'date'},
+                          {'label': 'Most Popular', 'value': 'popularity'},
+                          {
+                            'label': 'Price : High to Low',
+                            'value': 'price_desc'
+                          },
+                          {
+                            'label': 'Price : Low to High',
+                            'value': 'price_asc'
+                          },
+                          {'label': 'Name : A to Z', 'value': 'title_asc'},
+                          {'label': 'Name : Z to A', 'value': 'title_desc'}
+                        ].map((option) => RadioListTile<String>(
                               activeColor: primaryColor,
-                              title: Text(option),
-                              value: option,
+                              title: Text(option['label']!),
+                              value: option['value'].toString(),
                               groupValue: selectedSort,
                               onChanged: (String? value) {
                                 setState(() {
@@ -80,66 +106,12 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                           title: const Text('In stock Only'),
                           activeColor: primaryColor,
                           value: false,
-                          onChanged: (bool? value) {},
+                          onChanged: (bool? value) {
+                            // Handle stock status change
+                          },
                           contentPadding: EdgeInsets.zero,
                           controlAffinity: ListTileControlAffinity.leading,
                         ),
-
-                        // Category
-                        // const Text(
-                        //   'Category',
-                        //   style: TextStyle(
-                        //     fontSize: 16,
-                        //     fontWeight: FontWeight.bold,
-                        //   ),
-                        // ),
-                        // ...[
-                        //   'Collectible',
-                        //   'Featured',
-                        //   'Men',
-                        //   'Unboxed',
-                        //   'Unisex',
-                        //   'Women'
-                        // ].map((category) => CheckboxListTile(
-                        //       activeColor: primaryColor,
-                        //       title: Text(
-                        //         category,
-                        //       ),
-                        //       value: selectedCategories.contains(category),
-                        //       onChanged: (bool? value) {
-                        //         setState(() {
-                        //           if (value ?? false) {
-                        //             selectedCategories.add(category);
-                        //           } else {
-                        //             selectedCategories.remove(category);
-                        //           }
-                        //         });
-                        //       },
-                        //       contentPadding: EdgeInsets.zero,
-                        //       controlAffinity: ListTileControlAffinity.leading,
-                        //     )),
-
-                        // Dropdowns
-                        // const SizedBox(height: 16),
-                        ExpansionTile(
-                          title: const Text('Brands'),
-                          children: const [
-                            // Add brand options here
-                          ],
-                        ),
-                        ExpansionTile(
-                          title: const Text('Notes'),
-                          children: const [
-                            // Add notes options here
-                          ],
-                        ),
-                        ExpansionTile(
-                          title: const Text('Accords'),
-                          children: const [
-                            // Add accords options here
-                          ],
-                        ),
-
                         // Price Range
                         const SizedBox(height: 16),
                         const Text(
@@ -155,7 +127,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                           min: 99,
                           max: 10000,
                           activeColor: Colors.brown,
-                          inactiveColor: Colors.brown.withValues(alpha: 0.2),
+                          inactiveColor: Colors.brown.withAlpha(50),
                           onChanged: (RangeValues values) {
                             setState(() {
                               _currentRangeValues = values;
@@ -186,8 +158,22 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle apply filters
-                  Navigator.pop(context);
+                  // Trigger onChanged callback when apply button is tapped
+                  if (widget.onChanged != null) {
+                    widget.onChanged!({
+                      'selectedSort': selectedSort,
+                      'selectedCategories': selectedCategories,
+                      'priceRange': _currentRangeValues,
+                    });
+                  }
+                  Navigator.pop(context, {
+                    'selectedSort': selectedSort,
+                    'selectedCategories': selectedCategories.toList(),
+                    'priceRange': {
+                      'start': _currentRangeValues.start,
+                      'end': _currentRangeValues.end,
+                    },
+                  });
                 },
                 child: const Text(
                   'APPLY',

@@ -66,11 +66,17 @@ class CustomSearchDelegate extends SearchDelegate {
 }
 
 class ProductsListScreen extends StatefulWidget {
-  const ProductsListScreen(
-      {super.key, required this.title, required this.apiEndPoint});
+  ProductsListScreen(
+      {super.key,
+      required this.title,
+      required this.apiEndPoint,
+      String? categoryId})
+      : categoryId =
+            Uri.parse(apiEndPoint).queryParameters['category'] ?? categoryId;
 
   final String title;
   final String apiEndPoint;
+  final String? categoryId;
 
   @override
   State<ProductsListScreen> createState() => _ProductsListScreenState();
@@ -82,6 +88,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   bool _isLoadingMore = false;
   int _currentPage = 1;
   int _lastPage = 1;
+  Map<String, dynamic> _filters = {};
 
   @override
   void initState() {
@@ -90,15 +97,34 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
     _getProducts();
   }
 
-  Future<void> _getProducts({int page = 1}) async {
+  Future<void> _getProducts({int page = 1, bool reset = false}) async {
+    print(widget.apiEndPoint);
     if (_isLoadingMore) return;
 
     setState(() {
+      if (reset) {
+        _currentPage = 1;
+        _lastPage = 1;
+        _products.clear();
+      }
       _isLoadingMore = true;
     });
 
     try {
-      final res = await ApiService().get("${widget.apiEndPoint}&page=$page");
+      final queryParameters = {
+        'category': widget.categoryId,
+        'orderby': (_filters['selectedSort']
+                ?.replaceAll(RegExp(r'(_asc|_desc)$'), '') ??
+            'popularity'),
+        'order':
+            _filters['selectedSort']?.endsWith('_asc') == true ? 'asc' : 'desc',
+        'page': page.toString(),
+      };
+
+      final Uri uri = Uri.parse(widget.apiEndPoint)
+          .replace(queryParameters: queryParameters);
+
+      final res = await ApiService().get(uri.toString());
 
       log(res['pagination'].toString());
 
@@ -112,6 +138,9 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
       }
 
       setState(() {
+        if (page == 1) {
+          _products.clear();
+        }
         _products.addAll(newProducts);
         _currentPage = res['pagination']['current_page'];
         _lastPage = res['pagination']['last_page'];
@@ -132,6 +161,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         _currentPage < _lastPage) {
       _getProducts(page: _currentPage + 1);
     }
+  }
+
+  void _applyFilters(Map<String, dynamic> filters) {
+    print('filters applied: $filters');
+    setState(() {
+      _filters = filters;
+    });
+    _getProducts(page: 1, reset: true);
   }
 
   @override
@@ -166,7 +203,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                       top: Radius.circular(defaultBorderRadius)),
                 ),
                 isScrollControlled: true,
-                builder: (context) => const CustomBottomSheet(),
+                builder: (context) => CustomBottomSheet(
+                  initialRangeValues: _filters['rangeValues'],
+                  initialSelectedCategories: _filters['selectedCategories'],
+                  initialSelectedSort: _filters['selectedSort'],
+                  onChanged: (filters) {
+                    _applyFilters(filters);
+                  },
+                ),
               );
             },
             icon: SvgPicture.asset(
@@ -182,24 +226,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(
-            //       horizontal: defaultPadding, vertical: defaultPadding / 2),
-            //   child: SearchForm(
-            //     suffixIcon: "assets/icons/Setting.svg",
-            //     onTabFilter: () {
-            //       showModalBottomSheet(
-            //         context: context,
-            //         shape: RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.vertical(
-            //               top: Radius.circular(defaultBorderRadius)),
-            //         ),
-            //         isScrollControlled: true,
-            //         builder: (context) => CustomBottomSheet(),
-            //       );
-            //     },
-            //   ),
-            // ),
             Expanded(
               child: CustomScrollView(
                 controller: _scrollController,
