@@ -26,6 +26,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
   @override
   void initState() {
+    print(widget.initialSelectedSort);
     super.initState();
     _currentRangeValues =
         widget.initialRangeValues ?? const RangeValues(99, 10000);

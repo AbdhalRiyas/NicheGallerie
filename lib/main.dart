@@ -14,7 +14,6 @@ import 'package:shop/src/services/hive_service.dart';
 import 'package:shop/src/theme/app_theme.dart';
 
 import 'src/route/routes.dart';
-import 'src/services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -88,7 +88,9 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   bool _isLoadingMore = false;
   int _currentPage = 1;
   int _lastPage = 1;
-  Map<String, dynamic> _filters = {};
+  Map<String, dynamic> _filters = {
+    'selectedSort': 'popularity',
+  };
 
   @override
   void initState() {
@@ -98,7 +100,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   }
 
   Future<void> _getProducts({int page = 1, bool reset = false}) async {
-    print(widget.apiEndPoint);
     if (_isLoadingMore) return;
 
     setState(() {

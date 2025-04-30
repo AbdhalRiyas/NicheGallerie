@@ -62,7 +62,7 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
             MaterialPageRoute(
               builder: (context) => ProductsListScreen(
                 title: json['children'][i]['title'],
-                categoryId: json['children'][i]['category_id'],
+                categoryId: json['children'][i]['category_id'].toString(),
                 apiEndPoint: ApiContants().products,
               ),
             ),
