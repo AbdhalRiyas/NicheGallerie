@@ -126,41 +126,41 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                           ),
                         ),
                         // Price Range
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Price Range',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        RangeSlider(
-                          values: _currentRangeValues,
-                          min: 99,
-                          max: 10000,
-                          activeColor: Colors.brown,
-                          inactiveColor: Colors.brown.withAlpha(50),
-                          onChanged: (RangeValues values) {
-                            setState(() {
-                              _currentRangeValues = values;
-                            });
-                          },
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'MIN ${_currentRangeValues.start.round()}',
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                            const Text(' — '),
-                            Text(
-                              '${_currentRangeValues.end.round()} MAX',
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
+                        // const SizedBox(height: 16),
+                        // const Text(
+                        //   'Price Range',
+                        //   style: TextStyle(
+                        //     fontSize: 16,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 8),
+                        // RangeSlider(
+                        //   values: _currentRangeValues,
+                        //   min: 99,
+                        //   max: 10000,
+                        //   activeColor: Colors.brown,
+                        //   inactiveColor: Colors.brown.withAlpha(50),
+                        //   onChanged: (RangeValues values) {
+                        //     setState(() {
+                        //       _currentRangeValues = values;
+                        //     });
+                        //   },
+                        // ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     Text(
+                        //       'MIN ${_currentRangeValues.start.round()}',
+                        //       style: const TextStyle(color: Colors.grey),
+                        //     ),
+                        //     const Text(' — '),
+                        //     Text(
+                        //       '${_currentRangeValues.end.round()} MAX',
+                        //       style: const TextStyle(color: Colors.grey),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
@@ -176,17 +176,17 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     widget.onChanged!({
                       'selectedSort': selectedSort,
                       'selectedCategories': selectedCategories,
-                      'priceRange': _currentRangeValues,
+                      // 'priceRange': _currentRangeValues,
                       'inStockOnly': _inStockOnly.value,
                     });
                   }
                   Navigator.pop(context, {
                     'selectedSort': selectedSort,
                     'selectedCategories': selectedCategories.toList(),
-                    'priceRange': {
-                      'start': _currentRangeValues.start,
-                      'end': _currentRangeValues.end,
-                    },
+                    // 'priceRange': {
+                    //   'start': _currentRangeValues.start,
+                    //   'end': _currentRangeValues.end,
+                    // },
                   });
                 },
                 child: const Text(
