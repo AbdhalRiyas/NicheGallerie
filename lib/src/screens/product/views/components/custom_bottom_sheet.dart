@@ -5,6 +5,7 @@ class CustomBottomSheet extends StatefulWidget {
   final RangeValues? initialRangeValues;
   final Set<String>? initialSelectedCategories;
   final String? initialSelectedSort;
+  final bool? inStockOnly;
   final Function(Map<String, dynamic>)? onChanged;
 
   const CustomBottomSheet({
@@ -13,6 +14,7 @@ class CustomBottomSheet extends StatefulWidget {
     this.initialSelectedCategories,
     this.initialSelectedSort,
     this.onChanged,
+    this.inStockOnly,
   });
 
   @override
@@ -24,10 +26,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
   late Set<String> selectedCategories;
   late String selectedSort;
 
+  final ValueNotifier<bool> _inStockOnly = ValueNotifier(false);
+
   @override
   void initState() {
-    print(widget.initialSelectedSort);
     super.initState();
+
+    _inStockOnly.value = widget.inStockOnly ?? false;
+
     _currentRangeValues =
         widget.initialRangeValues ?? const RangeValues(99, 10000);
     selectedCategories = widget.initialSelectedCategories ?? {};
@@ -103,15 +109,21 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        CheckboxListTile(
-                          title: const Text('In stock Only'),
-                          activeColor: primaryColor,
-                          value: false,
-                          onChanged: (bool? value) {
-                            // Handle stock status change
-                          },
-                          contentPadding: EdgeInsets.zero,
-                          controlAffinity: ListTileControlAffinity.leading,
+                        ValueListenableBuilder(
+                          valueListenable: _inStockOnly,
+                          builder:
+                              (BuildContext context, value, Widget? child) =>
+                                  CheckboxListTile(
+                            title: const Text('In stock Only'),
+                            activeColor: primaryColor,
+                            value: value,
+                            onChanged: (bool? value) {
+                              _inStockOnly.value = value!;
+                              // Handle stock status change
+                            },
+                            contentPadding: EdgeInsets.zero,
+                            controlAffinity: ListTileControlAffinity.leading,
+                          ),
                         ),
                         // Price Range
                         const SizedBox(height: 16),
@@ -165,6 +177,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                       'selectedSort': selectedSort,
                       'selectedCategories': selectedCategories,
                       'priceRange': _currentRangeValues,
+                      'inStockOnly': _inStockOnly.value,
                     });
                   }
                   Navigator.pop(context, {

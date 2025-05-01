@@ -90,6 +90,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   int _lastPage = 1;
   Map<String, dynamic> _filters = {
     'selectedSort': 'popularity',
+    'inStockOnly': false,
   };
 
   @override
@@ -121,6 +122,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             _filters['selectedSort']?.endsWith('_asc') == true ? 'asc' : 'desc',
         'page': page.toString(),
       };
+
+      if (_filters['inStockOnly'] == true) {
+        queryParameters['stock_status'] = 'instock';
+      }
 
       final Uri uri = Uri.parse(widget.apiEndPoint)
           .replace(queryParameters: queryParameters);
@@ -165,7 +170,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   }
 
   void _applyFilters(Map<String, dynamic> filters) {
-    print('filters applied: $filters');
     setState(() {
       _filters = filters;
     });
@@ -205,6 +209,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                 ),
                 isScrollControlled: true,
                 builder: (context) => CustomBottomSheet(
+                  inStockOnly: _filters['inStockOnly'],
                   initialRangeValues: _filters['rangeValues'],
                   initialSelectedCategories: _filters['selectedCategories'],
                   initialSelectedSort: _filters['selectedSort'],

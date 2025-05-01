@@ -5,15 +5,6 @@ class FilterProvider extends ChangeNotifier {
   Set<String> selectedCategories = {};
   String selectedSort = '';
 
-  final Map<String, String> _sorts = {
-    'Newest Arrival': 'newest',
-    'Most Popular': 'popular',
-    'Price : High to Low': 'price_desc',
-    'Price : Low to High': 'price_asc',
-    'Name : A to Z': 'name_asc',
-    'Name : Z to A': 'name_desc',
-  };
-
   void updateRangeValues(RangeValues newRangeValues) {
     currentRangeValues = newRangeValues;
     notifyListeners();
