@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/product/product_card.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
@@ -14,54 +16,61 @@ class WishlistScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<WishlistProvider>(
       builder: (BuildContext context, WishlistProvider wishlistProvider,
-              Widget? child) =>
-          wishlistProvider.wishlistItems.isEmpty
-              ? const Center(
-                  child: Text("No Bookmarks"),
-                )
-              : FutureBuilder(
-                  future: wishlistProvider.fetchProducts(
-                      context.read<AppConfig>().preferredCurrency['code']),
-                  builder: (BuildContext context,
-                          AsyncSnapshot<List<Product>?> snapshot) =>
-                      !snapshot.hasData
-                          ? const Center(
-                              child: Text("No Bookmarks"),
-                            )
-                          : CustomScrollView(
-                              slivers: [
-                                SliverPadding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: defaultPadding,
-                                      vertical: defaultPadding),
-                                  sliver: SliverGrid(
-                                    gridDelegate:
-                                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                                      maxCrossAxisExtent: 200.0,
-                                      mainAxisSpacing: defaultPadding,
-                                      crossAxisSpacing: defaultPadding,
-                                      childAspectRatio: 0.66,
-                                    ),
-                                    delegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
-                                        return ProductCard(
-                                          product: snapshot.data![index],
-                                          press: () {
-                                            Navigator.pushNamed(context,
-                                                productDetailsScreenRoute,
-                                                arguments: [
-                                                  snapshot.data![index]
-                                                ]);
-                                          },
-                                        );
-                                      },
-                                      childCount: snapshot.data?.length,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                ),
+          Widget? child) {
+        return wishlistProvider.wishlistItems.isEmpty
+            ? const Center(
+                child: Text("No products in your wishlist"),
+              )
+            : FutureBuilder(
+                future: wishlistProvider.fetchProducts(
+                    context.read<AppConfig>().preferredCurrency['code']),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Product>?> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return ProductsSkelton(
+                      isGrid: true,
+                      gridCount: 2,
+                    );
+                  }
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text("No products in your wishlist"),
+                    );
+                  }
+                  return CustomScrollView(
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: defaultPadding,
+                            vertical: defaultPadding),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200.0,
+                            mainAxisSpacing: defaultPadding,
+                            crossAxisSpacing: defaultPadding,
+                            childAspectRatio: 0.66,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return ProductCard(
+                                product: snapshot.data![index],
+                                press: () {
+                                  context.go(
+                                    '/$productScreenRoute/${snapshot.data![index].slug}',
+                                  );
+                                },
+                              );
+                            },
+                            childCount: snapshot.data?.length,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+      },
 
       // CustomScrollView(
       //   slivers: [

@@ -25,7 +25,7 @@ dependencies:
   mobkit_dashed_border: ^0.0.7
   # country_code_picker: ^3.1.0
   # csc_picker:
-  #   git: 
+  #   git:
   #       url: https://github.com/Witsberry/csc_picker.git
   #       ref: 6cc8dc6
   go_router: ^14.6.1

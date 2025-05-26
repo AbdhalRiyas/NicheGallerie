@@ -58,7 +58,12 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: Consumer<ProductSearchProvider>(
         builder: (context, provider, child) {
-          if (provider.products.isEmpty) {
+          if (provider.isLoading && provider.products.isEmpty) {
+            return const ProductsSkelton(
+              isGrid: true,
+              gridCount: 4,
+            );
+          } else if (provider.products.isEmpty) {
             return EmptyHandleWidget(
               iconSrc: "assets/icons/Search.svg",
               title: provider.productSearchMsg,
