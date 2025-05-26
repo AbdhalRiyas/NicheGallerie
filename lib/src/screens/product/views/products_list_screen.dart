@@ -265,6 +265,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                     const SliverToBoxAdapter(
                       child: ProductsSkelton(
                         isGrid: true,
+                        gridCount: 6, // Adjust as needed
                       ),
                     ),
                 ],

@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -52,6 +54,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   int _currentStep = 0;
 
   bool _isFetchingShippingMethods = false;
+
+  bool _addressUpdated = true;
+
+  bool _isLoading = false;
 
   double? shippingFee;
 
@@ -228,6 +234,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     country: _countryController.text,
                     email: _emailController.text,
                   );
+                  _addressUpdated = false; // Reset address updated flag
                 });
                 Navigator.of(context).pop(); // Close the dialog
               }
@@ -297,11 +304,54 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       )),
                 ),
                 if (_selectedAddress != null &&
-                    _selectedAddress?.firstName != '')
+                    _selectedAddress?.firstName != '') ...[
                   AddressCard(
                     address: _selectedAddress!,
                     onAddressScreen: false,
                   ),
+                  if (!_addressUpdated)
+                    TextButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              try {
+                                final Result result =
+                                    await _userRepository.updateBillingAddress(
+                                  _selectedAddress!.toJson(),
+                                );
+                                log('Update Address Result: ${result.data}');
+                                if (result.isSuccess) {
+                                  setState(() {
+                                    _addressUpdated = true;
+                                  });
+                                  toast('Address updated successfully');
+                                } else {
+                                  toast(result.message);
+                                }
+                              } catch (e) {
+                                toast('Failed to update address');
+                              } finally {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                            },
+                      style: TextButton.styleFrom(
+                        foregroundColor: primaryColor,
+                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator.adaptive()
+                          : const Text(
+                              'Set as default address',
+                              style: TextStyle(
+                                color: sandDuneColor,
+                              ),
+                            ),
+                    ),
+                ]
               ],
             ),
             isActive: _currentStep >= 0,

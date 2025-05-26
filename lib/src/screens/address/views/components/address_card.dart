@@ -18,7 +18,11 @@ class AddressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     print(address.toJson());
     Widget cardContent = Padding(
-      padding: const EdgeInsets.all(defaultPadding),
+      padding: const EdgeInsets.only(
+        left: defaultPadding,
+        right: defaultPadding,
+        top: defaultPadding,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -13,6 +13,16 @@ class AppTheme {
       fontFamily: "Montserrat",
       primarySwatch: primaryMaterialColor,
       primaryColor: primaryColor,
+      colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: primaryMaterialColor,
+        accentColor: primaryColor,
+      ).copyWith(
+        secondary: primaryColor,
+        error: Colors.red,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onError: Colors.white,
+      ),
       scaffoldBackgroundColor: Colors.white,
       canvasColor: Colors.white,
       iconTheme: const IconThemeData(color: sandDuneColor),
