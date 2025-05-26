@@ -42,9 +42,9 @@ class CartProvider extends ChangeNotifier {
   void addItem(int productId, int qty) {
     if (!_isBoxInitialized) return;
 
-    if (!authProvider.isLoggedIn) {
-      throw Exception('User not logged in');
-    }
+    // if (!authProvider.isLoggedIn) {
+    //   throw Exception('User not logged in');
+    // }
 
     int index = cartItems.indexWhere((item) => item['product_id'] == productId);
 

@@ -230,8 +230,39 @@ class ProfileScreen extends StatelessWidget {
               builder: (BuildContext context, provider, Widget? child) =>
                   provider.isLoggedIn
                       ? ListTile(
-                          onTap: () {
-                            provider.logout();
+                          onTap: () async {
+                            final shouldLogout = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    defaultBorderRadius,
+                                  ),
+                                ),
+                                title: const Text('Confirm Logout'),
+                                content: const Text(
+                                    'Are you sure you want to log out?'),
+                                actions: [
+                                  Column(
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text('Log Out'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text('Cancel'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (shouldLogout == true) {
+                              provider.logout();
+                            }
                           },
                           minLeadingWidth: 24,
                           leading: SvgPicture.asset(

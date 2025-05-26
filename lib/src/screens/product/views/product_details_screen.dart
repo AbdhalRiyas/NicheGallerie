@@ -94,11 +94,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         onPressed: () {
                           if (isInWishlist) {
                             wishlistProvider.removeItem(_product.value!.id);
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(
                               customSnackBar('Removed from wishlist'),
                             );
                           } else {
                             wishlistProvider.addItem(_product.value!.id);
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(
                               customSnackBar('Added to wishlist'),
                             );
@@ -125,7 +127,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 builder: (BuildContext context, Product? product,
                         Widget? child) =>
                     product == null
-                        ? CircularProgressIndicator.adaptive()
+                        ? Center(
+                            child: CircularProgressIndicator.adaptive(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).primaryColor),
+                          ))
                         : Column(
                             children: [
                               ProductImages(
