@@ -8,6 +8,7 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'components/profile_card.dart';
 import 'components/profile_menu_item_list_tile.dart';
@@ -201,25 +202,83 @@ class ProfileScreen extends StatelessWidget {
             ProfileMenuListTile(
               text: "Get Help",
               svgSrc: "assets/icons/Help.svg",
-              press: () async {
-                if (await canLaunchUrlString(appConfig.helpLink)) {
-                  launchUrlString(
-                    appConfig.helpLink,
-                    mode: LaunchMode.externalApplication,
-                  );
-                }
+              press: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(title: const Text('Get Help')),
+                      body: WebViewWidget(
+                        controller: WebViewController()
+                          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                          ..setNavigationDelegate(
+                            NavigationDelegate(
+                              onProgress: (int progress) {},
+                              onPageStarted: (String url) {},
+                              onPageFinished: (String url) {},
+                              onHttpError: (HttpResponseError error) {},
+                              onWebResourceError: (WebResourceError error) {},
+                              onNavigationRequest:
+                                  (NavigationRequest request) async {
+                                if (request.url != appConfig.faqLink) {
+                                  try {
+                                    await launchUrlString(request.url,
+                                        mode: LaunchMode.externalApplication);
+                                  } on Exception catch (e) {
+                                    // Handle the exception if needed
+                                    print('Error launching URL: $e');
+                                  }
+                                  return NavigationDecision.prevent;
+                                }
+                                return NavigationDecision.navigate;
+                              },
+                            ),
+                          )
+                          ..loadRequest(Uri.parse(appConfig.helpLink)),
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
             ProfileMenuListTile(
               text: "FAQ",
               svgSrc: "assets/icons/FAQ.svg",
-              press: () async {
-                if (await canLaunchUrlString(appConfig.faqLink)) {
-                  launchUrlString(
-                    appConfig.faqLink,
-                    mode: LaunchMode.externalApplication,
-                  );
-                }
+              press: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(title: const Text('FAQs')),
+                      body: WebViewWidget(
+                        controller: WebViewController()
+                          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                          ..setNavigationDelegate(
+                            NavigationDelegate(
+                              onProgress: (int progress) {},
+                              onPageStarted: (String url) {},
+                              onPageFinished: (String url) {},
+                              onHttpError: (HttpResponseError error) {},
+                              onWebResourceError: (WebResourceError error) {},
+                              onNavigationRequest:
+                                  (NavigationRequest request) async {
+                                if (request.url != appConfig.faqLink) {
+                                  try {
+                                    await launchUrlString(request.url,
+                                        mode: LaunchMode.externalApplication);
+                                  } on Exception catch (e) {
+                                    // Handle the exception if needed
+                                    print('Error launching URL: $e');
+                                  }
+                                  return NavigationDecision.prevent;
+                                }
+                                return NavigationDecision.navigate;
+                              },
+                            ),
+                          )
+                          ..loadRequest(Uri.parse(appConfig.faqLink)),
+                      ),
+                    ),
+                  ),
+                );
               },
               isShowDivider: false,
             ),
