@@ -88,7 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           showLoader(context, message: 'Logging in...');
-
                           final Result result = await authProvider.login(
                               _emailController.text, _passwordController.text);
 

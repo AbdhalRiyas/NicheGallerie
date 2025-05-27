@@ -7,6 +7,9 @@ class ApiContants {
   final String home = '/home';
   final String products = '/products';
   final String categories = '/products/categories';
+  final String brands = '/products/brands';
+  final String accords = '/products/accords';
+  final String notes = '/products/notes';
   final String orders = '/orders';
   final String login = '/auth/login';
   final String register = '/auth/register';

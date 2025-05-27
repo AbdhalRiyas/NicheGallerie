@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shop/src/components/empty_error_state_widget.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/repositories/order_repository.dart';
@@ -187,7 +188,10 @@ class OrdersScreen extends StatelessWidget {
               );
             }
           },
-          loadingWidget: const HomeSkeleton(), // Loading UI
+          loadingWidget: const ProductsSkelton(
+            isGrid: true,
+            gridCount: 2, // Adjust as needed for loading state
+          ), // Loading UI
           errorBuilder: (error) {
             // Handle errors by showing the NoDataWidget
             return NoDataWidget(

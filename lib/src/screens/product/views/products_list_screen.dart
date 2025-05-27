@@ -70,13 +70,15 @@ class ProductsListScreen extends StatefulWidget {
       {super.key,
       required this.title,
       required this.apiEndPoint,
-      String? categoryId})
+      String? categoryId,
+      this.taxanomy})
       : categoryId =
             Uri.parse(apiEndPoint).queryParameters['category'] ?? categoryId;
 
   final String title;
   final String apiEndPoint;
   final String? categoryId;
+  final Map<String, String>? taxanomy;
 
   @override
   State<ProductsListScreen> createState() => _ProductsListScreenState();
@@ -114,7 +116,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
     try {
       final queryParameters = {
-        'category': widget.categoryId,
         'orderby': (_filters['selectedSort']
                 ?.replaceAll(RegExp(r'(_asc|_desc)$'), '') ??
             'popularity'),
@@ -123,12 +124,22 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         'page': page.toString(),
       };
 
+      if (widget.categoryId != null) {
+        queryParameters['category'] = widget.categoryId!;
+      } else {
+        widget.taxanomy?.forEach((key, value) {
+          queryParameters[key] = value;
+        });
+      }
+
       if (_filters['inStockOnly'] == true) {
         queryParameters['stock_status'] = 'instock';
       }
 
       final Uri uri = Uri.parse(widget.apiEndPoint)
           .replace(queryParameters: queryParameters);
+
+      log('Fetching products from: ${uri.toString()}');
 
       final res = await ApiService().get(uri.toString());
 
@@ -266,6 +277,12 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                       child: ProductsSkelton(
                         isGrid: true,
                         gridCount: 6, // Adjust as needed
+                      ),
+                    ),
+                  if (_products.isEmpty && !_isLoadingMore)
+                    const SliverToBoxAdapter(
+                      child: Center(
+                        child: Text("No products found"),
                       ),
                     ),
                 ],

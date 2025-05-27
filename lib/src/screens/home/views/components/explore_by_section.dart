@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/brand.dart';
+import 'package:shop/src/models/accord.dart';
+import 'package:shop/src/models/note.dart';
+import 'package:shop/src/repositories/category_repository.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 class ExploreBySection extends StatefulWidget {
-  const ExploreBySection({
-    super.key,
-  });
+  const ExploreBySection({super.key});
 
   @override
   State<ExploreBySection> createState() => _ExploreBySectionState();
@@ -18,69 +22,25 @@ class _ExploreBySectionState extends State<ExploreBySection> {
   final ScrollController _scrollController = ScrollController();
   Timer? _autoScrollTimer;
 
-  final List _tabs = [
-    {
-      "id": 0,
-      "name": "Brands",
-      "items": [
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/buy-tom-ford-perfume-fragrance-for-women-men-niche-gallery-nichegallerie.com_.jpg",
-      ]
-    },
-    {
-      "id": 1,
-      "name": "Accords",
-      "items": [
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/powdery-perfume-accord-buy-nichegallerie.com-perfume-niche-gallery.jpg",
-      ]
-    },
-    {
-      "id": 2,
-      "name": "Notes",
-      "items": [
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-        "https://nichegallerie.com/wp-content/uploads/2023/04/Patchouli-note-perfume-nichegallerie.com-niche-gallery-buy-perfume.jpg",
-      ]
-    },
+  List<Brand> _brands = [];
+  List<Accord> _accords = [];
+  List<Note> _notes = [];
+
+  bool _loadingBrands = false;
+  bool _loadingAccords = false;
+  bool _loadingNotes = false;
+
+  final List<Map<String, dynamic>> _tabsMeta = [
+    {"id": 0, "name": "Brands"},
+    {"id": 1, "name": "Accords"},
+    {"id": 2, "name": "Notes"},
   ];
 
   @override
   void initState() {
     super.initState();
+    _fetchTabData(_activeTab);
     _startAutoScroll();
-
-    // Add listener to the scroll controller to detect when we reach the bottom
     _scrollController.addListener(_scrollListener);
   }
 
@@ -97,27 +57,85 @@ class _ExploreBySectionState extends State<ExploreBySection> {
   }
 
   void _scrollListener() {
-    // Detect when the user reaches the end of the list
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      // If the scroll reaches the end, jump back to the start
-      if (_scrollController.position.maxScrollExtent ==
-          _scrollController.position.pixels) {
-        _scrollController.jumpTo(0);
-      }
+      _scrollController.jumpTo(0);
     }
   }
 
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
-    _scrollController.removeListener(_scrollListener); // Remove the listener
+    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
   }
 
+  Future<void> _fetchTabData(int tabId) async {
+    final repo = CategoryRepository();
+
+    if (tabId == 0 && _brands.isEmpty && !_loadingBrands) {
+      setState(() => _loadingBrands = true);
+      final res = await repo.getFeaturedBrands();
+      setState(() {
+        _brands = res.data;
+        _loadingBrands = false;
+      });
+    } else if (tabId == 1 && _accords.isEmpty && !_loadingAccords) {
+      setState(() => _loadingAccords = true);
+      final res = await repo.getFeaturedAccords();
+      setState(() {
+        _accords = res.data;
+        _loadingAccords = false;
+      });
+    } else if (tabId == 2 && _notes.isEmpty && !_loadingNotes) {
+      setState(() => _loadingNotes = true);
+      final res = await repo.getFeaturedNotes();
+      setState(() {
+        _notes = res.data;
+        _loadingNotes = false;
+      });
+    }
+  }
+
+  List<dynamic> _getActiveItems() {
+    switch (_activeTab) {
+      case 0:
+        return _brands;
+      case 1:
+        return _accords;
+      case 2:
+        return _notes;
+      default:
+        return [];
+    }
+  }
+
+  bool _isLoadingCurrentTab() {
+    switch (_activeTab) {
+      case 0:
+        return _loadingBrands;
+      case 1:
+        return _loadingAccords;
+      case 2:
+        return _loadingNotes;
+      default:
+        return false;
+    }
+  }
+
+  void _onTabSelected(int tabId) {
+    setState(() {
+      _activeTab = tabId;
+    });
+    _fetchTabData(tabId);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = _isLoadingCurrentTab();
+    final activeItems = _getActiveItems();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -126,78 +144,120 @@ class _ExploreBySectionState extends State<ExploreBySection> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Explore By",
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
+              Text("Explore By", style: Theme.of(context).textTheme.titleSmall),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: _tabs
-                    .map((tab) => Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: defaultPadding / 6),
-                          child: InkWell(
-                            onTap: _activeTab == tab['id']
-                                ? null
-                                : () {
-                                    setState(() {
-                                      _activeTab = tab['id'];
-                                    });
-                                  },
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(30)),
-                            child: Container(
-                              height: 26,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: defaultPadding),
-                              decoration: BoxDecoration(
-                                color: _activeTab == tab['id']
-                                    ? primaryColor
-                                    : Colors.transparent,
-                                border: Border.all(
-                                    color: _activeTab == tab['id']
-                                        ? Colors.transparent
-                                        : Theme.of(context).dividerColor),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(30)),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  tab['name'],
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
-                            ),
+                children: _tabsMeta.map((tab) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: defaultPadding / 6),
+                    child: InkWell(
+                      onTap: _activeTab == tab['id']
+                          ? null
+                          : () => _onTabSelected(tab['id']),
+                      borderRadius: BorderRadius.circular(30),
+                      child: Container(
+                        height: 26,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: defaultPadding),
+                        decoration: BoxDecoration(
+                          color: _activeTab == tab['id']
+                              ? primaryColor
+                              : Colors.transparent,
+                          border: Border.all(
+                            color: _activeTab == tab['id']
+                                ? Colors.transparent
+                                : Theme.of(context).dividerColor,
                           ),
-                        ))
-                    .toList(),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Center(
+                          child: Text(
+                            tab['name'],
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),
         ),
-        SizedBox(height: defaultPadding),
+        const SizedBox(height: defaultPadding),
         SizedBox(
           height: 50,
-          child: ListView.builder(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            itemCount:
-                null, // The list will scroll infinitely, so no fixed count
-            itemBuilder: (BuildContext context, int index) {
-              // Loop through the list using modulus to create an infinite scroll effect
-              num itemIndex = index % _tabs[_activeTab]['items'].length;
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: defaultPadding,
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: _tabs[_activeTab]['items'][itemIndex],
-                ),
-              );
-            },
-          ),
+          child: isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : activeItems.isEmpty
+                  ? const Center(child: Text('No items found'))
+                  : ListView.builder(
+                      controller: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: activeItems.length,
+                      itemBuilder: (context, index) {
+                        final item = activeItems[index % activeItems.length];
+                        return Padding(
+                          padding: const EdgeInsets.only(left: defaultPadding),
+                          child: InkWell(
+                            onTap: () {
+                              if (item is Brand) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ProductsListScreen(
+                                        title: item.name,
+                                        apiEndPoint: ApiContants().products,
+                                        taxanomy: {
+                                          "brands": item.slug.toString(),
+                                        },
+                                      );
+                                    },
+                                  ),
+                                );
+                              } else if (item is Accord) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ProductsListScreen(
+                                        title: item.name,
+                                        apiEndPoint: ApiContants().products,
+                                        taxanomy: {
+                                          "accords": item.slug.toString(),
+                                        },
+                                      );
+                                    },
+                                  ),
+                                );
+                              } else if (item is Note) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ProductsListScreen(
+                                        title: item.name,
+                                        apiEndPoint: ApiContants().products,
+                                        taxanomy: {
+                                          "notes": item.slug.toString(),
+                                        },
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: item.imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
         ),
       ],
     );
