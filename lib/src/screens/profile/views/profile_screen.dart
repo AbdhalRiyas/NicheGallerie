@@ -7,6 +7,7 @@ import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
+import 'package:shop/src/screens/webview_screen.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -205,36 +206,10 @@ class ProfileScreen extends StatelessWidget {
               press: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                      appBar: AppBar(title: const Text('Get Help')),
-                      body: WebViewWidget(
-                        controller: WebViewController()
-                          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                          ..setNavigationDelegate(
-                            NavigationDelegate(
-                              onProgress: (int progress) {},
-                              onPageStarted: (String url) {},
-                              onPageFinished: (String url) {},
-                              onHttpError: (HttpResponseError error) {},
-                              onWebResourceError: (WebResourceError error) {},
-                              onNavigationRequest:
-                                  (NavigationRequest request) async {
-                                if (request.url != appConfig.faqLink) {
-                                  try {
-                                    await launchUrlString(request.url,
-                                        mode: LaunchMode.externalApplication);
-                                  } on Exception catch (e) {
-                                    // Handle the exception if needed
-                                    print('Error launching URL: $e');
-                                  }
-                                  return NavigationDecision.prevent;
-                                }
-                                return NavigationDecision.navigate;
-                              },
-                            ),
-                          )
-                          ..loadRequest(Uri.parse(appConfig.helpLink)),
-                      ),
+                    builder: (context) => WebViewScreen(
+                      title: 'Get Help',
+                      url: appConfig.helpLink,
+                      allowedUrl: appConfig.helpLink,
                     ),
                   ),
                 );
@@ -246,36 +221,10 @@ class ProfileScreen extends StatelessWidget {
               press: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                      appBar: AppBar(title: const Text('FAQs')),
-                      body: WebViewWidget(
-                        controller: WebViewController()
-                          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                          ..setNavigationDelegate(
-                            NavigationDelegate(
-                              onProgress: (int progress) {},
-                              onPageStarted: (String url) {},
-                              onPageFinished: (String url) {},
-                              onHttpError: (HttpResponseError error) {},
-                              onWebResourceError: (WebResourceError error) {},
-                              onNavigationRequest:
-                                  (NavigationRequest request) async {
-                                if (request.url != appConfig.faqLink) {
-                                  try {
-                                    await launchUrlString(request.url,
-                                        mode: LaunchMode.externalApplication);
-                                  } on Exception catch (e) {
-                                    // Handle the exception if needed
-                                    print('Error launching URL: $e');
-                                  }
-                                  return NavigationDecision.prevent;
-                                }
-                                return NavigationDecision.navigate;
-                              },
-                            ),
-                          )
-                          ..loadRequest(Uri.parse(appConfig.faqLink)),
-                      ),
+                    builder: (context) => WebViewScreen(
+                      title: 'FAQs',
+                      url: appConfig.faqLink,
+                      allowedUrl: appConfig.faqLink,
                     ),
                   ),
                 );
@@ -283,7 +232,6 @@ class ProfileScreen extends StatelessWidget {
               isShowDivider: false,
             ),
             const SizedBox(height: defaultPadding),
-
             // Log Out
             Consumer<AuthProvider>(
               builder: (BuildContext context, provider, Widget? child) =>
