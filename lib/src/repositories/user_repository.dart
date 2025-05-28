@@ -26,4 +26,16 @@ class UserRepository {
       return Result(message: 'Unexpected error occured');
     }
   }
+
+  Future<Result> storeFcmToken(String token) async {
+    try {
+      final res = await ApiService()
+          .put(ApiContants().storeFcmToken, payload: {'fcm_token': token});
+      return Result(data: res['data'], message: res['message']);
+    } on AppException catch (e) {
+      return Result(message: e.message.toString());
+    } catch (e) {
+      return Result(message: 'Unexpected error occured');
+    }
+  }
 }

@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:shop/src/providers/auth_provider.dart';
+import 'package:shop/src/repositories/user_repository.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -16,9 +18,11 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   bool _isFlutterLocalNotificationsInitialized = false;
+  final AuthProvider authProvider = AuthProvider();
 
   Future<void> initialize() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    getToken();
     // request permission
     await _requestPermission();
 
@@ -34,7 +38,15 @@ class NotificationService {
 
   // get token
   Future<String?> getToken() async {
-    return await _messaging.getToken();
+    final token = await _messaging.getToken();
+    log("FCM Token: $token");
+    if (authProvider.isLoggedIn) {
+      // store token in the backend
+      await UserRepository().storeFcmToken(token!);
+    } else {
+      log("User is not logged in");
+    }
+    return token;
   }
 
   Future<void> _requestPermission() async {

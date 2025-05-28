@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,6 +10,7 @@ import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/providers/product_search_provider.dart';
 import 'package:shop/src/repositories/home_repository.dart';
 import 'package:shop/src/route/screen_export.dart';
+import 'package:shop/src/services/notification_service.dart';
 
 class EntryPoint extends StatefulWidget {
   const EntryPoint({super.key});
@@ -26,6 +29,13 @@ class _EntryPointState extends State<EntryPoint> {
     CartScreen(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationService.instance.initialize();
+    log("Notification Service Initialized");
+  }
 
   @override
   Widget build(BuildContext context) {

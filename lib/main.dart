@@ -36,9 +36,6 @@ Future<void> main() async {
 
   await appConfig.initialize();
 
-  // Initialize Notification Service
-  // await NotificationService.instance.initialize();
-
   runApp(ChangeNotifierProvider.value(
     value: appConfig,
     child: const MyApp(),
