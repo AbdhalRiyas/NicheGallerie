@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,7 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/webview_screen.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'components/profile_card.dart';
 import 'components/profile_menu_item_list_tile.dart';
@@ -57,7 +60,6 @@ class ProfileScreen extends StatelessWidget {
             //     ),
             //   ),
             // ),
-
             Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: defaultPadding, vertical: defaultPadding / 2),
@@ -286,7 +288,70 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         )
                       : SizedBox(),
-            )
+            ),
+            const SizedBox(height: defaultPadding * 2),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: defaultPadding,
+                vertical: defaultPadding / 2,
+              ),
+              child: Text(
+                "Follow us on social media for exclusive weekly giveaways and coupon codes",
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    try {
+                      await launchUrlString(
+                        appConfig.socialMedia['instagram']!,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    } catch (e) {
+                      log('Failed to open link: ${appConfig.socialMedia['facebook']}');
+                    }
+                  },
+                  child: SvgPicture.asset(
+                    "assets/icons/instagram.com.svg",
+                    height: 32,
+                    width: 32,
+                    colorFilter: const ColorFilter.mode(
+                      primaryColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: defaultPadding),
+                GestureDetector(
+                  onTap: () async {
+                    try {
+                      await launchUrlString(
+                        appConfig.socialMedia['tiktok']!,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    } catch (e) {
+                      // toast(
+                      //   'Failed to open link: ${request.url}',
+                      //   print: true,
+                      // );
+                    }
+                  },
+                  child: SvgPicture.asset(
+                    "assets/icons/tiktok.svg",
+                    height: 32,
+                    width: 32,
+                    colorFilter: const ColorFilter.mode(
+                      primaryColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
