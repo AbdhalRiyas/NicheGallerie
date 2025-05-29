@@ -67,6 +67,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   final List<Map<String, String>> _fees = [];
 
+  Map<String, dynamic>? _appliedCoupon;
+
+  double _discountAmount = 0.0;
+
   // Controllers for the address form
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
@@ -247,6 +251,45 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ],
       ),
     );
+  }
+
+  void _applyCoupon() async {
+    if (_couponController.text.isEmpty) return;
+
+    showLoader(context, message: 'Validating coupon...');
+
+    final result = await OrderRepository().validateCoupon(
+      couponCode: _couponController.text,
+      cartItems: widget.productMap,
+      email: _selectedAddress?.email,
+    );
+
+    context.pop();
+
+    log(result.isSuccess ? 'Coupon applied' : 'Coupon validation failed');
+
+    if (result.isSuccess) {
+      setState(() {
+        _appliedCoupon = result.data['coupon'];
+        log('Applied Coupon: $_appliedCoupon');
+        // Calculate discount amount based on coupon type
+        if (_appliedCoupon?['discount_type'] == 'fixed_cart') {
+          _discountAmount = double.parse(_appliedCoupon?['amount'] ?? '0');
+        } else if (_appliedCoupon?['discount_type'] == 'percent') {
+          _discountAmount = widget.subTotal *
+              (double.parse(_appliedCoupon?['amount'] ?? '0') / 100);
+        }
+        // Update total
+        total = (shippingFee ?? 0.0) + widget.subTotal - _discountAmount;
+        context.pop(); // Close the dialog
+      });
+      toast('Coupon applied successfully');
+    } else {
+      _appliedCoupon = null; // Reset applied coupon
+      _discountAmount = 0.0; // Reset discount amount
+      total = (shippingFee ?? 0.0) + widget.subTotal; // Reset total
+      toast(result.message);
+    }
   }
 
   @override
@@ -579,6 +622,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       );
                     },
                   ),
+            SizedBox(height: defaultPadding / 2),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildOrderSummary() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             // Text('Your Coupon Code',
             //     style: Theme.of(context).textTheme.titleMedium),
             Padding(
@@ -587,8 +644,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (context) =>
-                        CouponPopup(couponController: _couponController),
+                    builder: (context) => CouponPopup(
+                      couponController: _couponController,
+                      onApply: _applyCoupon,
+                    ),
                   );
                 },
                 child: Container(
@@ -613,26 +672,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                       SizedBox(width: 8),
-                      Text('Type coupon code'),
+                      Text(
+                          _appliedCoupon != null
+                              ? 'Coupon: ${_appliedCoupon!['code']}'
+                              : 'Type coupon code',
+                          style: Theme.of(context).textTheme.bodyLarge),
                     ],
                   ),
                 ),
               ),
             ),
-            SizedBox(height: defaultPadding / 2),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildOrderSummary() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
             _buildSummaryRow(
                 'Subtotal',
                 formatCurrency(
@@ -640,6 +689,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Currency.fromJson(
                         context.read<AppConfig>().preferredCurrency))),
             SizedBox(height: 8),
+            if (_appliedCoupon != null)
+              Column(
+                children: [
+                  _buildSummaryRow('Discount (${_appliedCoupon!['code']})',
+                      '-${formatCurrency(_discountAmount, Currency.fromJson(context.read<AppConfig>().preferredCurrency))}',
+                      color: Colors.green),
+                  SizedBox(height: 8),
+                ],
+              ),
             _buildSummaryRow(
                 'Shipping Fee',
                 formatCurrency(
@@ -658,6 +716,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             context.read<AppConfig>().preferredCurrency))),
               );
             }),
+            Divider(),
             _buildSummaryRow(
                 'Total',
                 formatCurrency(
@@ -773,6 +832,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       productMap: widget.productMap,
       selectedShippingMethod: _selectedShippingMethod!,
       feeLines: _fees,
+      coupon: _appliedCoupon,
     );
 
     if (result.isSuccess) {
@@ -793,8 +853,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         },
       );
     } else {
-      pop();
       toast(result.message);
+      context.pop();
     }
   }
 }

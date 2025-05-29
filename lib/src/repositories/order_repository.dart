@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/error/app_exception.dart';
@@ -68,8 +70,10 @@ class OrderRepository {
     required List<Map<dynamic, dynamic>> productMap,
     required ShippingModel selectedShippingMethod,
     required List<Map<String, String>> feeLines,
+    Map<String, dynamic>? coupon,
   }) async {
     try {
+      log('Couponnnn: $coupon');
       final res = await ApiService()
           .post("${ApiContants().orders}?currency=${currency.code}", payload: {
         'payment_method': selectedPaymentMethod['gateway_id'],
@@ -112,6 +116,14 @@ class OrderRepository {
           }
         ],
         'fee_lines': feeLines,
+        if (coupon != null) ...{
+          'coupon_lines': [
+            {
+              'code': coupon['code'],
+              'discount': coupon['amount'],
+            }
+          ],
+        }
       });
 
       if (res.containsKey('payment_url')) {
@@ -123,6 +135,47 @@ class OrderRepository {
       return Result(message: e.message.toString());
     } catch (e) {
       return Result(message: 'Unexpected error occured');
+    }
+  }
+
+  Future<Result> validateCoupon({
+    required String couponCode,
+    required List<Map<dynamic, dynamic>> cartItems,
+    String? email,
+  }) async {
+    try {
+      final response = await ApiService().post(
+        '/validate-coupon',
+        payload: {
+          'coupon_code': couponCode,
+          'items': cartItems.map((item) {
+            return {
+              'product_id': item['product_id'],
+              'quantity': item['qty'],
+            };
+          }).toList(),
+          if (email != null) 'email': email,
+        },
+      );
+
+      log('Coupon validation response: $response');
+
+      if (response == null) {
+        return Result(message: 'Failed to validate coupon');
+      }
+
+      if (response['success'] == true) {
+        return Result(
+          data: response,
+          message: response['message'],
+        );
+      } else {
+        return Result(message: response['message']);
+      }
+    } on AppException catch (e) {
+      return Result(message: e.message.toString());
+    } catch (e) {
+      return Result(message: 'An error occurred while validating the coupon');
     }
   }
 }

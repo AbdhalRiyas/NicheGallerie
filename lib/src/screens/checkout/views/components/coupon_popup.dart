@@ -6,9 +6,11 @@ class CouponPopup extends StatelessWidget {
   const CouponPopup({
     super.key,
     required TextEditingController couponController,
+    this.onApply,
   }) : _couponController = couponController;
 
   final TextEditingController _couponController;
+  final VoidCallback? onApply;
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +33,7 @@ class CouponPopup extends StatelessWidget {
         Column(
           children: [
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: onApply,
               child: Text('Apply'),
             ),
             TextButton(

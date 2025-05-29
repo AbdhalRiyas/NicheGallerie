@@ -3,12 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shop/src/components/empty_error_state_widget.dart';
+import 'package:shop/src/components/skeleton/others/categories_skelton.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
+import 'package:shop/src/components/skeleton/skeleton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/repositories/order_repository.dart';
 import 'package:shop/src/route/screen_export.dart';
-import 'package:shop/src/screens/home/views/components/home_skeleton.dart';
 import 'package:shop/src/utils/result.dart';
 
 class OrdersScreen extends StatelessWidget {
@@ -188,10 +189,7 @@ class OrdersScreen extends StatelessWidget {
               );
             }
           },
-          loadingWidget: const ProductsSkelton(
-            isGrid: true,
-            gridCount: 2, // Adjust as needed for loading state
-          ), // Loading UI
+          loadingWidget: _buildShimmer(), // Loading UI
           errorBuilder: (error) {
             // Handle errors by showing the NoDataWidget
             return NoDataWidget(
@@ -202,6 +200,42 @@ class OrdersScreen extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Padding _buildShimmer() {
+    return Padding(
+      padding: const EdgeInsets.all(defaultPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 24),
+          ...List.generate(
+            5,
+            (index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                child: Row(
+                  children: [
+                    Skeleton(height: 60, width: 60),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Skeleton(height: 20, width: 300),
+                          const SizedBox(height: defaultPadding / 2),
+                          Skeleton(height: 20, width: 100),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

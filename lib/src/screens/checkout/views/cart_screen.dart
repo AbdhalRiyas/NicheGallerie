@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/empty_handle_widget.dart';
@@ -11,7 +10,6 @@ import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
-import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
 import 'components/cart_product.dart';
 
@@ -101,11 +99,6 @@ class _CartScreenState extends State<CartScreen> {
                         key: Key(product.id.toString()),
                         product: product,
                         qty: cartItem['qty'],
-                        onTap: () {
-                          context.go(
-                            '/$productScreenRoute/${product.slug}',
-                          );
-                        },
                         onDecrement: () =>
                             cartProvider.decrementQty(product.id),
                         onIncrement: !product.manageStock ||
@@ -172,27 +165,30 @@ class _CartScreenState extends State<CartScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 24),
-          ...List.generate(5, (index) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
-              child: Row(
-                children: [
-                  Skeleton(height: 60, width: 60),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Skeleton(height: 20, width: 300),
-                        const SizedBox(height: defaultPadding / 2),
-                        Skeleton(height: 20, width: 100),
-                      ],
+          ...List.generate(
+            5,
+            (index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                child: Row(
+                  children: [
+                    Skeleton(height: 60, width: 60),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Skeleton(height: 20, width: 300),
+                          const SizedBox(height: defaultPadding / 2),
+                          Skeleton(height: 20, width: 100),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
