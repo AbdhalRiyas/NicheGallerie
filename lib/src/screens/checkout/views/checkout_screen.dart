@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nb_utils/nb_utils.dart' show pop, toast;
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/address/views/components/address_button.dart';
 import 'package:shop/src/screens/address/views/components/address_card.dart';
 import 'package:shop/src/screens/address/views/components/address_form.dart';
+import 'package:shop/src/screens/checkout/views/components/coupon_popup.dart';
 import 'package:shop/src/services/api_service.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
 import 'package:shop/src/utils/result.dart';
@@ -78,6 +80,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _stateController = TextEditingController();
   final _countryController = TextEditingController();
   final _emailController = TextEditingController();
+  final _couponController = TextEditingController();
 
   // Errors map to store validation errors
   final Map<String, String> _errors = {};
@@ -576,6 +579,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       );
                     },
                   ),
+            // Text('Your Coupon Code',
+            //     style: Theme.of(context).textTheme.titleMedium),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+              child: InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) =>
+                        CouponPopup(couponController: _couponController),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(defaultPadding),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(defaultBorderRadius),
+                  ),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/icons/Tag.svg",
+                        height: 24,
+                        width: 24,
+                        colorFilter: ColorFilter.mode(
+                          Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .color!
+                              .withOpacity(0.3),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text('Type coupon code'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: defaultPadding / 2),
           ],
         );
       },

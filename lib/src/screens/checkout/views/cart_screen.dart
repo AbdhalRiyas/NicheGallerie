@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/empty_handle_widget.dart';
@@ -24,7 +25,6 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final TextEditingController _couponController = TextEditingController();
   late Future<List<Product>?> _cartProducts;
 
   @override
@@ -32,13 +32,6 @@ class _CartScreenState extends State<CartScreen> {
     super.initState();
     _cartProducts = Provider.of<CartProvider>(context, listen: false)
         .fetchProducts(context.read<AppConfig>().preferredCurrency['code']);
-  }
-
-  void _onCouponCodePressed() {
-    showDialog(
-      context: context,
-      builder: (context) => CouponPopup(couponController: _couponController),
-    );
   }
 
   double calculateSubtotal(
@@ -108,6 +101,11 @@ class _CartScreenState extends State<CartScreen> {
                         key: Key(product.id.toString()),
                         product: product,
                         qty: cartItem['qty'],
+                        onTap: () {
+                          context.go(
+                            '/$productScreenRoute/${product.slug}',
+                          );
+                        },
                         onDecrement: () =>
                             cartProvider.decrementQty(product.id),
                         onIncrement: !product.manageStock ||
@@ -118,43 +116,6 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     }),
                     SizedBox(height: defaultPadding / 2),
-                    // Text('Your Coupon Code',
-                    //     style: Theme.of(context).textTheme.titleMedium),
-                    // Padding(
-                    //   padding:
-                    //       const EdgeInsets.symmetric(vertical: defaultPadding),
-                    //   child: InkWell(
-                    //     onTap: _onCouponCodePressed,
-                    //     child: Container(
-                    //       padding: EdgeInsets.all(defaultPadding),
-                    //       decoration: BoxDecoration(
-                    //         color: Colors.grey[100],
-                    //         borderRadius:
-                    //             BorderRadius.circular(defaultBorderRadius),
-                    //       ),
-                    //       child: Row(
-                    //         children: [
-                    //           SvgPicture.asset(
-                    //             "assets/icons/Tag.svg",
-                    //             height: 24,
-                    //             width: 24,
-                    //             colorFilter: ColorFilter.mode(
-                    //               Theme.of(context)
-                    //                   .textTheme
-                    //                   .bodyLarge!
-                    //                   .color!
-                    //                   .withOpacity(0.3),
-                    //               BlendMode.srcIn,
-                    //             ),
-                    //           ),
-                    //           SizedBox(width: 8),
-                    //           Text('Type coupon code'),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    // SizedBox(height: defaultPadding / 2),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

@@ -24,7 +24,7 @@ class CategoryRepository {
 
   Future<Result> getFeaturedBrands() async {
     final res = await ApiService().get("${ApiContants().brands}?featured=true");
-    log(res.toString());
+    log("brands: $res");
 
     List<Brand> featuredBrands = [];
 
@@ -39,7 +39,7 @@ class CategoryRepository {
   Future<Result> getFeaturedAccords() async {
     final res =
         await ApiService().get("${ApiContants().accords}?featured=true");
-    log(res.toString());
+    log("accords: $res");
 
     List<Accord> featuredAccords = [];
 
@@ -54,7 +54,7 @@ class CategoryRepository {
 
   Future<Result> getFeaturedNotes() async {
     final res = await ApiService().get("${ApiContants().notes}?featured=true");
-    log(res.toString());
+    log("notes: $res");
 
     List<Note> featuredNotes = [];
 

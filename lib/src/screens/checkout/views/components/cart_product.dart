@@ -15,6 +15,7 @@ class CartProduct extends StatelessWidget {
   final VoidCallback onDismissed;
   final VoidCallback? onDecrement;
   final VoidCallback? onIncrement;
+  final VoidCallback? onTap;
 
   const CartProduct({
     super.key,
@@ -23,6 +24,7 @@ class CartProduct extends StatelessWidget {
     required this.onDismissed,
     this.onDecrement,
     this.onIncrement,
+    this.onTap,
   });
 
   @override
@@ -42,7 +44,7 @@ class CartProduct extends StatelessWidget {
       direction: DismissDirection.endToStart,
       onDismissed: (_) => onDismissed(),
       child: ListTile(
-        onTap: () {},
+        onTap: onTap,
         contentPadding: EdgeInsets.zero,
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
