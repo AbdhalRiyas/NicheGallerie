@@ -144,21 +144,68 @@ class _EntryPointState extends State<EntryPoint> {
               builder: (BuildContext context, CartProvider provider,
                       Widget? child) =>
                   Stack(
+                clipBehavior: Clip.none,
                 children: [
                   svgIcon(
                     "assets/icons/Bag.svg",
-                    color: provider.cartItems.isNotEmpty ? primaryColor : null,
+                    color: _currentIndex == 3
+                        ? primaryColor
+                        : Theme.of(context).iconTheme.color,
                   ),
                   if (provider.cartItems.isNotEmpty)
                     Positioned(
-                      top: 0,
-                      right: 0,
+                      top: -2,
+                      right: -2,
                       child: Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
+                        width: 14,
+                        height: 14,
+                        decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${provider.cartItems.length}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                ],
+              ),
+            ),
+            activeIcon: Consumer<CartProvider>(
+              builder: (BuildContext context, CartProvider provider,
+                      Widget? child) =>
+                  Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  svgIcon(
+                    "assets/icons/Bag.svg",
+                    color: primaryColor,
+                  ),
+                  if (provider.cartItems.isNotEmpty)
+                    Positioned(
+                      top: -2,
+                      right: -2,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${provider.cartItems.length}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     )

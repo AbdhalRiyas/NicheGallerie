@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nb_utils/nb_utils.dart' show snackBar;
 import 'package:provider/provider.dart';
+import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
-import 'package:shop/src/route/route_constants.dart';
+import 'package:shop/src/screens/webview_screen.dart';
 import 'package:shop/src/utils/result.dart';
 import 'package:shop/src/utils/show_loader.dart';
 
@@ -67,12 +70,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         passwordController: _passwordController),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: TextButton(
-                        child: const Text("Forgot Password?"),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, passwordRecoveryScreenRoute);
-                        },
+                      child: Consumer<AppConfig>(
+                        builder: (context, value, child) => TextButton(
+                          child: const Text("Forgot Password?"),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => WebViewScreen(
+                                  title: 'Reset Password',
+                                  url: value.forgotPassword,
+                                  allowedUrl: value.forgotPassword,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(

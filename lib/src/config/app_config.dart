@@ -19,8 +19,15 @@ class AppConfig with ChangeNotifier {
   Map<String, String> get socialMedia =>
       Map<String, String>.from(_config?['social_media'] ?? {});
 
+  String get wholesale =>
+      _config?['wholesale'] ?? 'https://nichegallerie.com/wholesale/';
+
   List<Map<String, dynamic>> get paymentMethods =>
       List<Map<String, dynamic>>.from(_config?['payment_methods'] ?? []);
+
+  String get forgotPassword =>
+      _config?['forgot_password'] ??
+      'https://nichegallerie.com/my-account/?eael-lostpassword=1';
 
   List<Map<String, dynamic>> get currencies {
     var defaultCurrency = [

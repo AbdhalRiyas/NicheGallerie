@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nb_utils/nb_utils.dart' as nb;
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/list_tile/divider_list_tile.dart';
 import 'package:shop/src/config/app_config.dart';
@@ -154,7 +153,7 @@ class ProfileScreen extends StatelessWidget {
                                   appConfig.setPreferredCurrency(
                                     appConfig.currencies[i],
                                   );
-                                  context.pop();
+                                  nb.pop(context);
                                 },
                         ),
                       ),
@@ -201,13 +200,13 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             ProfileMenuListTile(
-              text: "Get Help",
+              text: "Contact Us",
               svgSrc: "assets/icons/Help.svg",
               press: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => WebViewScreen(
-                      title: 'Get Help',
+                      title: 'Contact',
                       url: appConfig.helpLink,
                       allowedUrl: appConfig.helpLink,
                     ),
@@ -225,6 +224,22 @@ class ProfileScreen extends StatelessWidget {
                       title: 'FAQs',
                       url: appConfig.faqLink,
                       allowedUrl: appConfig.faqLink,
+                    ),
+                  ),
+                );
+              },
+              isShowDivider: false,
+            ),
+            ProfileMenuListTile(
+              text: "Wholesale",
+              svgSrc: "assets/icons/FAQ.svg",
+              press: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => WebViewScreen(
+                      title: 'Wholesale',
+                      url: appConfig.wholesale,
+                      allowedUrl: appConfig.wholesale,
                     ),
                   ),
                 );
@@ -296,8 +311,8 @@ class ProfileScreen extends StatelessWidget {
                 vertical: defaultPadding / 2,
               ),
               child: Text(
-                "Follow us on social media for exclusive weekly giveaways and coupon codes",
-                style: Theme.of(context).textTheme.titleMedium,
+                "FOLLOW US ON SOCIAL MEDIA FOR EXCLUSIVE WEEKLY GIVEAWAYS AND COUPON CODES",
+                style: Theme.of(context).textTheme.titleSmall,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -312,7 +327,10 @@ class ProfileScreen extends StatelessWidget {
                         mode: LaunchMode.externalApplication,
                       );
                     } catch (e) {
-                      log('Failed to open link: ${appConfig.socialMedia['facebook']}');
+                      nb.toast(
+                        'Failed to open link: ${appConfig.socialMedia['instagram']}',
+                        print: true,
+                      );
                     }
                   },
                   child: SvgPicture.asset(
@@ -334,10 +352,10 @@ class ProfileScreen extends StatelessWidget {
                         mode: LaunchMode.externalApplication,
                       );
                     } catch (e) {
-                      // toast(
-                      //   'Failed to open link: ${request.url}',
-                      //   print: true,
-                      // );
+                      nb.toast(
+                        'Failed to open link: ${appConfig.socialMedia['tiktok']}',
+                        print: true,
+                      );
                     }
                   },
                   child: SvgPicture.asset(
@@ -351,6 +369,60 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: defaultPadding),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "SUBSCRIBE TO OUR NEWSLETTER FOR INSTANT UPDATES ON NEW ARRIVALS AND FLASH DEALS",
+                    style: Theme.of(context).textTheme.titleSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: defaultPadding / 2),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "Your Email Address",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 0),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: 120, // Set a fixed width for the button
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Example: Show a snackbar for now
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Subscribed!')),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blackColor,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 16,
+                            ),
+                          ),
+                          child: const Text("Subscribe"),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: defaultPadding),
+                ],
+              ),
             ),
           ],
         ),
