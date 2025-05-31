@@ -7,6 +7,7 @@ import 'package:shop/src/components/list_tile/divider_list_tile.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
+import 'package:shop/src/repositories/user_repository.dart';
 import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/webview_screen.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -19,6 +20,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
     return Scaffold(
       body: Consumer<AppConfig>(
         builder: (context, appConfig, child) => ListView(
@@ -387,6 +389,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: "Your Email Address",
                             border: OutlineInputBorder(
@@ -396,17 +399,43 @@ class ProfileScreen extends StatelessWidget {
                                 horizontal: 12, vertical: 0),
                           ),
                           keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) {
+                            // Rebuild to show/hide error
+                            (context as Element).markNeedsBuild();
+                          },
                         ),
                       ),
                       const SizedBox(width: 8),
                       SizedBox(
                         width: 120, // Set a fixed width for the button
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Example: Show a snackbar for now
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Subscribed!')),
+                          onPressed: () async {
+                            if (emailController.text.isEmpty ||
+                                !RegExp(
+                                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                                ).hasMatch(emailController.text)) {
+                              nb.toast(
+                                'Please enter a valid email',
+                                print: true,
+                              );
+                              return;
+                            }
+                            final result =
+                                await UserRepository().emailSubscription(
+                              emailController.text,
                             );
+                            if (result.isSuccess) {
+                              nb.toast(
+                                'Subscribed successfully',
+                                print: true,
+                              );
+                              emailController.clear();
+                            } else {
+                              nb.toast(
+                                result.message,
+                                print: true,
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: blackColor,

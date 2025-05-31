@@ -16,6 +16,8 @@ class ApiContants {
   final String calculateShipping = '/checkout/shipping-cost';
   final String shippingMethods = '/checkout/shipping-methods';
   final String storeFcmToken = '/users/fcm-token';
+  final String emailSubscription = '/users/email-subscription';
+  final String requestStock = '/products/request-stock';
 
   final String billingAddress = '/users/billing-address';
   final String countries = '/countries';

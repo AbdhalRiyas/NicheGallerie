@@ -20,7 +20,7 @@ import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.d
 import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';
 import 'package:shop/src/services/api_service.dart';
 
-import 'components/notify_me_card.dart';
+import 'components/request_stock_dialog.dart';
 import 'components/product_images.dart';
 import 'components/product_info.dart';
 import 'components/product_list_tile.dart';
@@ -86,7 +86,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         );
                       },
                     )
-                  : NotifyMeCard();
+                  : RequestStockDialog(
+                      productId: product.id,
+                    );
         },
         valueListenable: _product,
       ),

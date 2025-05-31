@@ -23,4 +23,19 @@ class ProductRepository {
       return Result(message: e.toString());
     }
   }
+
+  Future<Result> requestStock(int productId, String whatsappNumber) async {
+    try {
+      final res = await ApiService().post(
+        ApiContants().requestStock,
+        payload: {
+          'product_id': productId,
+          'whatsapp_number': whatsappNumber,
+        },
+      );
+      return Result(data: res['data'], message: res['message']);
+    } catch (e) {
+      return Result(message: e.toString());
+    }
+  }
 }

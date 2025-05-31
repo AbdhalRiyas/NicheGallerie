@@ -3,12 +3,17 @@ import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/repositories/product_repository.dart';
 
-class NotifyMeCard extends StatelessWidget {
-  const NotifyMeCard({
+class RequestStockDialog extends StatelessWidget {
+  const RequestStockDialog({
     super.key,
+    required this.productId,
   });
+
+  final int productId;
 
   void _showWhatsappDialog(BuildContext context) {
     final TextEditingController phoneController = TextEditingController();
@@ -35,7 +40,8 @@ class NotifyMeCard extends StatelessWidget {
                 onChanged: (value) {
                   countryCodeController.text = value.dialCode ?? '+974';
                 },
-                initialSelection: 'UAE',
+                showFlagDialog: true,
+                showFlagMain: true,
                 favorite: ['+974', 'UAE'],
                 showFlag: true,
                 showCountryOnly: false,
@@ -70,10 +76,30 @@ class NotifyMeCard extends StatelessWidget {
         ),
         actions: [
           ElevatedButton(
-            onPressed: () {
-              final String phoneNumber = phoneController.text.trim();
-              final String countryCode = countryCodeController.text.trim();
-              log('Phone Number: $countryCode$phoneNumber');
+            onPressed: () async {
+              final String whatsappNumber =
+                  '${countryCodeController.text}${phoneController.text}';
+
+              if (phoneController.text.isEmpty ||
+                  countryCodeController.text.isEmpty) {
+                toast(
+                  'Please enter your WhatsApp number',
+                );
+                return;
+              }
+              final result = await ProductRepository().requestStock(
+                productId, // Replace with actual product ID
+                whatsappNumber,
+              );
+
+              if (result.isSuccess) {
+                log('Stock request sent successfully: ${result.data}');
+                toast(result.message);
+                Navigator.of(context).pop();
+              } else {
+                log('Error sending stock request: ${result.message}');
+                toast(result.message);
+              }
             },
             child: const Text('Submit'),
           ),

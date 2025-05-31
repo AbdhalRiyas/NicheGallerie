@@ -38,4 +38,18 @@ class UserRepository {
       return Result(message: 'Unexpected error occured');
     }
   }
+
+  Future<Result> emailSubscription(String email) async {
+    try {
+      final res =
+          await ApiService().post(ApiContants().emailSubscription, payload: {
+        'email': email,
+      });
+      return Result(data: res['data'], message: res['message']);
+    } on AppException catch (e) {
+      return Result(message: e.message.toString());
+    } catch (e) {
+      return Result(message: 'Unexpected error occured');
+    }
+  }
 }
