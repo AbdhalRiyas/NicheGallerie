@@ -191,7 +191,7 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                                   width: 1,
                                 ),
                               ),
-                              child: ClipOval(
+                              child: CircleAvatar(
                                 child: CachedNetworkImage(
                                   imageUrl: imageUrl,
                                   fit: BoxFit.cover,

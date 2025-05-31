@@ -86,10 +86,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         );
                       },
                     )
-                  : NotifyMeCard(
-                      isNotify: false,
-                      onChanged: (value) {},
-                    );
+                  : NotifyMeCard();
         },
         valueListenable: _product,
       ),
