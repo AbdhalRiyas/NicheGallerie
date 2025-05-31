@@ -99,6 +99,11 @@ class _CartScreenState extends State<CartScreen> {
                         key: Key(product.id.toString()),
                         product: product,
                         qty: cartItem['qty'],
+                        onTap: () {
+                          context.go(
+                            '/$productScreenRoute/${product.slug}',
+                          );
+                        },
                         onDecrement: () =>
                             cartProvider.decrementQty(product.id),
                         onIncrement: !product.manageStock ||

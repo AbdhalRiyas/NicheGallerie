@@ -11,7 +11,6 @@ class ProductRepository {
       log(productIds.toString());
       final res = await ApiService().get(
           "${ApiContants().products}?include=${productIds.join(',')}&currency=$currencyCode");
-      log(res.toString());
 
       List<Product> products = [];
 

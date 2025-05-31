@@ -29,7 +29,9 @@ class AppRouter {
               pageBuilder: (context, state) {
                 final slug = state.pathParameters['slug'] as String;
                 return MaterialPage(
-                  child: ProductDetailsScreen(slug: slug),
+                  child: ProductDetailsScreen(
+                    slug: slug,
+                  ),
                 );
               },
             ),

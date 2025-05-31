@@ -1,14 +1,20 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/components/custom_snackbar.dart';
+import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/wishlist_provider.dart';
+import 'package:shop/src/repositories/product_repository.dart';
+import 'package:shop/src/route/route_constants.dart';
 import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.dart';
 import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';
 import 'package:shop/src/services/api_service.dart';
@@ -39,8 +45,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   void getProduct() async {
     final res = await ApiService().get(
         '${ApiContants().products}/${widget.slug}?currency=${context.read<AppConfig>().preferredCurrency['code']}');
-
+    log('Product Details Response: $res');
     _product.value = Product.fromJson(res);
+  }
+
+  Future<List<Product>> getRelatedProducts() async {
+    final res = await ProductRepository().fetchProductById(
+      _product.value!.relatedIds,
+      context.read<AppConfig>().preferredCurrency['code']!,
+    );
+    log('Related Products Request: ${_product.value!.relatedIds}');
+    log('Related Products Response: $res');
+    return res.data as List<Product>;
   }
 
   @override
@@ -172,14 +188,75 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   );
                                 },
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(defaultPadding),
-                              //   child: Text(
-                              //     "You may also like",
-                              //     style:
-                              //         Theme.of(context).textTheme.titleSmall!,
-                              //   ),
-                              // ),
+                              Padding(
+                                padding: const EdgeInsets.all(defaultPadding),
+                                child: Text(
+                                  "You may also like",
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall!,
+                                ),
+                              ),
+                              if (product.relatedIds.isNotEmpty)
+                                FutureBuilder<List<Product>>(
+                                  future: getRelatedProducts(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                        child:
+                                            CircularProgressIndicator.adaptive(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text(
+                                          'Error fetching related products',
+                                          style: const TextStyle(
+                                              color: Colors.red),
+                                        ),
+                                      );
+                                    } else if (!snapshot.hasData ||
+                                        snapshot.data!.isEmpty) {
+                                      return const Center(
+                                        child:
+                                            Text('No related products found'),
+                                      );
+                                    } else {
+                                      return SizedBox(
+                                        height: 250,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: snapshot.data!.length,
+                                          itemBuilder: (context, index) {
+                                            final relatedProduct =
+                                                snapshot.data![index];
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: ProductCard(
+                                                press: () {
+                                                  log(
+                                                    'Navigating to product:/$productScreenRoute/${relatedProduct.slug}',
+                                                  );
+                                                  context.go(
+                                                    '/$productScreenRoute/${relatedProduct.slug}',
+                                                  );
+                                                },
+                                                product: relatedProduct,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  },
+                                )
+                              else
+                                const SizedBox.shrink(),
                             ],
                           ),
               ),

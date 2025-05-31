@@ -31,6 +31,8 @@ class Product {
 
   final String weight;
 
+  final List<dynamic> relatedIds;
+
   Product({
     required this.id,
     required this.name,
@@ -48,6 +50,7 @@ class Product {
     required this.stockQuantity,
     required this.manageStock,
     required this.weight,
+    required this.relatedIds,
   });
 
   factory Product.fromJson(Map<String, dynamic> product) => Product(
@@ -68,7 +71,10 @@ class Product {
       metadata: product['metadata'],
       stockQuantity: product['stock_quantity'] ?? 0,
       manageStock: product['manage_stock'],
-      weight: product['weight'] ?? '1');
+      weight: product['weight'] ?? '1',
+      relatedIds: product['related_ids'] != null
+          ? List<dynamic>.from(product['related_ids'])
+          : []);
 
   Map<String, dynamic> toJson() => {
         'id': id,
