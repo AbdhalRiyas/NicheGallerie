@@ -36,7 +36,7 @@ class ProductInfo extends StatelessWidget {
             maxLines: 2,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const SizedBox(height: defaultPadding),
+          // const SizedBox(height: defaultPadding),
           Row(
             children: [
               ProductAvailabilityTag(isAvailable: isAvailable),
@@ -50,7 +50,7 @@ class ProductInfo extends StatelessWidget {
               // Text("($numOfReviews Reviews)")
             ],
           ),
-          const SizedBox(height: defaultPadding),
+          // const SizedBox(height: defaultPadding),
           // Text(
           //   "Product info",
           //   style: Theme.of(context)
@@ -59,11 +59,13 @@ class ProductInfo extends StatelessWidget {
           //       .copyWith(fontWeight: FontWeight.w500),
           // ),
           // const SizedBox(height: defaultPadding / 2),
-          Text(
-            description,
-            style: const TextStyle(height: 1.4),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+            child: Text(
+              description,
+              style: const TextStyle(height: 1.4),
+            ),
           ),
-          const SizedBox(height: defaultPadding / 2),
         ],
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/src/config/api_contants.dart';
@@ -7,134 +5,65 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/brand.dart';
 import 'package:shop/src/models/accord.dart';
 import 'package:shop/src/models/note.dart';
-import 'package:shop/src/repositories/category_repository.dart';
 import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 class ExploreBySection extends StatefulWidget {
-  const ExploreBySection({super.key});
+  final Map<String, String> tabs;
+  final List<Brand> brands;
+  final List<Accord> accords;
+  final List<Note> notes;
+
+  const ExploreBySection({
+    super.key,
+    required this.tabs,
+    required this.brands,
+    required this.accords,
+    required this.notes,
+  });
 
   @override
   State<ExploreBySection> createState() => _ExploreBySectionState();
 }
 
 class _ExploreBySectionState extends State<ExploreBySection> {
-  int _activeTab = 0;
-  final ScrollController _scrollController = ScrollController();
-  Timer? _autoScrollTimer;
-
-  List<Brand> _brands = [];
-  List<Accord> _accords = [];
-  List<Note> _notes = [];
-
-  bool _loadingBrands = false;
-  bool _loadingAccords = false;
-  bool _loadingNotes = false;
-
-  final List<Map<String, dynamic>> _tabsMeta = [
-    {"id": 0, "name": "Brands"},
-    {"id": 1, "name": "Accords"},
-    {"id": 2, "name": "Notes"},
-  ];
+  late String _activeTab;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _fetchTabData(_activeTab);
-    _startAutoScroll();
-    _scrollController.addListener(_scrollListener);
-  }
-
-  void _startAutoScroll() {
-    _autoScrollTimer = Timer.periodic(Duration(seconds: 2), (timer) {
-      if (_scrollController.hasClients) {
-        double maxScroll = _scrollController.position.maxScrollExtent;
-        double currentScroll = _scrollController.position.pixels;
-        double nextScroll = (currentScroll + 100).clamp(0, maxScroll);
-        _scrollController.animateTo(nextScroll,
-            duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-      }
-    });
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      _scrollController.jumpTo(0);
-    }
+    // Set the initial active tab to the first tab's ID
+    _activeTab = widget.tabs.values.first;
   }
 
   @override
   void dispose() {
-    _autoScrollTimer?.cancel();
-    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchTabData(int tabId) async {
-    final repo = CategoryRepository();
-
-    if (tabId == 0 && _brands.isEmpty && !_loadingBrands) {
-      setState(() => _loadingBrands = true);
-      final res = await repo.getFeaturedBrands();
-      setState(() {
-        _brands = res.data;
-        _loadingBrands = false;
-      });
-    } else if (tabId == 1 && _accords.isEmpty && !_loadingAccords) {
-      setState(() => _loadingAccords = true);
-      final res = await repo.getFeaturedAccords();
-      setState(() {
-        _accords = res.data;
-        _loadingAccords = false;
-      });
-    } else if (tabId == 2 && _notes.isEmpty && !_loadingNotes) {
-      setState(() => _loadingNotes = true);
-      final res = await repo.getFeaturedNotes();
-      setState(() {
-        _notes = res.data;
-        _loadingNotes = false;
-      });
-    }
-  }
-
-  List<dynamic> _getActiveItems() {
-    switch (_activeTab) {
-      case 0:
-        return _brands;
-      case 1:
-        return _accords;
-      case 2:
-        return _notes;
-      default:
-        return [];
-    }
-  }
-
-  bool _isLoadingCurrentTab() {
-    switch (_activeTab) {
-      case 0:
-        return _loadingBrands;
-      case 1:
-        return _loadingAccords;
-      case 2:
-        return _loadingNotes;
-      default:
-        return false;
-    }
-  }
-
-  void _onTabSelected(int tabId) {
+  void _onTabSelected(String tabId) {
     setState(() {
       _activeTab = tabId;
     });
-    _fetchTabData(tabId);
+  }
+
+  List<dynamic> _getActiveItems() {
+    if (_activeTab == 'brands') {
+      return widget.brands;
+    } else if (_activeTab == 'accords') {
+      return widget.accords;
+    } else if (_activeTab == 'notes') {
+      return widget.notes;
+    }
+    return [];
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = _isLoadingCurrentTab();
     final activeItems = _getActiveItems();
+    final tabsMeta =
+        widget.tabs.entries.map((e) => {'name': e.key, 'id': e.value}).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,21 +73,26 @@ class _ExploreBySectionState extends State<ExploreBySection> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Explore By", style: Theme.of(context).textTheme.titleSmall),
+              Text(
+                "Explore By",
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
               Row(
-                children: _tabsMeta.map((tab) {
+                children: tabsMeta.map((tab) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: defaultPadding / 6),
+                        horizontal: defaultPadding / 4),
                     child: InkWell(
                       onTap: _activeTab == tab['id']
                           ? null
-                          : () => _onTabSelected(tab['id']),
+                          : () => _onTabSelected(tab['id']!),
                       borderRadius: BorderRadius.circular(30),
                       child: Container(
-                        height: 26,
+                        height: 32,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: defaultPadding),
+                          horizontal: defaultPadding * 0.75,
+                          vertical: defaultPadding / 4,
+                        ),
                         decoration: BoxDecoration(
                           color: _activeTab == tab['id']
                               ? primaryColor
@@ -172,8 +106,16 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                         ),
                         child: Center(
                           child: Text(
-                            tab['name'],
-                            style: const TextStyle(fontSize: 12),
+                            tab['name']!,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: _activeTab == tab['id']
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
+                            ),
                           ),
                         ),
                       ),
@@ -186,78 +128,105 @@ class _ExploreBySectionState extends State<ExploreBySection> {
         ),
         const SizedBox(height: defaultPadding),
         SizedBox(
-          height: 50,
-          child: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : activeItems.isEmpty
-                  ? const Center(child: Text('No items found'))
-                  : ListView.builder(
-                      controller: _scrollController,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: activeItems.length,
-                      itemBuilder: (context, index) {
-                        final item = activeItems[index % activeItems.length];
-                        return Padding(
-                          padding: const EdgeInsets.only(left: defaultPadding),
-                          child: InkWell(
+          height: 80,
+          child: activeItems.isEmpty
+              ? const Center(child: Text('No items found'))
+              : ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: activeItems.length,
+                  itemBuilder: (context, index) {
+                    final item = activeItems[index];
+                    String imageUrl = '';
+                    String name = '';
+                    String slug = '';
+                    Map<String, String> taxonomy = {};
+
+                    if (item is Brand) {
+                      imageUrl = item.imageUrl;
+                      name = item.name;
+                      slug = item.slug;
+                      taxonomy = {"brands": slug};
+                    } else if (item is Accord) {
+                      imageUrl = item.imageUrl;
+                      name = item.name;
+                      slug = item.slug;
+                      taxonomy = {"accords": slug};
+                    } else if (item is Note) {
+                      imageUrl = item.imageUrl;
+                      name = item.name;
+                      slug = item.slug;
+                      taxonomy = {"notes": slug};
+                    }
+
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: index == 0 ? defaultPadding : defaultPadding / 2,
+                        right: index == activeItems.length - 1
+                            ? defaultPadding
+                            : defaultPadding / 2,
+                      ),
+                      child: Column(
+                        children: [
+                          InkWell(
                             onTap: () {
-                              if (item is Brand) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return ProductsListScreen(
-                                        title: item.name,
-                                        apiEndPoint: ApiContants().products,
-                                        taxanomy: {
-                                          "brands": item.slug.toString(),
-                                        },
-                                      );
-                                    },
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductsListScreen(
+                                    title: name,
+                                    apiEndPoint: ApiContants().products,
+                                    taxanomy: taxonomy,
                                   ),
-                                );
-                              } else if (item is Accord) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return ProductsListScreen(
-                                        title: item.name,
-                                        apiEndPoint: ApiContants().products,
-                                        taxanomy: {
-                                          "accords": item.slug.toString(),
-                                        },
-                                      );
-                                    },
-                                  ),
-                                );
-                              } else if (item is Note) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return ProductsListScreen(
-                                        title: item.name,
-                                        apiEndPoint: ApiContants().products,
-                                        taxanomy: {
-                                          "notes": item.slug.toString(),
-                                        },
-                                      );
-                                    },
-                                  ),
-                                );
-                              }
+                                ),
+                              );
                             },
-                            child: CachedNetworkImage(
-                              imageUrl: item.imageUrl,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Theme.of(context).dividerColor,
+                                  width: 1,
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator.adaptive(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        greyColor,
+                                      ),
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
+                              ),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                          const SizedBox(height: 4),
+                          SizedBox(
+                            width: 60,
+                            child: Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
         ),
       ],
     );

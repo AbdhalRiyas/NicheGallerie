@@ -8,6 +8,7 @@ import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/components/product/product_card.dart';
+import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
@@ -202,15 +203,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return Center(
-                                        child:
-                                            CircularProgressIndicator.adaptive(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                            Theme.of(context).primaryColor,
-                                          ),
-                                        ),
-                                      );
+                                      return ProductsSkelton();
                                     } else if (snapshot.hasError) {
                                       return Center(
                                         child: Text(
@@ -242,7 +235,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                   log(
                                                     'Navigating to product:/$productScreenRoute/${relatedProduct.slug}',
                                                   );
-                                                  context.go(
+                                                  context.push(
                                                     '/$productScreenRoute/${relatedProduct.slug}',
                                                   );
                                                 },

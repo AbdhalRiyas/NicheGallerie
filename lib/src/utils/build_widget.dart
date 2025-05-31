@@ -4,6 +4,9 @@ import 'package:shop/src/components/Banner/M/banner_m_with_counter.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/models/accord.dart';
+import 'package:shop/src/models/brand.dart';
+import 'package:shop/src/models/note.dart';
 import 'package:shop/src/screens/home/views/components/explore_by_section.dart';
 import 'package:shop/src/screens/home/views/components/featured_category_card.dart';
 import 'package:shop/src/screens/home/views/components/offers_carousel.dart';
@@ -89,10 +92,35 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
   }
 
   if (json['widget_name'] == 'explore_by_section') {
+    // Convert tabs to Map<String, String>
+    final Map<String, String> tabs = Map<String, String>.from(
+      json['children']['tabs']
+          .map((key, value) => MapEntry(key, value.toString())),
+    );
+
+    // Parse items into appropriate model lists
+    final List<Brand> brands =
+        (json['children']['brands'][0]['items'] as List<dynamic>)
+            .map((item) => Brand.fromJson(item))
+            .toList();
+    final List<Accord> accords =
+        (json['children']['accords'][0]['items'] as List<dynamic>)
+            .map((item) => Accord.fromJson(item))
+            .toList();
+    final List<Note> notes =
+        (json['children']['notes'][0]['items'] as List<dynamic>)
+            .map((item) => Note.fromJson(item))
+            .toList();
+
     return SliverPadding(
       padding: EdgeInsets.symmetric(vertical: defaultPadding),
       sliver: SliverToBoxAdapter(
-        child: ExploreBySection(),
+        child: ExploreBySection(
+          tabs: tabs,
+          brands: brands,
+          accords: accords,
+          notes: notes,
+        ),
       ),
     );
   }
