@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nb_utils/nb_utils.dart' show pop, toast;
+import 'package:nb_utils/nb_utils.dart' show toast;
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
@@ -275,9 +275,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         // Calculate discount amount based on coupon type
         if (_appliedCoupon?['discount_type'] == 'fixed_cart') {
           _discountAmount = double.parse(_appliedCoupon?['amount'] ?? '0');
+          _fees.add({
+            'name': 'Coupon Discount (${_appliedCoupon?['code']})',
+            'total': "-${_discountAmount.toString()}",
+          });
         } else if (_appliedCoupon?['discount_type'] == 'percent') {
           _discountAmount = widget.subTotal *
               (double.parse(_appliedCoupon?['amount'] ?? '0') / 100);
+          _fees.add({
+            'name': 'Coupon Discount (${_appliedCoupon?['code']})',
+            'total': "-${_discountAmount.toString()}",
+          });
         }
         // Update total
         total = (shippingFee ?? 0.0) + widget.subTotal - _discountAmount;
@@ -290,6 +298,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       total = (shippingFee ?? 0.0) + widget.subTotal; // Reset total
       toast(result.message);
     }
+  }
+
+  void _removeCoupon() {
+    setState(() {
+      _appliedCoupon = null;
+      _discountAmount = 0.0;
+      _couponController.clear();
+      // Recalculate total without discount
+      total = (shippingFee ?? 0.0) + widget.subTotal;
+
+      // Recalculate fees if on final step
+      if (_currentStep > 3 && _selectedPaymentMethod != null) {
+        _fees.clear();
+        total = (shippingFee ?? 0.00) + widget.subTotal;
+
+        for (var fee in _selectedPaymentMethod!['fees']) {
+          double calculatedFee = fee['type'] == 'fixed'
+              ? ((shippingFee ?? 0.00) + widget.subTotal) +
+                  double.parse(fee['amount'])
+              : (((shippingFee ?? 0.00) + widget.subTotal) *
+                  double.parse(fee['amount']) /
+                  100);
+          _fees.add({
+            'name': fee['name'],
+            'total': calculatedFee.toString(),
+          });
+
+          total += calculatedFee;
+        }
+      }
+    });
+    toast('Coupon removed');
   }
 
   @override
@@ -479,6 +519,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       total = (shippingFee ?? 0.00) + widget.subTotal;
 
       for (var fee in _selectedPaymentMethod!['fees']) {
+        log('Fee: $fee');
         double calculatedFee = fee['type'] == 'fixed'
             ? ((shippingFee ?? 0.00) + widget.subTotal) +
                 double.parse(fee['amount'])
@@ -636,51 +677,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Text('Your Coupon Code',
-            //     style: Theme.of(context).textTheme.titleMedium),
+            // Coupon Section
             Padding(
               padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-              child: InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => CouponPopup(
-                      couponController: _couponController,
-                      onApply: _applyCoupon,
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: EdgeInsets.all(defaultPadding),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(defaultBorderRadius),
-                  ),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        "assets/icons/Tag.svg",
-                        height: 24,
-                        width: 24,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .color!
-                              .withOpacity(0.3),
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                          _appliedCoupon != null
-                              ? 'Coupon: ${_appliedCoupon!['code']}'
-                              : 'Type coupon code',
-                          style: Theme.of(context).textTheme.bodyLarge),
-                    ],
-                  ),
-                ),
-              ),
+              child: _appliedCoupon != null
+                  ? _buildAppliedCouponCard()
+                  : _buildCouponInputCard(),
             ),
             _buildSummaryRow(
                 'Subtotal',
@@ -689,15 +691,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Currency.fromJson(
                         context.read<AppConfig>().preferredCurrency))),
             SizedBox(height: 8),
-            if (_appliedCoupon != null)
-              Column(
-                children: [
-                  _buildSummaryRow('Discount (${_appliedCoupon!['code']})',
-                      '-${formatCurrency(_discountAmount, Currency.fromJson(context.read<AppConfig>().preferredCurrency))}',
-                      color: Colors.green),
-                  SizedBox(height: 8),
-                ],
-              ),
+            // if (_appliedCoupon != null)
+            //   Column(
+            //     children: [
+            //       _buildSummaryRow('Discount (${_appliedCoupon!['code']})',
+            //           '-${formatCurrency(_discountAmount, Currency.fromJson(context.read<AppConfig>().preferredCurrency))}',
+            //           color: Colors.green),
+            //       SizedBox(height: 8),
+            //     ],
+            //   ),
             _buildSummaryRow(
                 'Shipping Fee',
                 formatCurrency(
@@ -709,11 +711,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               return Padding(
                 padding: EdgeInsets.only(bottom: 8),
                 child: _buildSummaryRow(
-                    _fees[index]['name']!,
-                    formatCurrency(
-                        double.parse(_fees[index]['total']!),
-                        Currency.fromJson(
-                            context.read<AppConfig>().preferredCurrency))),
+                  _fees[index]['name']!,
+                  formatCurrency(
+                    double.parse(_fees[index]['total']!),
+                    Currency.fromJson(
+                        context.read<AppConfig>().preferredCurrency),
+                  ),
+                ),
               );
             }),
             Divider(),
@@ -742,6 +746,103 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildAppliedCouponCard() {
+    return Container(
+      padding: EdgeInsets.all(defaultPadding),
+      decoration: BoxDecoration(
+        color: Colors.green[50],
+        borderRadius: BorderRadius.circular(defaultBorderRadius),
+        border: Border.all(color: Colors.green[200]!),
+      ),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            "assets/icons/Tag.svg",
+            height: 24,
+            width: 24,
+            colorFilter: ColorFilter.mode(
+              Colors.green,
+              BlendMode.srcIn,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Coupon Applied',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.green[700],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  _appliedCoupon!['code'],
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green[800],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: _removeCoupon,
+            icon: Icon(
+              Icons.close,
+              size: 20,
+            ),
+            tooltip: 'Remove coupon',
+            padding: EdgeInsets.all(4),
+            constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCouponInputCard() {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => CouponPopup(
+            couponController: _couponController,
+            onApply: _applyCoupon,
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(defaultPadding),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              "assets/icons/Tag.svg",
+              height: 24,
+              width: 24,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.3),
+                BlendMode.srcIn,
+              ),
+            ),
+            SizedBox(width: 8),
+            Text(
+              'Type coupon code',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -807,6 +908,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Future<void> _onContinuePressed() async {
+    log("fee lines: $_fees");
     if (_selectedAddress == null) {
       toast('Please enter the address');
       return;

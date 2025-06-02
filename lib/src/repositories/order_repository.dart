@@ -74,8 +74,7 @@ class OrderRepository {
   }) async {
     try {
       log('Couponnnn: $coupon');
-      final res = await ApiService()
-          .post("${ApiContants().orders}?currency=${currency.code}", payload: {
+      Map<String, dynamic> orderPayload = {
         'payment_method': selectedPaymentMethod['gateway_id'],
         'payment_method_title': selectedPaymentMethod['title'],
         'billing': {
@@ -116,15 +115,23 @@ class OrderRepository {
           }
         ],
         'fee_lines': feeLines,
-        if (coupon != null) ...{
-          'coupon_lines': [
-            {
-              'code': coupon['code'],
-              'discount': coupon['amount'],
-            }
-          ],
-        }
-      });
+      };
+
+      // Add coupon lines if coupon is applied
+      if (coupon != null) {
+        orderPayload['coupon_lines'] = [
+          {
+            'code': coupon['code'],
+            // Let WooCommerce calculate the discount automatically
+            // Or include discount amount if needed:
+            'discount': coupon['amount'],
+          }
+        ];
+      }
+
+      final res = await ApiService().post(
+          "${ApiContants().orders}?currency=${currency.code}",
+          payload: orderPayload);
 
       if (res.containsKey('payment_url')) {
         return Result(data: res, message: 'Order created successfully');
@@ -132,6 +139,7 @@ class OrderRepository {
         return Result(message: 'Error creating order');
       }
     } on AppException catch (e) {
+      log('Error creating order: ${e.message}');
       return Result(message: e.message.toString());
     } catch (e) {
       return Result(message: 'Unexpected error occured');

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'dart:developer' as log;
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/services/api_service.dart';
 
@@ -85,7 +86,7 @@ class AppConfig with ChangeNotifier {
       await _saveConfig(freshConfig); // Cache the fresh config
       notifyListeners(); // Notify listeners that the config has been updated
     } catch (e) {
-      log(e.toString());
+      log.log(e.toString());
     }
   }
 

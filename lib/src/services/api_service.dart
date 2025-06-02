@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -49,6 +50,7 @@ class ApiService {
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 30));
+      log("API Response: ${res.body}");
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
