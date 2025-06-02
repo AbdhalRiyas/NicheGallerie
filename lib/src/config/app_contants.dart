@@ -8,5 +8,5 @@ class AppContants {
   String get appName => dotenv.env['APP_NAME'] ?? "Witcommerce";
 
   String get apiBaseUrl =>
-      dotenv.env['API_URL'] ?? "http://witcommerce-cp.test/api/v3";
+      dotenv.env['API_URL'] ?? "https://niche.witsberry.com/api/v3";
 }
