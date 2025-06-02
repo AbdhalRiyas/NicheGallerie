@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shop/src/components/skeleton/others/discover_categories_skelton.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/category_repository.dart';
 import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/utils/result.dart';
-import 'package:shop/src/components/skeleton/others/discover_categories_skelton.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -23,76 +23,88 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                defaultPadding,
-                defaultPadding,
-                defaultPadding,
-                defaultPadding / 2,
+              padding: const EdgeInsets.symmetric(
+                horizontal: defaultPadding,
+                vertical: defaultPadding,
               ),
               child: Text(
                 "Explore Categories",
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      // fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
                     ),
+                semanticsLabel: "Explore Categories",
               ),
             ),
-            FutureBuilder(
-              future: _repository.getCategories(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Expanded(child: DiscoverCategoriesSkelton());
-                }
-                if (snapshot.hasError) {
-                  return const Expanded(
-                    child: Center(
-                      child: Text(
-                        "Failed to load categories",
-                        style: TextStyle(color: Colors.redAccent),
-                      ),
-                    ),
-                  );
-                }
-                if (snapshot.hasData) {
-                  Result result = snapshot.data!;
-                  return Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: defaultPadding,
-                        vertical: defaultPadding / 2,
-                      ),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1.2,
-                        crossAxisSpacing: defaultPadding,
-                        mainAxisSpacing: defaultPadding,
-                      ),
-                      itemCount: result.data.length,
-                      itemBuilder: (context, index) {
-                        return CategoryCard(
-                          title: result.data[index].name,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductsListScreen(
-                                  title: result.data[index].name,
-                                  categoryId: result.data[index].id.toString(),
-                                  apiEndPoint: ApiContants().products,
+            // Category List
+            Expanded(
+              child: FutureBuilder(
+                future: _repository.getCategories(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const DiscoverCategoriesSkelton();
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                            size: 48,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Failed to load categories",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.error,
                                 ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => setState(() {}),
+                            child: const Text("Retry"),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    Result result = snapshot.data!;
+                    if (result.data.isEmpty) {
+                      return const Center(
+                        child: Text("No categories available"),
+                      );
+                    }
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: defaultPadding),
+                      itemCount: result.data.length,
+                      itemBuilder: (context, index) => CategoryTile(
+                        title: result.data[index].name,
+                        categoryId: result.data[index].id.toString(),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductsListScreen(
+                                title: result.data[index].name,
+                                categoryId: result.data[index].id.toString(),
+                                apiEndPoint: ApiContants().products,
                               ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  );
-                }
-                return const Expanded(
-                  child: Center(child: Text("No categories found")),
-                );
-              },
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
+                  return const Center(child: Text("No data available"));
+                },
+              ),
             ),
           ],
         ),
@@ -101,38 +113,49 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 }
 
-class CategoryCard extends StatelessWidget {
+// Custom Category Tile Widget
+class CategoryTile extends StatelessWidget {
   final String title;
+  final String categoryId;
   final VoidCallback onTap;
 
-  const CategoryCard({
+  const CategoryTile({
     super.key,
     required this.title,
+    required this.categoryId,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-          color: Theme.of(context).colorScheme.primary.withAlpha(10),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(defaultPadding / 2),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withAlpha(10),
+        borderRadius: BorderRadius.circular(defaultBorderRadius),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(),
+                  overflow: TextOverflow.ellipsis,
+                  semanticsLabel: title,
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                size: 16,
+              ),
+            ],
           ),
         ),
       ),
