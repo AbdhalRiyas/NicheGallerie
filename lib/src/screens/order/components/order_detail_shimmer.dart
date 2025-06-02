@@ -233,7 +233,7 @@ class _OrderDetailShimmerState extends State<OrderDetailShimmer>
         borderRadius: isCircle
             ? BorderRadius.circular(height / 2)
             : BorderRadius.circular(borderRadius ?? 4),
-        color: Colors.grey[300],
+        color: Colors.grey.withAlpha(20),
       ),
     );
   }
