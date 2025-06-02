@@ -133,33 +133,99 @@ class ProfileScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
+                    insetPadding: EdgeInsets.all(defaultPadding),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(defaultBorderRadius),
+                    ),
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.currency_exchange,
+                          color: Theme.of(context).primaryColor,
+                          size: 24,
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          'Select Currency',
+                        ),
+                      ],
+                    ),
+                    contentPadding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                     content: SizedBox(
                       width: double.maxFinite,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: appConfig.currencies.length,
-                        itemBuilder: (context, i) => ListTile(
-                          title: Text(
-                            appConfig.currencies[i]['code'],
-                            style: TextStyle(
-                              color: appConfig.currencies[i]['code'] ==
-                                      appConfig.preferredCurrency['code']
-                                  ? Colors.grey.shade200
-                                  : null,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Currency list
+                          Flexible(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: appConfig.currencies.length,
+                              itemBuilder: (context, i) {
+                                final currency = appConfig.currencies[i];
+                                final isSelected = currency['code'] ==
+                                    appConfig.preferredCurrency['code'];
+
+                                return Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        defaultBorderRadius),
+                                    color: isSelected
+                                        ? Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.1)
+                                        : null,
+                                  ),
+                                  child: ListTile(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    title: Text(
+                                      currency['code'],
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: isSelected
+                                            ? Theme.of(context).primaryColor
+                                            : null,
+                                      ),
+                                    ),
+                                    trailing: isSelected
+                                        ? Icon(
+                                            Icons.check_circle,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            size: 24,
+                                          )
+                                        : Icon(
+                                            Icons.radio_button_unchecked,
+                                            color: Colors.grey.shade400,
+                                            size: 24,
+                                          ),
+                                    onTap: isSelected
+                                        ? null
+                                        : () {
+                                            appConfig
+                                                .setPreferredCurrency(currency);
+                                            Navigator.of(context).pop();
+                                          },
+                                  ),
+                                );
+                              },
                             ),
                           ),
-                          onTap: appConfig.currencies[i]['code'] ==
-                                  appConfig.preferredCurrency
-                              ? null
-                              : () {
-                                  appConfig.setPreferredCurrency(
-                                    appConfig.currencies[i],
-                                  );
-                                  nb.pop(context);
-                                },
-                        ),
+                        ],
                       ),
                     ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.grey.shade600),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },

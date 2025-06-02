@@ -454,8 +454,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: sandDuneColor,
-            foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(defaultBorderRadius),
@@ -468,10 +466,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               SizedBox(width: 8),
               Text(
                 "Complete Payment",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
               ),
             ],
           ),

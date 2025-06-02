@@ -197,7 +197,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     await showDialog<Result>(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
+        insetPadding: EdgeInsets.all(defaultPadding),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+        ),
         content: SingleChildScrollView(
           child: AddressForm(
             formKey: _formKey,
@@ -338,150 +343,153 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       appBar: AppBar(
         title: const Text('Checkout'),
       ),
-      body: Stepper(
-        connectorColor: WidgetStateProperty.all(primaryColor),
-        currentStep: _currentStep,
-        controlsBuilder: (context, details) => Row(
-          children: [
-            if (_currentStep != 0)
-              TextButton(
-                onPressed: details.onStepCancel,
-                child: const Text('Back'),
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: defaultPadding),
+        child: Stepper(
+          connectorColor: WidgetStateProperty.all(primaryColor),
+          currentStep: _currentStep,
+          controlsBuilder: (context, details) => Row(
+            children: [
+              if (_currentStep != 0)
+                TextButton(
+                  onPressed: details.onStepCancel,
+                  child: const Text('Back'),
+                ),
+              if (_currentStep != 4)
+                TextButton(
+                  onPressed: details.onStepContinue,
+                  child: const Text('Next'),
+                ),
+            ],
+          ),
+          onStepContinue: (_currentStep == 0 &&
+                      (_selectedAddress == null ||
+                          _selectedAddress?.firstName == '')) ||
+                  (_currentStep == 1 && _selectedPaymentMethod == null) ||
+                  (_currentStep == 3 && _selectedShippingMethod == null)
+              ? null
+              : _onStepContinue,
+          onStepCancel: _currentStep == 0 ? null : _onStepCancel,
+          steps: [
+            Step(
+              title: const Text('Select Address'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AddressButton(
+                    text: _selectedAddress == null ||
+                            _selectedAddress?.firstName == ''
+                        ? 'Enter Address'
+                        : 'Change Address',
+                    onTap: () => _addEditAddress(_selectedAddress ??
+                        AddressModel(
+                          firstName: '',
+                          lastName: '',
+                          company: '',
+                          address1: '',
+                          address2: '',
+                          city: '',
+                          state: '',
+                          postcode: '',
+                          country: '',
+                          email: '',
+                          phone: '',
+                        )),
+                  ),
+                  if (_selectedAddress != null &&
+                      _selectedAddress?.firstName != '') ...[
+                    AddressCard(
+                      address: _selectedAddress!,
+                      onAddressScreen: false,
+                    ),
+                    if (!_addressUpdated)
+                      TextButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                try {
+                                  final Result result = await _userRepository
+                                      .updateBillingAddress(
+                                    _selectedAddress!.toJson(),
+                                  );
+                                  log('Update Address Result: ${result.data}');
+                                  if (result.isSuccess) {
+                                    setState(() {
+                                      _addressUpdated = true;
+                                    });
+                                    toast('Address updated successfully');
+                                  } else {
+                                    toast(result.message);
+                                  }
+                                } catch (e) {
+                                  toast('Failed to update address');
+                                } finally {
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                }
+                              },
+                        style: TextButton.styleFrom(
+                          foregroundColor: primaryColor,
+                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator.adaptive()
+                            : const Text(
+                                'Set as default address',
+                                style: TextStyle(
+                                  color: sandDuneColor,
+                                ),
+                              ),
+                      ),
+                  ]
+                ],
               ),
-            if (_currentStep != 4)
-              TextButton(
-                onPressed: details.onStepContinue,
-                child: const Text('Next'),
+              isActive: _currentStep >= 0,
+              state: _currentStep > 0 ? StepState.complete : StepState.indexed,
+            ),
+            Step(
+              title: const Text('Payment Method'),
+              content: _buildPaymentMethods(),
+              isActive: _currentStep >= 1,
+              state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+            ),
+            Step(
+              title: const Text('Review Order'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildReviewOrder(),
+                ],
               ),
+              isActive: _currentStep >= 2,
+              state: _currentStep > 2 ? StepState.complete : StepState.indexed,
+            ),
+            Step(
+              title: const Text('Shipping Method'),
+              content: _isFetchingShippingMethods
+                  ? CircularProgressIndicator.adaptive()
+                  : _shippingMethods.isEmpty
+                      ? Text("No shipping methods available for this address.")
+                      : _buildShippinhMethods(),
+              isActive: _currentStep >= 3,
+              state: _currentStep > 3 ? StepState.complete : StepState.indexed,
+            ),
+            Step(
+              title: const Text('Order Summary'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildOrderSummary(),
+                ],
+              ),
+              isActive: _currentStep >= 4,
+              state: _currentStep > 4 ? StepState.complete : StepState.indexed,
+            ),
           ],
         ),
-        onStepContinue: (_currentStep == 0 &&
-                    (_selectedAddress == null ||
-                        _selectedAddress?.firstName == '')) ||
-                (_currentStep == 1 && _selectedPaymentMethod == null) ||
-                (_currentStep == 3 && _selectedShippingMethod == null)
-            ? null
-            : _onStepContinue,
-        onStepCancel: _currentStep == 0 ? null : _onStepCancel,
-        steps: [
-          Step(
-            title: const Text('Select Address'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AddressButton(
-                  text: _selectedAddress == null ||
-                          _selectedAddress?.firstName == ''
-                      ? 'Enter Address'
-                      : 'Change Address',
-                  onTap: () => _addEditAddress(_selectedAddress ??
-                      AddressModel(
-                        firstName: '',
-                        lastName: '',
-                        company: '',
-                        address1: '',
-                        address2: '',
-                        city: '',
-                        state: '',
-                        postcode: '',
-                        country: '',
-                        email: '',
-                        phone: '',
-                      )),
-                ),
-                if (_selectedAddress != null &&
-                    _selectedAddress?.firstName != '') ...[
-                  AddressCard(
-                    address: _selectedAddress!,
-                    onAddressScreen: false,
-                  ),
-                  if (!_addressUpdated)
-                    TextButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () async {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              try {
-                                final Result result =
-                                    await _userRepository.updateBillingAddress(
-                                  _selectedAddress!.toJson(),
-                                );
-                                log('Update Address Result: ${result.data}');
-                                if (result.isSuccess) {
-                                  setState(() {
-                                    _addressUpdated = true;
-                                  });
-                                  toast('Address updated successfully');
-                                } else {
-                                  toast(result.message);
-                                }
-                              } catch (e) {
-                                toast('Failed to update address');
-                              } finally {
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              }
-                            },
-                      style: TextButton.styleFrom(
-                        foregroundColor: primaryColor,
-                      ),
-                      child: _isLoading
-                          ? const CircularProgressIndicator.adaptive()
-                          : const Text(
-                              'Set as default address',
-                              style: TextStyle(
-                                color: sandDuneColor,
-                              ),
-                            ),
-                    ),
-                ]
-              ],
-            ),
-            isActive: _currentStep >= 0,
-            state: _currentStep > 0 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: const Text('Payment Method'),
-            content: _buildPaymentMethods(),
-            isActive: _currentStep >= 1,
-            state: _currentStep > 1 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: const Text('Review Order'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildReviewOrder(),
-              ],
-            ),
-            isActive: _currentStep >= 2,
-            state: _currentStep > 2 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: const Text('Shipping Method'),
-            content: _isFetchingShippingMethods
-                ? CircularProgressIndicator.adaptive()
-                : _shippingMethods.isEmpty
-                    ? Text("No shipping methods available for this address.")
-                    : _buildShippinhMethods(),
-            isActive: _currentStep >= 3,
-            state: _currentStep > 3 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: const Text('Order Summary'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildOrderSummary(),
-              ],
-            ),
-            isActive: _currentStep >= 4,
-            state: _currentStep > 4 ? StepState.complete : StepState.indexed,
-          ),
-        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _currentStep == 4

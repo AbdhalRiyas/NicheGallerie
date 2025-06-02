@@ -129,51 +129,46 @@ class _AddressFormState extends State<AddressForm> {
         key: widget.formKey,
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: widget.firstNameController,
-                    onSaved: (fName) {},
-                    validator: (value) =>
-                        getError('first_name') ?? nameValidator(value),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[a-zA-Z]'),
-                      ),
-                    ],
-                    decoration: InputDecoration(
-                      hintText: "First name",
-                      errorText: getError('first_name'),
-                      prefixIcon: FormFieldSvgIcon(
-                        iconPath: "assets/icons/Profile.svg",
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: defaultPadding),
-                Expanded(
-                  child: TextFormField(
-                    controller: widget.lastNameController,
-                    onSaved: (lName) {},
-                    validator: (value) =>
-                        getError('last_name') ?? nameValidator(value),
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[a-zA-Z]'),
-                      ),
-                    ],
-                    decoration: InputDecoration(
-                      hintText: "Last name",
-                      errorText: getError('last_name'),
-                    ),
-                  ),
+            TextFormField(
+              controller: widget.firstNameController,
+              onSaved: (fName) {},
+              validator: (value) =>
+                  getError('first_name') ?? nameValidator(value),
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.text,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r'[a-zA-Z]'),
                 ),
               ],
+              decoration: InputDecoration(
+                hintText: "First name",
+                errorText: getError('first_name'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/Profile.svg",
+                ),
+              ),
+            ),
+            const SizedBox(height: defaultPadding),
+            TextFormField(
+              controller: widget.lastNameController,
+              onSaved: (lName) {},
+              validator: (value) =>
+                  getError('last_name') ?? nameValidator(value),
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r'[a-zA-Z]'),
+                ),
+              ],
+              decoration: InputDecoration(
+                hintText: "Last name",
+                errorText: getError('last_name'),
+                prefixIcon: FormFieldSvgIcon(
+                  iconPath: "assets/icons/Profile.svg",
+                ),
+              ),
             ),
             const SizedBox(height: defaultPadding),
             TextFormField(

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shop/src/components/skeleton/others/discover_categories_skelton.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/category_repository.dart';
 import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/utils/result.dart';
-
-import 'components/expansion_category.dart';
+import 'package:shop/src/components/skeleton/others/discover_categories_skelton.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -26,50 +24,116 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: defaultPadding, vertical: defaultPadding / 2),
+              padding: const EdgeInsets.fromLTRB(
+                defaultPadding,
+                defaultPadding,
+                defaultPadding,
+                defaultPadding / 2,
+              ),
               child: Text(
-                "Discover By Categories",
-                style: Theme.of(context).textTheme.titleSmall,
+                "Explore Categories",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
               ),
             ),
-            // While loading use 👇
-            // const Expanded(
-            //   child: DiscoverCategoriesSkelton(),
-            // ),
             FutureBuilder(
+              future: _repository.getCategories(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  Result result = snapshot.data!;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: result.data.length,
-                      itemBuilder: (context, index) => ExpansionCategory(
-                        svgSrc: result.data[index].image,
-                        //result.data[index].image?.src ??
-                        title: result.data[index].name,
-                        subCategory: [],
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductsListScreen(
-                                title: result.data[index].name,
-                                categoryId: result.data[index].id.toString(),
-                                apiEndPoint: ApiContants().products,
-                              ),
-                            ),
-                          );
-                        },
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Expanded(child: DiscoverCategoriesSkelton());
+                }
+                if (snapshot.hasError) {
+                  return const Expanded(
+                    child: Center(
+                      child: Text(
+                        "Failed to load categories",
+                        style: TextStyle(color: Colors.redAccent),
                       ),
                     ),
                   );
                 }
-                return Expanded(child: DiscoverCategoriesSkelton());
+                if (snapshot.hasData) {
+                  Result result = snapshot.data!;
+                  return Expanded(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: defaultPadding,
+                        vertical: defaultPadding / 2,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.2,
+                        crossAxisSpacing: defaultPadding,
+                        mainAxisSpacing: defaultPadding,
+                      ),
+                      itemCount: result.data.length,
+                      itemBuilder: (context, index) {
+                        return CategoryCard(
+                          title: result.data[index].name,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductsListScreen(
+                                  title: result.data[index].name,
+                                  categoryId: result.data[index].id.toString(),
+                                  apiEndPoint: ApiContants().products,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  );
+                }
+                return const Expanded(
+                  child: Center(child: Text("No categories found")),
+                );
               },
-              future: _repository.getCategories(),
-            )
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryCard extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const CategoryCard({
+    super.key,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+          color: Theme.of(context).colorScheme.primary.withAlpha(10),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(defaultPadding / 2),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ),
       ),
     );
