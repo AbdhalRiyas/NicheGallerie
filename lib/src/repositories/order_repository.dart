@@ -23,10 +23,13 @@ class OrderRepository {
     return _instance;
   }
 
-  Future<Result> fetchOrders({int page = 1}) async {
+  Future<Result> fetchOrders({int page = 1, int perPage = 10}) async {
     try {
-      final res = await ApiService().get(ApiContants().orders);
-      List<Order> orders = [];
+      final res = await ApiService().get(
+        "${ApiContants().orders}?page=$page&per_page=$perPage",
+      );
+      log('Orders fetched: $res');
+      List orders = [];
 
       for (var order in res) {
         try {
@@ -40,7 +43,7 @@ class OrderRepository {
     } on AppException catch (e) {
       return Result(message: e.message.toString());
     } catch (e) {
-      return Result(message: 'Unexpected error occured');
+      return Result(message: 'Unexpected error occurred');
     }
   }
 

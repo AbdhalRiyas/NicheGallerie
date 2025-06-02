@@ -1,241 +1,453 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:shop/src/components/empty_error_state_widget.dart';
-import 'package:shop/src/components/skeleton/others/categories_skelton.dart';
-import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/components/skeleton/skeleton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/order.dart';
 import 'package:shop/src/repositories/order_repository.dart';
 import 'package:shop/src/route/screen_export.dart';
-import 'package:shop/src/utils/result.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
 
   @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  final OrderRepository orderRepository = OrderRepository();
+  final ScrollController _scrollController = ScrollController();
+  List<Order> _orders = [];
+  int _currentPage = 1;
+  bool _isLoading = false;
+  bool _hasMore = true;
+  bool _isRefreshing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrders();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadOrders({bool isRefresh = false}) async {
+    if (_isLoading || (!_hasMore && !isRefresh)) return;
+
+    setState(() {
+      _isLoading = true;
+      if (isRefresh) {
+        _currentPage = 1;
+        _orders = [];
+        _hasMore = true;
+        _isRefreshing = true;
+      }
+    });
+
+    final result = await orderRepository.fetchOrders(page: _currentPage);
+
+    setState(() {
+      _isLoading = false;
+      _isRefreshing = false;
+
+      if (result.isSuccess && result.data.isNotEmpty) {
+        // Explicitly cast result.data to List<Order>
+        _orders.addAll(result.data.cast<Order>());
+        _currentPage++;
+        _hasMore = result.data.length >= 10; // Assuming per_page is 10
+      } else {
+        _hasMore = false;
+      }
+    });
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      _loadOrders();
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    await _loadOrders(isRefresh: true);
+  }
+
+  final Map<String, dynamic> orderStatus = {
+    'pending': {
+      'title': 'Awaiting Payment',
+      'color': Colors.orange,
+      'icon': Icons.schedule,
+      'bgColor': Colors.orange.withAlpha(25),
+    },
+    'processing': {
+      'title': 'Ready to Ship',
+      'color': Colors.blue,
+      'icon': Icons.local_shipping_outlined,
+      'bgColor': Colors.blue.withAlpha(25),
+    },
+    'on-hold': {
+      'title': 'On Hold',
+      'color': Colors.grey,
+      'icon': Icons.pause_circle_outline,
+      'bgColor': Colors.grey.withAlpha(25),
+    },
+    'completed': {
+      'title': 'Shipped',
+      'color': Colors.green,
+      'icon': Icons.check_circle_outline,
+      'bgColor': Colors.green.withAlpha(25),
+    },
+    'cancelled': {
+      'title': 'Cancelled',
+      'color': Colors.red,
+      'icon': Icons.cancel_outlined,
+      'bgColor': Colors.red.withAlpha(25),
+    },
+    'refunded': {
+      'title': 'Refunded',
+      'color': Colors.purple,
+      'icon': Icons.money_off,
+      'bgColor': Colors.purple.withAlpha(25),
+    },
+    'failed': {
+      'title': 'Payment Failed',
+      'color': Colors.red,
+      'icon': Icons.error_outline,
+      'bgColor': Colors.red.withAlpha(25),
+    },
+  };
+
+  @override
   Widget build(BuildContext context) {
-    final OrderRepository orderRepository = OrderRepository();
-
-    final Map<String, dynamic> orderStatus = {
-      'pending': {
-        'title': 'Awaiting Payment',
-        'color': Colors.orangeAccent, // A warm color for waiting
-      },
-      'processing': {
-        'title': 'Ready to Ship',
-        'color': Colors.blue, // Indicates action is in progress
-      },
-      'on-hold': {
-        'title': 'On Hold',
-        'color': Colors.grey, // Neutral color for paused state
-      },
-      'completed': {
-        'title': 'Shipped',
-        'color': Colors.green, // Green for success and completion
-      },
-      'cancelled': {
-        'title': 'Cancelled',
-        'color': Colors.redAccent, // Red for cancellation
-      },
-      'refunded': {
-        'title': 'Refunded',
-        'color': Colors.purple, // Purple for financial adjustments
-      },
-      'failed': {
-        'title': 'Payment Failed',
-        'color': Colors.red, // Bold red for critical failure
-      },
-    };
-
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('My Orders'.toUpperCase()),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: defaultPadding / 3),
-        child: SnapHelperWidget<Result>(
-          future: orderRepository.fetchOrders(),
-          onSuccess: (result) {
-            if (result.isSuccess && result.data.isNotEmpty) {
-              List<Order> orders = result.data;
-
-              // Render data if the result indicates success
-              return ListView.builder(
-                itemBuilder: (context, index) => Container(
-                  padding: EdgeInsets.all(defaultPadding),
-                  margin: EdgeInsets.symmetric(vertical: defaultPadding / 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color.fromARGB(13, 0, 0, 0),
-                        blurRadius: 10,
-                        offset: Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          context.goNamed(viewOrderScreen, pathParameters: {
-                            'id': orders[index].id.toString(),
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "#${orders[index].id}",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: sandDuneColor,
-                                  ),
-                                ),
-                                Text(
-                                  orderStatus[orders[index].status]['title'],
-                                  style: TextStyle(
-                                    color: orderStatus[orders[index].status]
-                                        ['color'],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: defaultPadding / 2),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "${orders[index].currency} ${orders[index].total} for ${orderRepository.totalItemsInOrder(orders[index].items)} ${orderRepository.totalItemsInOrder(orders[index].items) > 1 ? 'items' : 'item'}",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  DateFormat('MMMM d, yyyy').format(
-                                      DateTime.parse(
-                                          orders[index].dateCreated)),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      // SizedBox(height: defaultPadding),
-                      // Row(
-                      //   children: [
-                      //     Expanded(
-                      //       child: ElevatedButton(
-                      //         onPressed: () {},
-                      //         child: Text(
-                      //           "Cancel",
-                      //           style: TextStyle(fontSize: 12),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     SizedBox(width: 2),
-                      //     Expanded(
-                      //       child: ElevatedButton(
-                      //         onPressed: () {},
-                      //         child: Text(
-                      //           "Order Again",
-                      //           style: TextStyle(fontSize: 12),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     if (orders[index].status == 'pending')
-                      //       SizedBox(width: 2),
-                      //     if (orders[index].status == 'pending')
-                      //       Expanded(
-                      //         child: ElevatedButton(
-                      //           onPressed: () {
-                      //             Navigator.of(context).push(MaterialPageRoute(
-                      //                 builder: (context) =>
-                      //                     PaymentWebViewScreen(
-                      //                         checkoutUrl: orders[index]
-                      //                             .paymentUrl
-                      //                             .toString())));
-                      //           },
-                      //           child: Text(
-                      //             "Pay",
-                      //             style: TextStyle(fontSize: 12),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //   ],
-                      // ),
-                    ],
-                  ),
-                ),
-                itemCount: orders.length,
-              );
-            } else {
-              // Display NoDataWidget if the result indicates failure
-              return NoDataWidget(
-                title:
-                    'No orders found', // Display message when no orders are available
-                imageWidget: const ErrorStateWidget(),
-              );
-            }
-          },
-          loadingWidget: _buildShimmer(), // Loading UI
-          errorBuilder: (error) {
-            // Handle errors by showing the NoDataWidget
-            return NoDataWidget(
-              title: error.toString(), // Display error message
-              imageWidget: const ErrorStateWidget(),
-              // retryText: 'Reload',
-              // onRetry: () {}, // Retry logic
-            );
-          },
+        title: Text(
+          'My Orders',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
         ),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black87,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: Colors.grey[200],
+          ),
+        ),
+      ),
+      body: RefreshIndicator.adaptive(
+        onRefresh: _onRefresh,
+        child: _orders.isEmpty && !_isLoading
+            ? _buildEmptyState()
+            : ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.all(16),
+                itemBuilder: (context, index) {
+                  if (index < _orders.length) {
+                    return _buildOrderCard(
+                      context,
+                      _orders[index],
+                      orderStatus,
+                      orderRepository,
+                    );
+                  } else if (_hasMore) {
+                    return _buildShimmer();
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                },
+                itemCount: _orders.length + (_hasMore ? 1 : 0),
+              ),
       ),
     );
   }
 
-  Padding _buildShimmer() {
-    return Padding(
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 24),
-          ...List.generate(
-            5,
-            (index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
-                child: Row(
+  Widget _buildOrderCard(
+    BuildContext context,
+    Order order,
+    Map<String, dynamic> orderStatus,
+    OrderRepository orderRepository,
+  ) {
+    final status = orderStatus[order.status] ?? orderStatus['pending'];
+    final totalItems = orderRepository.totalItemsInOrder(order.items);
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(defaultBorderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(25),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(defaultBorderRadius),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+          onTap: () {
+            context.goNamed(viewOrderScreen, pathParameters: {
+              'id': order.id.toString(),
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Skeleton(height: 60, width: 60),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      children: [
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: sandDuneColor.withAlpha(25),
+                            borderRadius:
+                                BorderRadius.circular(defaultBorderRadius),
+                          ),
+                          child: Text(
+                            "#${order.id}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: sandDuneColor,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 12,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: status['bgColor'],
+                        borderRadius:
+                            BorderRadius.circular(defaultBorderRadius),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Skeleton(height: 20, width: 300),
-                          const SizedBox(height: defaultPadding / 2),
-                          Skeleton(height: 20, width: 100),
+                          Icon(
+                            status['icon'],
+                            size: 14,
+                            color: status['color'],
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            status['title'],
+                            style: TextStyle(
+                              color: status['color'],
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
-              );
-            },
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.shopping_bag_outlined,
+                                size: 16,
+                                color: Colors.grey[600],
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                "$totalItems ${totalItems > 1 ? 'items' : 'item'}",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "${order.currency} ${order.total}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                "Order Date",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            DateFormat('MMM d, yyyy').format(
+                              DateTime.parse(order.dateCreated),
+                            ),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.shopping_bag_outlined,
+              size: 60,
+              color: Colors.grey[400],
+            ),
+          ),
+          SizedBox(height: 24),
+          Text(
+            'No Orders Yet',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Your order history will appear here\nonce you make your first purchase',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+              height: 1.4,
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return Column(
+      children: List.generate(
+        3,
+        (index) => Container(
+          margin: EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(defaultBorderRadius),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Skeleton(height: 24, width: 80),
+                  Skeleton(height: 24, width: 100),
+                ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Skeleton(height: 16, width: 60),
+                      SizedBox(height: 8),
+                      Skeleton(height: 20, width: 80),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Skeleton(height: 14, width: 70),
+                      SizedBox(height: 6),
+                      Skeleton(height: 16, width: 90),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
