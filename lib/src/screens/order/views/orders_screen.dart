@@ -51,19 +51,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
     final result = await orderRepository.fetchOrders(page: _currentPage);
 
-    setState(() {
-      _isLoading = false;
-      _isRefreshing = false;
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _isRefreshing = false;
 
-      if (result.isSuccess && result.data.isNotEmpty) {
-        // Explicitly cast result.data to List<Order>
-        _orders.addAll(result.data.cast<Order>());
-        _currentPage++;
-        _hasMore = result.data.length >= 10; // Assuming per_page is 10
-      } else {
-        _hasMore = false;
-      }
-    });
+        if (result.isSuccess && result.data.isNotEmpty) {
+          _orders.addAll(result.data.cast<Order>());
+          _currentPage++;
+          _hasMore = result.data.length >= 10; // Assuming per_page is 10
+        } else {
+          _hasMore = false;
+        }
+      });
+    }
   }
 
   void _onScroll() {
