@@ -20,7 +20,7 @@ class Currency {
       pos: json["pos"],
       rate: double.tryParse(json["rate"].toString()) ?? 1.0,
       exchangeFeeType: json["exchange_fee_type"],
-      exchangeFee: double.tryParse(json["exchange_fee"]) ?? 0.00);
+      exchangeFee: double.tryParse(json["exchange_fee"].toString()) ?? 0.00);
 
   Map<String, dynamic> toJson() => {
         "code": code,
