@@ -33,25 +33,36 @@ class ProductSearchProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _onSearchChanged(String query) {
+  void _onSearchChanged(String query, {String category = ''}) {
     _searchQuery = query;
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(seconds: 1), () {
       if (query.length > 3) {
         _currentPage = 1;
         _products.clear();
-        _fetchResults(query: query);
+        _fetchResults(
+          query: query,
+          category: category,
+        );
       }
     });
   }
 
-  Future<void> _fetchResults({String query = '', int page = 1}) async {
+  Future<void> _fetchResults(
+      {String query = '', int page = 1, String category = ''}) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final res = await _apiService
-          .get('${ApiContants().products}?search=$query&page=$page');
+      // Build the base URL with query and page
+      String url = '${ApiContants().products}?search=$query&page=$page';
+
+      // Only append category if it's not empty
+      if (category.isNotEmpty) {
+        url += '&category=$category';
+      }
+
+      final res = await _apiService.get(url);
 
       for (var element in res['data']) {
         try {
@@ -74,18 +85,24 @@ class ProductSearchProvider with ChangeNotifier {
     }
 
     _isLoading = false;
-
     notifyListeners();
   }
 
-  void search(String query) {
-    _onSearchChanged(query);
+  void search(String query, {String? category = ''}) {
+    _onSearchChanged(
+      query,
+      category: category!,
+    );
   }
 
-  void loadMore() {
+  void loadMore({String? category = ''}) {
     if (_currentPage < _lastPage) {
       _currentPage++;
-      _fetchResults(query: _searchQuery, page: _currentPage);
+      _fetchResults(
+        query: _searchQuery,
+        page: _currentPage,
+        category: category!,
+      );
     }
   }
 }

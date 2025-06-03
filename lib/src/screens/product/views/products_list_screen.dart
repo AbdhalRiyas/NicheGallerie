@@ -3,11 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
+import 'package:shop/src/providers/product_search_provider.dart';
 import 'package:shop/src/route/route_constants.dart';
+import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/product/views/components/custom_bottom_sheet.dart';
 import 'package:shop/src/services/api_service.dart';
 
@@ -195,12 +198,26 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              // create search
-              showSearch(
-                context: context,
-                delegate: CustomSearchDelegate(),
+              final provider =
+                  Provider.of<ProductSearchProvider>(context, listen: false);
+
+              provider.reset();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchScreen(
+                    category: widget.categoryId,
+                  ),
+                ),
               );
             },
+            // onPressed: () {
+            //   // create search
+            //   showSearch(
+            //     context: context,
+            //     delegate: CustomSearchDelegate(),
+            //   );
+            // },
             icon: SvgPicture.asset(
               "assets/icons/Search.svg",
               height: 24,

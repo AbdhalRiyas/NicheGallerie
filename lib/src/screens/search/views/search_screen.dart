@@ -11,7 +11,9 @@ import 'package:shop/src/route/route_constants.dart';
 import 'components/search_form.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key, this.category});
+
+  final String? category;
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -38,7 +40,9 @@ class _SearchScreenState extends State<SearchScreen> {
       final provider =
           Provider.of<ProductSearchProvider>(context, listen: false);
       if (!provider.isLoading) {
-        provider.loadMore();
+        provider.loadMore(
+          category: widget.category ?? '',
+        );
       }
     }
   }
@@ -51,8 +55,10 @@ class _SearchScreenState extends State<SearchScreen> {
           autofocus: true,
           hintText: 'Search for products...',
           onChanged: (query) {
-            Provider.of<ProductSearchProvider>(context, listen: false)
-                .search(query!);
+            Provider.of<ProductSearchProvider>(context, listen: false).search(
+              query!,
+              category: widget.category ?? '',
+            );
           },
         ),
       ),
@@ -98,7 +104,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 if (provider.isLoading)
-                  SliverToBoxAdapter(child: ProductsSkelton())
+                  SliverToBoxAdapter(
+                    child: ProductsSkelton(
+                      isGrid: true,
+                      gridCount: 4, // Adjust as needed
+                    ),
+                  )
               ],
             );
           }
