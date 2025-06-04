@@ -8,15 +8,15 @@
 
 class Accord {
   final String name;
-  final String accordId;
-  final String slug;
+  final String link;
+  final String image;
   final String imageUrl;
   final bool isFeatured;
 
   Accord({
     required this.name,
-    required this.accordId,
-    required this.slug,
+    required this.link,
+    required this.image,
     required this.imageUrl,
     this.isFeatured = false,
   });
@@ -24,8 +24,8 @@ class Accord {
   factory Accord.fromJson(Map<String, dynamic> json) {
     return Accord(
       name: json['name'],
-      accordId: json['accord_id'],
-      slug: json['slug'],
+      link: json['link'],
+      image: json['image'],
       imageUrl: json['image_url'],
       isFeatured: json['is_featured'] == 1,
     );

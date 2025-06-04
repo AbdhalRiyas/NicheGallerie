@@ -1,14 +1,14 @@
 class Note {
   final String name;
-  final String noteId;
-  final String slug;
+  final String link;
+  final String image;
   final String imageUrl;
   final bool isFeatured;
 
   Note({
     required this.name,
-    required this.noteId,
-    required this.slug,
+    required this.link,
+    required this.image,
     required this.imageUrl,
     this.isFeatured = false,
   });
@@ -16,8 +16,8 @@ class Note {
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
       name: json['name'],
-      noteId: json['brand_id'],
-      slug: json['slug'],
+      link: json['link'],
+      image: json['image'],
       imageUrl: json['image_url'],
       isFeatured: json['is_featured'] == 1,
     );

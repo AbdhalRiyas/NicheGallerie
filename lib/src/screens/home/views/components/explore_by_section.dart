@@ -150,12 +150,12 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     } else if (item is Accord) {
                       imageUrl = item.imageUrl;
                       name = item.name;
-                      slug = item.slug;
+                      slug = item.link;
                       taxonomy = {"accords": slug};
                     } else if (item is Note) {
                       imageUrl = item.imageUrl;
                       name = item.name;
-                      slug = item.slug;
+                      slug = item.link;
                       taxonomy = {"notes": slug};
                     }
 
