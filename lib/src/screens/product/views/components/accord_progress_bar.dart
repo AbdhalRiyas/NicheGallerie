@@ -1,15 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class AccordProgressBar extends StatelessWidget {
   final String name;
   final double percentage;
-  final String imageId;
+  final String imageUrl;
 
   const AccordProgressBar({
     super.key,
     required this.name,
     required this.percentage,
-    required this.imageId,
+    required this.imageUrl,
   });
 
   @override
@@ -18,20 +19,23 @@ class AccordProgressBar extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15),
       child: Row(
         children: [
-          // Container(
-          //   width: 40,
-          //   height: 40,
-          //   decoration: BoxDecoration(
-          //     shape: BoxShape.circle,
-          //     image: DecorationImage(
-          //       image: NetworkImage(
-          //         'https://nichegallerie.com/wp-content/uploads/2023/04/fresh-spicy-perfume-accords-niche-gallery.jpg', // Replace with actual image URL
-          //       ),
-          //       fit: BoxFit.cover,
-          //     ),
-          //   ),
-          // ),
-          // const SizedBox(width: 12),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Stack(
               children: [
@@ -54,10 +58,10 @@ class AccordProgressBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        name,
+                        name.toUpperCase(),
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
                       ),
