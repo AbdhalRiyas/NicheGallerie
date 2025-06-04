@@ -11,6 +11,7 @@ import 'package:shop/src/providers/product_search_provider.dart';
 import 'package:shop/src/repositories/home_repository.dart';
 import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/services/notification_service.dart';
+import 'package:upgrader/upgrader.dart';
 
 class EntryPoint extends StatefulWidget {
   const EntryPoint({super.key});
@@ -39,20 +40,22 @@ class _EntryPointState extends State<EntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: PageTransitionSwitcher(
-        duration: defaultDuration,
-        transitionBuilder: (child, animation, secondAnimation) {
-          return FadeThroughTransition(
-            animation: animation,
-            secondaryAnimation: secondAnimation,
-            child: child,
-          );
-        },
-        child: _pages[_currentIndex],
+    return UpgradeAlert(
+      child: Scaffold(
+        appBar: _buildAppBar(context),
+        body: PageTransitionSwitcher(
+          duration: defaultDuration,
+          transitionBuilder: (child, animation, secondAnimation) {
+            return FadeThroughTransition(
+              animation: animation,
+              secondaryAnimation: secondAnimation,
+              child: child,
+            );
+          },
+          child: _pages[_currentIndex],
+        ),
+        bottomNavigationBar: _buildBottomNavigation(context),
       ),
-      bottomNavigationBar: _buildBottomNavigation(context),
     );
   }
 

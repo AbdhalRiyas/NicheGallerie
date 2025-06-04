@@ -35,7 +35,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
     _inStockOnly.value = widget.inStockOnly ?? false;
 
     _currentRangeValues =
-        widget.initialRangeValues ?? const RangeValues(99, 10000);
+        widget.initialRangeValues ?? const RangeValues(0, 10000);
     selectedCategories = widget.initialSelectedCategories ?? {};
     selectedSort = widget.initialSelectedSort ?? 'Newest Arrival';
   }
@@ -137,7 +137,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                         const SizedBox(height: 8),
                         RangeSlider(
                           values: _currentRangeValues,
-                          min: 99,
+                          min: 0,
                           max: 10000,
                           activeColor: Colors.brown,
                           inactiveColor: Colors.brown.withAlpha(50),

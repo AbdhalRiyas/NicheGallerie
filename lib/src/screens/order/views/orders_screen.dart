@@ -21,6 +21,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   int _currentPage = 1;
   bool _isLoading = false;
   bool _hasMore = true;
+  // ignore: unused_field
   bool _isRefreshing = false;
 
   @override
