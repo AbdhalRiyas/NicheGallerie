@@ -29,7 +29,7 @@ class ProductRepository {
       final res = await ApiService().post(
         ApiContants().requestStock,
         payload: {
-          'product_id': productId,
+          'product_id': productId.toString(),
           'whatsapp_number': whatsappNumber,
         },
       );
