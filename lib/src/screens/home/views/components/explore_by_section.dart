@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/src/config/api_contants.dart';
@@ -29,48 +28,16 @@ class ExploreBySection extends StatefulWidget {
 class _ExploreBySectionState extends State<ExploreBySection> {
   late String _activeTab;
   final _scrollController = ScrollController();
-  Timer? _autoScrollTimer;
 
   @override
   void initState() {
     super.initState();
+    // Set the initial active tab to the first tab's ID
     _activeTab = widget.tabs.values.first;
-    _startAutoScroll();
-    _scrollController.addListener(_scrollListener);
-  }
-
-  void _startAutoScroll() {
-    _autoScrollTimer?.cancel(); // Cancel any existing timer
-    _autoScrollTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      if (_scrollController.hasClients) {
-        double maxScroll = _scrollController.position.maxScrollExtent;
-        double currentScroll = _scrollController.position.pixels;
-        // Scroll by approximately one item width (60 + padding)
-        double itemWidth = 60 + defaultPadding;
-        double nextScroll = currentScroll + itemWidth;
-        if (nextScroll > maxScroll) {
-          nextScroll = 0; // Loop back to start
-        }
-        _scrollController.animateTo(
-          nextScroll,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      _scrollController.jumpTo(0); // Jump to start when reaching end
-    }
   }
 
   @override
   void dispose() {
-    _autoScrollTimer?.cancel();
-    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
   }
@@ -78,8 +45,6 @@ class _ExploreBySectionState extends State<ExploreBySection> {
   void _onTabSelected(String tabId) {
     setState(() {
       _activeTab = tabId;
-      _scrollController.jumpTo(0); // Reset scroll position
-      _startAutoScroll(); // Restart timer for new tab
     });
   }
 

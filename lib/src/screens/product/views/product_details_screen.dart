@@ -18,6 +18,7 @@ import 'package:shop/src/repositories/product_repository.dart';
 import 'package:shop/src/route/route_constants.dart';
 import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.dart';
 import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';
+import 'package:shop/src/screens/product/views/components/product_detail_skeleton.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import 'components/request_stock_dialog.dart';
@@ -29,12 +30,10 @@ import 'product_buy_now_screen.dart';
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({
     super.key,
-    this.productImageUrls,
     required this.slug,
   });
 
   final String slug;
-  final List<String>? productImageUrls;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -143,11 +142,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 builder: (BuildContext context, Product? product,
                         Widget? child) =>
                     product == null
-                        ? Center(
-                            child: CircularProgressIndicator.adaptive(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).primaryColor),
-                          ))
+                        ? ProductDetailsSkeleton()
                         : Column(
                             children: [
                               ProductImages(
