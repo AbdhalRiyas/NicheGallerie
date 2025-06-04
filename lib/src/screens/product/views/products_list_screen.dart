@@ -139,6 +139,13 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         queryParameters['stock_status'] = 'instock';
       }
 
+      if (_filters['priceRange'] != null) {
+        queryParameters['min_price'] =
+            _filters['priceRange'].start.toStringAsFixed(2);
+        queryParameters['max_price'] =
+            _filters['priceRange'].end.toStringAsFixed(2);
+      }
+
       final Uri uri = Uri.parse(widget.apiEndPoint)
           .replace(queryParameters: queryParameters);
 
