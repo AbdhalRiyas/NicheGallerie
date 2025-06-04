@@ -49,6 +49,7 @@ dependencies:
   hive_flutter: ^1.1.0
   lottie: ^3.3.1
   webview_flutter: ^4.13.0
+  upgrader: ^11.4.0
 
   # FIREBASE
   firebase_core: ^3.11.0
@@ -84,7 +85,6 @@ flutter:
     - assets/Illustration/
     - assets/flags/
     - assets/logo/
-    - assets/screens/
     - assets/lottie/
 
   fonts:
