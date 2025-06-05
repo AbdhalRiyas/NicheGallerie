@@ -45,6 +45,7 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
                         widget.product.id,
                         qty,
                       );
+                      context.pop();
                       customModalBottomSheet(
                         context,
                         isDismissible: false,

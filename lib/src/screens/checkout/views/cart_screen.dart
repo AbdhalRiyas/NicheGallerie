@@ -78,7 +78,14 @@ class _CartScreenState extends State<CartScreen> {
               };
               final subtotal = calculateSubtotal(productMap, cartProvider);
               final isOutOfStock = cartItems
-                  .any((product) => product.stockStatus == 'outofstock');
+                      .any((product) => product.stockStatus == 'outofstock') ||
+                  cartItems.any(
+                    (product) =>
+                        product.manageStock &&
+                        cartProvider.cartItems.any((item) =>
+                            item['product_id'] == product.id &&
+                            item['qty'] > product.stockQuantity),
+                  );
 
               return Padding(
                 padding: const EdgeInsets.all(defaultPadding),
@@ -153,6 +160,15 @@ class _CartScreenState extends State<CartScreen> {
                         child: Text('Checkout'),
                       ),
                     ),
+                    isOutOfStock
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text(
+                              'Some items are out of stock or exceed available quantity.',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               );

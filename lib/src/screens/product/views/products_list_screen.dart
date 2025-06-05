@@ -9,7 +9,6 @@ import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/product_search_provider.dart';
-import 'package:shop/src/route/route_constants.dart';
 import 'package:shop/src/route/screen_export.dart';
 import 'package:shop/src/screens/product/views/components/custom_bottom_sheet.dart';
 import 'package:shop/src/services/api_service.dart';
@@ -245,7 +244,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                 isScrollControlled: true,
                 builder: (context) => CustomBottomSheet(
                   inStockOnly: _filters['inStockOnly'],
-                  initialRangeValues: _filters['rangeValues'],
+                  initialRangeValues: _filters['priceRange'],
                   initialSelectedCategories: _filters['selectedCategories'],
                   initialSelectedSort: _filters['selectedSort'],
                   onChanged: (filters) {

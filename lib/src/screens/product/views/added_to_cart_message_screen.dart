@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/route/screen_export.dart';
@@ -15,10 +16,13 @@ class AddedToCartMessageScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              Image.asset(
-                Theme.of(context).brightness == Brightness.light
-                    ? "assets/Illustration/success.png"
-                    : "assets/Illustration/success_dark.png",
+              SvgPicture.asset(
+                "assets/icons/cart-check.svg",
+                width: 200,
+                colorFilter: ColorFilter.mode(
+                  primaryColor.withAlpha(100),
+                  BlendMode.srcIn,
+                ),
                 height: MediaQuery.of(context).size.height * 0.3,
               ),
               const Spacer(flex: 2),
