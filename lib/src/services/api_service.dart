@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shop/src/config/app_contants.dart';
@@ -18,12 +19,15 @@ class ApiService {
     final Uri uri = Uri.parse("${AppContants().apiBaseUrl}$apiEndPoint");
 
     try {
+      final headers = await _buildHeaders();
       final res = await http
           .get(
             uri,
-            headers: _buildHeaders(),
+            headers: headers,
           )
           .timeout(const Duration(seconds: 30));
+
+      log("API Response: ${res.body}");
 
       return _processResponse(res);
     } on SocketException {
@@ -43,10 +47,11 @@ class ApiService {
     final Uri uri = Uri.parse("${AppContants().apiBaseUrl}$apiEndPoint");
 
     try {
+      final headers = await _buildHeaders();
       final res = await http
           .post(
             uri,
-            headers: _buildHeaders(),
+            headers: headers,
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 30));
@@ -63,13 +68,12 @@ class ApiService {
       {Map<dynamic, dynamic>? payload}) async {
     final Uri uri = Uri.parse("${AppContants().apiBaseUrl}$apiEndPoint");
 
-    // final userToken = Hive.box("app").get("user");
-
     try {
+      final headers = await _buildHeaders();
       final res = await http
           .put(
             uri,
-            headers: _buildHeaders(),
+            headers: headers,
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 20));
@@ -87,10 +91,11 @@ class ApiService {
     final Uri uri = Uri.parse("${AppContants().apiBaseUrl}$apiEndPoint");
 
     try {
+      final headers = await _buildHeaders();
       final res = await http
           .delete(
             uri,
-            headers: _buildHeaders(),
+            headers: headers,
             body: jsonEncode(payload),
           )
           .timeout(const Duration(seconds: 15));
@@ -156,23 +161,38 @@ class ApiService {
     }
   }
 
-  Map<String, String> _buildHeaders() {
-    final context = GlobalKeyContants().navigatorKey.currentContext;
-    if (context != null) {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      if (authProvider.token != null) {
-        return {
-          "Authorization": "Bearer ${authProvider.token}",
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-          "Connection": "Keep-Alive",
-        };
-      }
-    }
-    return {
+  Future<Map<String, String>> _buildHeaders() async {
+    final headers = {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "Connection": "Keep-Alive",
     };
+
+    // Add Authorization token if available
+    final context = GlobalKeyContants().navigatorKey.currentContext;
+    if (context != null) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.token != null) {
+        headers["Authorization"] = "Bearer ${authProvider.token}";
+      }
+    }
+
+    // Add Firebase App Check token
+    try {
+      final appCheckToken = await FirebaseAppCheck.instance.getToken();
+      if (appCheckToken != null) {
+        headers["X-Firebase-AppCheck"] = appCheckToken;
+        log("App Check Token: $appCheckToken");
+      } else {
+        log("App Check Token is null. Ensure debug provider is configured for emulator.");
+      }
+    } catch (e) {
+      log("Error fetching App Check token: $e");
+      // Optionally throw an exception if token is required
+      // throw AppException("Failed to retrieve Firebase App Check token");
+    }
+
+    log("Request Headers: $headers");
+    return headers;
   }
 }

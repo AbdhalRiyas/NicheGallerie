@@ -39,12 +39,9 @@ class NotificationService {
   // get token
   Future<String?> getToken() async {
     final token = await _messaging.getToken();
-    log("FCM Token: $token");
     if (authProvider.isLoggedIn) {
       // store token in the backend
       await UserRepository().storeFcmToken(token!);
-    } else {
-      log("User is not logged in");
     }
     return token;
   }
