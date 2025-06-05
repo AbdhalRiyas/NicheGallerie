@@ -57,12 +57,12 @@ class NotificationService {
         criticalAlert: false);
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
+      log('User granted permission');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
+      log('User granted provisional permission');
     } else {
-      print('User declined or has not accepted permission');
+      log('User declined or has not accepted permission');
     }
   }
 
@@ -157,7 +157,7 @@ class NotificationService {
   }
 
   void _handleNotificationClick(String? payload) {
-    print(payload);
+    log(payload.toString());
     // if (payload == 'announcement') {
     //   navigatorKey.currentState?.push(
     //     MaterialPageRoute(

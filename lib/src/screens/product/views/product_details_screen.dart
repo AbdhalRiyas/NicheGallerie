@@ -54,8 +54,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       _product.value!.relatedIds,
       context.read<AppConfig>().preferredCurrency['code']!,
     );
-    log('Related Products Request: ${_product.value!.relatedIds}');
-    log('Related Products Response: ${res.data.toString()}');
     return res.data as List<Product>;
   }
 

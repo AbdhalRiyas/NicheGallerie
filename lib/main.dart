@@ -1,5 +1,6 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
@@ -24,10 +25,18 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize Firebase App Check
-  await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug, // For Android
-    // appleProvider: AppleProvider.appAttest, // For iOS
-  );
+  if (kReleaseMode) {
+    await FirebaseAppCheck.instance.activate(
+      androidProvider: AndroidProvider.playIntegrity, // For Android
+      appleProvider: AppleProvider.deviceCheck, // For iOS
+    );
+  } else {
+    // In debug mode, you can use the debug provider
+    await FirebaseAppCheck.instance.activate(
+      androidProvider: AndroidProvider.debug,
+      appleProvider: AppleProvider.debug,
+    );
+  }
 
   await dotenv.load(fileName: ".env");
 

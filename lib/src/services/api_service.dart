@@ -27,8 +27,6 @@ class ApiService {
           )
           .timeout(const Duration(seconds: 30));
 
-      log("API Response: ${res.body}");
-
       return _processResponse(res);
     } on SocketException {
       throw FetchDataException("No Internet Connection", uri.toString());
@@ -182,7 +180,6 @@ class ApiService {
       final appCheckToken = await FirebaseAppCheck.instance.getToken();
       if (appCheckToken != null) {
         headers["X-Firebase-AppCheck"] = appCheckToken;
-        log("App Check Token: $appCheckToken");
       } else {
         log("App Check Token is null. Ensure debug provider is configured for emulator.");
       }
@@ -191,8 +188,6 @@ class ApiService {
       // Optionally throw an exception if token is required
       // throw AppException("Failed to retrieve Firebase App Check token");
     }
-
-    log("Request Headers: $headers");
     return headers;
   }
 }
