@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -185,6 +186,42 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ),
                                   );
                                 },
+                              ),
+                              //brand image
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(defaultPadding),
+                                  child: product.brand != null
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    product.brand!.imageUrl,
+                                                height: 80,
+                                                width: 80,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              product.brand!.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium,
+                                            ),
+                                          ],
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(defaultPadding),

@@ -1,3 +1,5 @@
+import 'package:shop/src/models/brand.dart';
+
 class Product {
   final int id;
 
@@ -33,6 +35,8 @@ class Product {
 
   final List<dynamic> relatedIds;
 
+  final Brand? brand;
+
   Product({
     required this.id,
     required this.name,
@@ -51,6 +55,7 @@ class Product {
     required this.manageStock,
     required this.weight,
     required this.relatedIds,
+    this.brand,
   });
 
   factory Product.fromJson(Map<String, dynamic> product) => Product(
@@ -72,6 +77,7 @@ class Product {
       stockQuantity: product['stock_quantity'] ?? 0,
       manageStock: product['manage_stock'],
       weight: product['weight'] ?? '1',
+      brand: product['brand'] != null ? Brand.fromJson(product['brand']) : null,
       relatedIds: product['related_ids'] != null
           ? List<dynamic>.from(product['related_ids'])
           : []);
