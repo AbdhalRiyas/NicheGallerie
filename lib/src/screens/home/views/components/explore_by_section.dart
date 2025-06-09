@@ -5,6 +5,7 @@ import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/brand.dart';
 import 'package:shop/src/models/accord.dart';
 import 'package:shop/src/models/note.dart';
+import 'package:shop/src/screens/home/views/explore_by_screen.dart';
 import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 class ExploreBySection extends StatefulWidget {
@@ -57,6 +58,28 @@ class _ExploreBySectionState extends State<ExploreBySection> {
       return widget.notes;
     }
     return [];
+  }
+
+  String _getActiveTabTitle() {
+    if (_activeTab == 'brands') {
+      return "All Brands";
+    } else if (_activeTab == 'accords') {
+      return "All Accords";
+    } else if (_activeTab == 'notes') {
+      return "All Notes";
+    }
+    return "All";
+  }
+
+  String _getActiveTaxonomy() {
+    if (_activeTab == 'brands') {
+      return "brands";
+    } else if (_activeTab == 'accords') {
+      return "accords";
+    } else if (_activeTab == 'notes') {
+      return "notes";
+    }
+    return "";
   }
 
   @override
@@ -237,6 +260,25 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     );
                   },
                 ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+          child: Align(
+            // alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ExploreByScreen(
+                      taxanomy: _getActiveTaxonomy(),
+                    ),
+                  ),
+                );
+              },
+              child: Text('View All ${_getActiveTabTitle().split(' ').last}'),
+            ),
+          ),
         ),
       ],
     );

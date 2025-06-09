@@ -18,6 +18,9 @@ class ApiContants {
   final String storeFcmToken = '/users/fcm-token';
   final String emailSubscription = '/users/email-subscription';
   final String requestStock = '/products/request-stock';
+  final String brands = '/products/brands';
+  final String accords = '/products/accords';
+  final String notes = '/products/notes';
 
   final String billingAddress = '/users/billing-address';
   final String countries = '/countries';
