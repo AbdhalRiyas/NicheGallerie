@@ -32,7 +32,7 @@ class AuthProvider extends ChangeNotifier {
           '_token': authData['data']['token'],
         });
 
-        log(res.toString());
+        // log(res.toString());
 
         if (res['success'] == true) {
           await _setUserData(res);

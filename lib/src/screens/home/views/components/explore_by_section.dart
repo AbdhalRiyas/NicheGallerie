@@ -150,12 +150,22 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     } else if (item is Accord) {
                       imageUrl = item.imageUrl;
                       name = item.name;
-                      slug = item.link;
+                      // Extract the string between the last two slashes for the slug
+                      final uri = Uri.parse(item.link);
+                      final segments = uri.pathSegments;
+                      slug = segments.isNotEmpty
+                          ? segments[segments.length - 2]
+                          : '';
                       taxonomy = {"accords": slug};
                     } else if (item is Note) {
                       imageUrl = item.imageUrl;
                       name = item.name;
-                      slug = item.link;
+                      // Extract the string between the last two slashes for the slug
+                      final uri = Uri.parse(item.link);
+                      final segments = uri.pathSegments;
+                      slug = segments.isNotEmpty
+                          ? segments[segments.length - 2]
+                          : '';
                       taxonomy = {"notes": slug};
                     }
 

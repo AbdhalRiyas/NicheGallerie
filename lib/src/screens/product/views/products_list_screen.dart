@@ -68,13 +68,13 @@ class CustomSearchDelegate extends SearchDelegate {
 }
 
 class ProductsListScreen extends StatefulWidget {
-  ProductsListScreen(
-      {super.key,
-      required this.title,
-      required this.apiEndPoint,
-      String? categoryId,
-      this.taxanomy})
-      : categoryId =
+  ProductsListScreen({
+    super.key,
+    required this.title,
+    required this.apiEndPoint,
+    String? categoryId,
+    this.taxanomy,
+  }) : categoryId =
             Uri.parse(apiEndPoint).queryParameters['category'] ?? categoryId;
 
   final String title;
@@ -213,9 +213,11 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                 MaterialPageRoute(
                   builder: (context) => SearchScreen(
                     category: widget.categoryId,
+                    taxanomy: widget.taxanomy,
                   ),
                 ),
               );
+              log('taxanomy: ${widget.taxanomy}');
             },
             // onPressed: () {
             //   // create search

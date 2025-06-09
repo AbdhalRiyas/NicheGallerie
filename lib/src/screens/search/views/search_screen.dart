@@ -11,9 +11,10 @@ import 'package:shop/src/route/route_constants.dart';
 import 'components/search_form.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key, this.category});
+  const SearchScreen({super.key, this.category, this.taxanomy});
 
   final String? category;
+  final Map<String, String>? taxanomy;
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -42,6 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
       if (!provider.isLoading) {
         provider.loadMore(
           category: widget.category ?? '',
+          taxanomy: widget.taxanomy ?? {},
         );
       }
     }
@@ -58,6 +60,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Provider.of<ProductSearchProvider>(context, listen: false).search(
               query!,
               category: widget.category ?? '',
+              taxanomy: widget.taxanomy ?? {},
             );
           },
         ),

@@ -33,7 +33,8 @@ class ProductSearchProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _onSearchChanged(String query, {String category = ''}) {
+  void _onSearchChanged(String query,
+      {String category = '', Map<String, String>? taxanomy}) {
     _searchQuery = query;
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(seconds: 1), () {
@@ -43,13 +44,17 @@ class ProductSearchProvider with ChangeNotifier {
         _fetchResults(
           query: query,
           category: category,
+          taxanomy: taxanomy,
         );
       }
     });
   }
 
   Future<void> _fetchResults(
-      {String query = '', int page = 1, String category = ''}) async {
+      {String query = '',
+      int page = 1,
+      String category = '',
+      Map<String, String>? taxanomy}) async {
     _isLoading = true;
     notifyListeners();
 
@@ -61,6 +66,15 @@ class ProductSearchProvider with ChangeNotifier {
       if (category.isNotEmpty) {
         url += '&category=$category';
       }
+
+      // Append taxanomy if provided
+      if (taxanomy != null && taxanomy.isNotEmpty) {
+        taxanomy.forEach((key, value) {
+          url += '&$key=$value';
+        });
+      }
+
+      log('Fetching products from: $url');
 
       final res = await _apiService.get(url);
 
@@ -88,20 +102,23 @@ class ProductSearchProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void search(String query, {String? category = ''}) {
+  void search(String query,
+      {String? category = '', Map<String, String>? taxanomy}) {
     _onSearchChanged(
       query,
       category: category!,
+      taxanomy: taxanomy,
     );
   }
 
-  void loadMore({String? category = ''}) {
+  void loadMore({String? category = '', Map<String, String>? taxanomy}) {
     if (_currentPage < _lastPage) {
       _currentPage++;
       _fetchResults(
         query: _searchQuery,
         page: _currentPage,
         category: category!,
+        taxanomy: taxanomy,
       );
     }
   }
