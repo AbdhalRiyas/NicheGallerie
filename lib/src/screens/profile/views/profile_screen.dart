@@ -500,6 +500,7 @@ class ProfileScreen extends StatelessWidget {
                               nb.toast(
                                 result.message,
                                 print: true,
+                                length: nb.Toast.LENGTH_LONG,
                               );
                             }
                           },
@@ -510,7 +511,7 @@ class ProfileScreen extends StatelessWidget {
                               vertical: 16,
                             ),
                           ),
-                          child: const Text("Subscribe"),
+                          child: Text("Subscribe"),
                         ),
                       ),
                     ],

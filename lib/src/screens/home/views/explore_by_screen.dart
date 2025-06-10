@@ -316,13 +316,12 @@ class _ExploreByScreenState extends State<ExploreByScreen> {
                       child: Column(
                         children: [
                           Container(
-                            width: 80,
-                            height: 80,
+                            width: 100,
+                            height: 100,
                             decoration: BoxDecoration(
-                              shape: BoxShape.circle,
                               border: Border.all(
-                                color: Theme.of(context).dividerColor,
-                                width: 1,
+                                color: primaryColor.withAlpha(150),
+                                width: 0.5,
                               ),
                             ),
                             child: ClipOval(
@@ -343,10 +342,11 @@ class _ExploreByScreenState extends State<ExploreByScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            name,
+                            name.toUpperCase(),
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
+                              color: primaryColor,
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 1,

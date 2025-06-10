@@ -28,7 +28,7 @@ Future<void> main() async {
   if (kReleaseMode) {
     await FirebaseAppCheck.instance.activate(
       androidProvider: AndroidProvider.playIntegrity, // For Android
-      appleProvider: AppleProvider.deviceCheck, // For iOS
+      appleProvider: AppleProvider.appAttestWithDeviceCheckFallback, // For iOS
     );
   } else {
     // In debug mode, you can use the debug provider

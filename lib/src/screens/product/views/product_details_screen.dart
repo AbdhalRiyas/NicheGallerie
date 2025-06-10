@@ -201,7 +201,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                 border: Border.all(
                                                   color: Theme.of(context)
                                                       .primaryColor,
-                                                  width: 1,
+                                                  width: 0.5,
                                                 ),
                                               ),
                                               child: CachedNetworkImage(

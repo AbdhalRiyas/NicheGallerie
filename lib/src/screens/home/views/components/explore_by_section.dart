@@ -157,8 +157,31 @@ class _ExploreBySectionState extends State<ExploreBySection> {
               : ListView.builder(
                   controller: _scrollController,
                   scrollDirection: Axis.horizontal,
-                  itemCount: activeItems.length,
+                  itemCount: activeItems.length + 1,
                   itemBuilder: (context, index) {
+                    if (index == activeItems.length) {
+                      // Add the "View All" button at the end
+                      return TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ExploreByScreen(
+                                taxanomy: _getActiveTaxonomy(),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                            'View All ${_getActiveTabTitle().split(' ').last}'
+                                .toUpperCase(),
+                            style: TextStyle(
+                              color: sandDuneColor,
+                              fontSize: 12,
+                            )),
+                      );
+                    }
+
                     final item = activeItems[index];
                     String imageUrl = '';
                     String name = '';
@@ -195,9 +218,7 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     return Padding(
                       padding: EdgeInsets.only(
                         left: index == 0 ? defaultPadding : defaultPadding / 2,
-                        right: index == activeItems.length - 1
-                            ? defaultPadding
-                            : defaultPadding / 2,
+                        right: defaultPadding / 2,
                       ),
                       child: Column(
                         children: [
@@ -260,25 +281,6 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     );
                   },
                 ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-          child: Align(
-            // alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExploreByScreen(
-                      taxanomy: _getActiveTaxonomy(),
-                    ),
-                  ),
-                );
-              },
-              child: Text('View All ${_getActiveTabTitle().split(' ').last}'),
-            ),
-          ),
         ),
       ],
     );
