@@ -6,29 +6,33 @@ class FeaturedCategoryCard extends StatelessWidget {
   const FeaturedCategoryCard({
     super.key,
     required this.title,
+    required this.subtitle,
     required this.imageUrl,
     this.press,
   });
 
-  final String title, imageUrl;
+  final String title, imageUrl, subtitle;
   final VoidCallback? press;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: press,
+    return GestureDetector(
+      onTap: press,
+      child: SizedBox(
+        height: 200, // Fixed height for the card
         child: Stack(
           children: [
             CachedNetworkImage(
               imageUrl: imageUrl,
+              fit: BoxFit.cover,
+              width: double.infinity,
             ),
+            // Positioned.fill(
+            //   child: Container(color: Colors.black45),
+            // ),
             Positioned.fill(
-              child: Container(color: Colors.black45),
-            ),
-            Positioned.fill(
-              top: 4,
-              bottom: 4,
+              top: 50,
+              bottom: 10,
               left: 0,
               right: 0,
               child: Column(
@@ -38,28 +42,34 @@ class FeaturedCategoryCard extends StatelessWidget {
                     title.toUpperCase(),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 30,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
                       height: 1,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      height: 1.5,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: IconButton(
-                      onPressed: press,
+                    child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
+                        minimumSize:
+                            const Size(120, 40), // Set min width and height
                         backgroundColor: Colors.white,
+                        foregroundColor: Theme.of(context).primaryColor,
+                        elevation: 2,
                       ),
-                      icon: SvgPicture.asset(
-                        "assets/icons/Arrow - Right.svg",
-                        fit: BoxFit.scaleDown,
-                        height: 36,
-                        colorFilter: const ColorFilter.mode(
-                            Colors.black, BlendMode.srcIn),
-                      ),
+                      onPressed: press,
+                      child: const Text('SHOP NOW'),
                     ),
                   ),
                 ],

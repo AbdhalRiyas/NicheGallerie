@@ -18,11 +18,12 @@ class ProductsSection extends StatefulWidget {
   const ProductsSection({
     super.key,
     required this.title,
+    required this.subtitle,
     this.dataApiEndPoint = '',
     this.viewAllVisibility = true,
   });
 
-  final String title, dataApiEndPoint;
+  final String title, dataApiEndPoint, subtitle;
   final bool viewAllVisibility;
 
   @override
@@ -56,37 +57,56 @@ class _ProductsSectionState extends State<ProductsSection> {
         Padding(
           padding: const EdgeInsets.all(defaultPadding),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                widget.title,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              if (widget.viewAllVisibility)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductsListScreen(
-                          title: widget.title,
-                          apiEndPoint: widget.dataApiEndPoint,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      const Text("View all"),
-                      const SizedBox(width: 8),
-                      SvgPicture.asset(
-                        "assets/icons/Arrow - Right.svg",
-                        colorFilter: const ColorFilter.mode(
-                            Colors.grey, BlendMode.srcIn),
-                      )
-                    ],
-                  ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                    ),
+                    const SizedBox(height: defaultPadding),
+                    Text(
+                      widget.subtitle,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.grey[850],
+                          ),
+                    ),
+                    const SizedBox(height: defaultPadding / 2),
+                  ],
                 ),
+              ),
+              // if (widget.viewAllVisibility)
+              //   GestureDetector(
+              //     onTap: () {
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => ProductsListScreen(
+              //             title: widget.title,
+              //             apiEndPoint: widget.dataApiEndPoint,
+              //           ),
+              //         ),
+              //       );
+              //     },
+              //     child: Row(
+              //       children: [
+              //         const Text("View all"),
+              //         const SizedBox(width: 8),
+              //         SvgPicture.asset(
+              //           "assets/icons/Arrow - Right.svg",
+              //           colorFilter: const ColorFilter.mode(
+              //               Colors.grey, BlendMode.srcIn),
+              //         )
+              //       ],
+              //     ),
+              //   ),
             ],
           ),
         ),
@@ -119,7 +139,6 @@ class _ProductsSectionState extends State<ProductsSection> {
                     ),
                   );
                 }
-
                 return const ProductsSkelton();
               }),
         )

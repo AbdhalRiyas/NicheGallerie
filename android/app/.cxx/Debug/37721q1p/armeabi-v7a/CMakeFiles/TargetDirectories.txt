@@ -1,0 +1,2 @@
+C:/Users/abdha/Documents/GitHub/NicheGallerie/android/app/.cxx/Debug/37721q1p/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/abdha/Documents/GitHub/NicheGallerie/android/app/.cxx/Debug/37721q1p/armeabi-v7a/CMakeFiles/rebuild_cache.dir

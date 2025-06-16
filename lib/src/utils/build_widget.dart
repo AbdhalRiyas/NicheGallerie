@@ -47,6 +47,7 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
     return SliverToBoxAdapter(
         child: ProductsSection(
       title: json['child']['title'],
+      subtitle: json['child']['subtitle'],
       viewAllVisibility: json['child']['view_all_visibility'],
       dataApiEndPoint: json['child']['data_api_end_point'],
     ));
@@ -58,6 +59,7 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
     for (int i = 0; i < json['children'].length; i++) {
       children.add(FeaturedCategoryCard(
         title: json['children'][i]['title'],
+        subtitle: json['children'][i]['subtitle'],
         imageUrl: json['children'][i]['image_url'],
         press: () {
           Navigator.push(
@@ -74,7 +76,7 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
       ));
 
       if (i < json['children'].length - 1) {
-        children.add(SizedBox(width: 5));
+        children.add(SizedBox(height: defaultPadding));
       }
     }
 
@@ -84,7 +86,8 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
         horizontal: defaultPadding,
       ),
       sliver: SliverToBoxAdapter(
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: children,
         ),
       ),
