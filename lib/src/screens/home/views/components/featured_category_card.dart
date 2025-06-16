@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class FeaturedCategoryCard extends StatelessWidget {
   const FeaturedCategoryCard({
@@ -67,6 +66,7 @@ class FeaturedCategoryCard extends StatelessWidget {
                         backgroundColor: Colors.white,
                         foregroundColor: Theme.of(context).primaryColor,
                         elevation: 2,
+                        padding: const EdgeInsets.all(0),
                       ),
                       onPressed: press,
                       child: const Text('SHOP NOW'),

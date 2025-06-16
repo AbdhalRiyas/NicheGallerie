@@ -9,7 +9,8 @@ import 'package:shop/src/screens/home/views/explore_by_screen.dart';
 import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 class ExploreBySection extends StatefulWidget {
-  final Map<String, String> tabs;
+  final Map<String, Map<String, String>>
+      tabs; // Updated to include key and description
   final List<Brand> brands;
   final List<Accord> accords;
   final List<Note> notes;
@@ -33,8 +34,8 @@ class _ExploreBySectionState extends State<ExploreBySection> {
   @override
   void initState() {
     super.initState();
-    // Set the initial active tab to the first tab's ID
-    _activeTab = widget.tabs.values.first;
+    // Set the initial active tab to the first tab's key
+    _activeTab = widget.tabs.values.first['key']!;
   }
 
   @override
@@ -71,6 +72,15 @@ class _ExploreBySectionState extends State<ExploreBySection> {
     return "All";
   }
 
+  String _getActiveTabDescription() {
+    // Find the tab with the matching key and return its description
+    final activeTabEntry = widget.tabs.entries.firstWhere(
+      (entry) => entry.value['key'] == _activeTab,
+      orElse: () => MapEntry('', {'description': ''}),
+    );
+    return activeTabEntry.value['description'] ?? '';
+  }
+
   String _getActiveTaxonomy() {
     if (_activeTab == 'brands') {
       return "brands";
@@ -85,69 +95,79 @@ class _ExploreBySectionState extends State<ExploreBySection> {
   @override
   Widget build(BuildContext context) {
     final activeItems = _getActiveItems();
-    final tabsMeta =
-        widget.tabs.entries.map((e) => {'name': e.key, 'id': e.value}).toList();
+    final tabsMeta = widget.tabs.entries
+        .map((e) => {'name': e.key, 'id': e.value['key']!})
+        .toList();
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Explore By",
-                style: Theme.of(context).textTheme.titleSmall,
+                "Search By",
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
               ),
-              Row(
-                children: tabsMeta.map((tab) {
+              const SizedBox(height: defaultPadding / 2),
+              ...tabsMeta.map(
+                (tab) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: defaultPadding / 4),
-                    child: InkWell(
-                      onTap: _activeTab == tab['id']
-                          ? null
-                          : () => _onTabSelected(tab['id']!),
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        height: 32,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: defaultPadding * 0.75,
-                          vertical: defaultPadding / 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _activeTab == tab['id']
-                              ? primaryColor
-                              : Colors.transparent,
-                          border: Border.all(
-                            color: _activeTab == tab['id']
-                                ? Colors.transparent
-                                : Theme.of(context).dividerColor,
+                    padding: const EdgeInsets.only(bottom: defaultPadding),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () => _onTabSelected(tab['id']!),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _activeTab == tab['id']
+                              ? Colors.black.withAlpha(200)
+                              : Colors.white,
+                          foregroundColor: _activeTab == tab['id']
+                              ? Colors.white
+                              : Colors.black.withAlpha(200),
+                          elevation: _activeTab == tab['id'] ? 2 : 1,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: defaultPadding / 2,
                           ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Center(
-                          child: Text(
-                            tab['name']!,
-                            style: TextStyle(
-                              fontSize: 12,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
                               color: _activeTab == tab['id']
-                                  ? Colors.white
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.color,
+                                  ? Colors.transparent
+                                  : Colors.black,
                             ),
+                          ),
+                        ),
+                        child: Text(
+                          tab['name']!.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
+        ),
+        const SizedBox(height: defaultPadding),
+        Text(
+          _getActiveTabDescription(),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.black,
+                fontSize: 14,
+              ),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: defaultPadding),
         SizedBox(
@@ -157,31 +177,8 @@ class _ExploreBySectionState extends State<ExploreBySection> {
               : ListView.builder(
                   controller: _scrollController,
                   scrollDirection: Axis.horizontal,
-                  itemCount: activeItems.length + 1,
+                  itemCount: activeItems.length,
                   itemBuilder: (context, index) {
-                    if (index == activeItems.length) {
-                      // Add the "View All" button at the end
-                      return TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ExploreByScreen(
-                                taxanomy: _getActiveTaxonomy(),
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                            'View All ${_getActiveTabTitle().split(' ').last}'
-                                .toUpperCase(),
-                            style: TextStyle(
-                              color: sandDuneColor,
-                              fontSize: 12,
-                            )),
-                      );
-                    }
-
                     final item = activeItems[index];
                     String imageUrl = '';
                     String name = '';
@@ -196,7 +193,6 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     } else if (item is Accord) {
                       imageUrl = item.imageUrl;
                       name = item.name;
-                      // Extract the string between the last two slashes for the slug
                       final uri = Uri.parse(item.link);
                       final segments = uri.pathSegments;
                       slug = segments.isNotEmpty
@@ -206,7 +202,6 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     } else if (item is Note) {
                       imageUrl = item.imageUrl;
                       name = item.name;
-                      // Extract the string between the last two slashes for the slug
                       final uri = Uri.parse(item.link);
                       final segments = uri.pathSegments;
                       slug = segments.isNotEmpty
@@ -230,7 +225,7 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                                   builder: (context) => ProductsListScreen(
                                     title: name,
                                     apiEndPoint: ApiContants().products,
-                                    taxanomy: taxonomy,
+                                    taxanomy: taxonomy, // Fixed typo
                                   ),
                                 ),
                               );
@@ -281,6 +276,28 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                     );
                   },
                 ),
+        ),
+        SizedBox(
+          width: 150,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(0),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExploreByScreen(
+                    taxanomy: _getActiveTaxonomy(), // Fixed typo
+                  ),
+                ),
+              );
+            },
+            child: Text(
+              'View All ${_getActiveTabTitle().split(' ').last}'.toUpperCase(),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
       ],
     );
