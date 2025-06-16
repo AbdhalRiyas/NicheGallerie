@@ -17,19 +17,21 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
   if (json['widget_name'] == 'carousel') {
     List<Widget> children = [];
 
-    for (var element in json['children']) {
+    for (var element in json['children'] ?? []) {
       if (element['type'] == 'normal') {
         children.add(BannerMStyle1(
-          image: element['image'],
-          ctaText: element['cta_text'] == '' ? null : element['cta_text'],
-          press: element['cta_url'] == '' ? () {} : () {},
+          image: element['image'] ?? '',
+          ctaText: element['cta_text']?.isNotEmpty ?? false
+              ? element['cta_text']
+              : null,
+          press: element['cta_url']?.isNotEmpty ?? false ? () {} : () {},
         ));
       } else if (element['type'] == 'with_counter') {
         children.add(BannerMWithCounter(
-          duration: Duration(seconds: element['duration_in_seconds']),
-          title: element['title'],
-          subtitle: element['subtitle'],
-          ctaText: element['cta_text'],
+          duration: Duration(seconds: element['duration_in_seconds'] ?? 0),
+          title: element['title'] ?? '',
+          subtitle: element['subtitle'] ?? '',
+          ctaText: element['cta_text'] ?? '',
           press: () {},
         ));
       }
@@ -37,37 +39,41 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
 
     return SliverToBoxAdapter(
       child: OffersCarousel(
-        key: Key('carousel'),
+        key: const Key('carousel'),
         offers: children,
       ),
     );
   }
 
   if (json['widget_name'] == 'product_section') {
-    return SliverToBoxAdapter(
-        child: ProductsSection(
-      title: json['child']['title'],
-      subtitle: json['child']['subtitle'],
-      viewAllVisibility: json['child']['view_all_visibility'],
-      dataApiEndPoint: json['child']['data_api_end_point'],
-    ));
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+      sliver: ProductsSection(
+        title: json['child']?['title']?.toString() ?? '',
+        subtitle: json['child']?['subtitle']?.toString() ?? '',
+        viewAllVisibility: json['child']?['view_all_visibility'] ?? true,
+        dataApiEndPoint: json['child']?['data_api_end_point']?.toString() ?? '',
+        isListView: json['child']?['is_list_view'] ?? true,
+      ),
+    );
   }
 
   if (json['widget_name'] == 'featured_category_section') {
     final List<Widget> children = [];
 
-    for (int i = 0; i < json['children'].length; i++) {
+    for (int i = 0; i < (json['children']?.length ?? 0); i++) {
       children.add(FeaturedCategoryCard(
-        title: json['children'][i]['title'],
-        subtitle: json['children'][i]['subtitle'],
-        imageUrl: json['children'][i]['image_url'],
+        title: json['children'][i]['title'] ?? '',
+        subtitle: json['children'][i]['subtitle'] ?? '',
+        imageUrl: json['children'][i]['image_url'] ?? '',
         press: () {
           Navigator.push(
             GlobalKeyContants().navigatorKey.currentContext!,
             MaterialPageRoute(
               builder: (context) => ProductsListScreen(
-                title: json['children'][i]['title'],
-                categoryId: json['children'][i]['category_id'].toString(),
+                title: json['children'][i]['title'] ?? '',
+                categoryId:
+                    json['children'][i]['category_id']?.toString() ?? '',
                 apiEndPoint: ApiContants().products,
               ),
             ),
@@ -75,8 +81,8 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
         },
       ));
 
-      if (i < json['children'].length - 1) {
-        children.add(SizedBox(height: defaultPadding));
+      if (i < (json['children']?.length ?? 0) - 1) {
+        children.add(const SizedBox(height: defaultPadding));
       }
     }
 
@@ -95,28 +101,32 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
   }
 
   if (json['widget_name'] == 'explore_by_section') {
-    // Convert tabs to Map<String, String>
-    final Map<String, String> tabs = Map<String, String>.from(
-      json['children']['tabs']
-          .map((key, value) => MapEntry(key, value.toString())),
+    final Map<String, Map<String, String>> tabs =
+        Map<String, Map<String, String>>.from(
+      (json['children']?['tabs'] ?? {}).map((key, value) => MapEntry(
+            key,
+            {
+              'key': value['key']?.toString() ?? '',
+              'description': value['description']?.toString() ?? '',
+            },
+          )),
     );
 
-    // Parse items into appropriate model lists
     final List<Brand> brands =
-        (json['children']['brands'][0]['items'] as List<dynamic>)
+        (json['children']?['brands']?[0]['items'] as List<dynamic>? ?? [])
             .map((item) => Brand.fromJson(item))
             .toList();
     final List<Accord> accords =
-        (json['children']['accords'][0]['items'] as List<dynamic>)
+        (json['children']?['accords']?[0]['items'] as List<dynamic>? ?? [])
             .map((item) => Accord.fromJson(item))
             .toList();
     final List<Note> notes =
-        (json['children']['notes'][0]['items'] as List<dynamic>)
+        (json['children']?['notes']?[0]['items'] as List<dynamic>? ?? [])
             .map((item) => Note.fromJson(item))
             .toList();
 
     return SliverPadding(
-      padding: EdgeInsets.symmetric(vertical: defaultPadding),
+      padding: const EdgeInsets.symmetric(vertical: defaultPadding),
       sliver: SliverToBoxAdapter(
         child: ExploreBySection(
           tabs: tabs,
@@ -128,5 +138,5 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
     );
   }
 
-  return SliverToBoxAdapter(child: SizedBox());
+  return const SliverToBoxAdapter(child: SizedBox.shrink());
 }
