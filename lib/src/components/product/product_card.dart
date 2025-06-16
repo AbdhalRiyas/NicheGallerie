@@ -34,8 +34,7 @@ class ProductCard extends StatelessWidget {
         100;
     return isListview
         ? Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 4),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(8),
@@ -43,10 +42,10 @@ class ProductCard extends StatelessWidget {
             child: InkWell(
               onTap: press,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 80, // Set a fixed width for the image
+                    width: 100, // Set a fixed width for the image
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: NetworkImageWithLoader(
@@ -60,11 +59,11 @@ class ProductCard extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           product.name,
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
@@ -131,7 +130,7 @@ class ProductCard extends StatelessWidget {
                                 product.stockStatus == 'instock'
                                     ? 'Add to Cart'.toUpperCase()
                                     : 'Out Of Stock'.toUpperCase(),
-                                style: const TextStyle(fontSize: 10),
+                                style: const TextStyle(fontSize: 12),
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -147,11 +146,11 @@ class ProductCard extends StatelessWidget {
                                         : "assets/icons/Heart.svg",
                                     colorFilter: isInWishlist
                                         ? const ColorFilter.mode(
-                                            primaryColor,
+                                            sandDuneColor,
                                             BlendMode.srcIn,
                                           )
                                         : const ColorFilter.mode(
-                                            sandDuneColor,
+                                            primaryColor,
                                             BlendMode.srcIn,
                                           ),
                                   ),
@@ -219,12 +218,12 @@ class ProductCard extends StatelessWidget {
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 10,
-                                  fontWeight: FontWeight.w500),
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
                         ),
                       Positioned(
-                        right: defaultPadding / 2,
+                        right: 0,
                         top: 0,
                         child: Consumer<WishlistProvider>(
                           builder: (context, wishlistProvider, child) {

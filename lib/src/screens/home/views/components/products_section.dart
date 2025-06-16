@@ -68,8 +68,9 @@ class _ProductsSectionState extends State<ProductsSection> {
                           widget.title,
                           style:
                               Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.black,
+                                    fontSize: 24,
                                   ),
                         ),
                         const SizedBox(height: defaultPadding),
@@ -162,7 +163,8 @@ class _ProductsSectionState extends State<ProductsSection> {
                   return const Text('No products found');
                 },
               ),
-              if (widget.viewAllVisibility)
+              if (widget.viewAllVisibility) ...[
+                SizedBox(height: defaultPadding),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(120, 40),
@@ -191,6 +193,7 @@ class _ProductsSectionState extends State<ProductsSection> {
                     semanticsLabel: 'View all ${widget.title} products',
                   ),
                 ),
+              ]
             ],
           ),
         ]),

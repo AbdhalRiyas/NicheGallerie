@@ -110,11 +110,12 @@ class _ExploreBySectionState extends State<ExploreBySection> {
               Text(
                 "Search By",
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w500,
                       color: Colors.black,
+                      fontSize: 24,
                     ),
               ),
-              const SizedBox(height: defaultPadding / 2),
+              const SizedBox(height: defaultPadding),
               ...tabsMeta.map(
                 (tab) {
                   return Padding(
@@ -277,6 +278,7 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                   },
                 ),
         ),
+        const SizedBox(height: defaultPadding),
         SizedBox(
           width: 150,
           child: ElevatedButton(

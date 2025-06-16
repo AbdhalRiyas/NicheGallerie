@@ -52,24 +52,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         children: [
                           const Icon(
                             Icons.error_outline,
-                            color: Colors.red,
                             size: 48,
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            "Failed to load categories",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () => setState(() {}),
-                            child: const Text("Retry"),
-                          ),
+                          Text("Failed to load categories",
+                              style: Theme.of(context).textTheme.bodyLarge),
                         ],
                       ),
                     );

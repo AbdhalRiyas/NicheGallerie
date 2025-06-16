@@ -89,7 +89,7 @@ Widget buildWidget(Map<dynamic, dynamic> json) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(
         vertical: defaultPadding * 1.5,
-        horizontal: defaultPadding,
+        // horizontal: defaultPadding,
       ),
       sliver: SliverToBoxAdapter(
         child: Column(
