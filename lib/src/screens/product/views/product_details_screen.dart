@@ -186,11 +186,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                         .styleFrom(
                                                       minimumSize:
                                                           const Size(150, 40),
-                                                      backgroundColor:
-                                                          sandDuneColor,
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              0),
+                                                      backgroundColor: cartProvider
+                                                              .cartItems
+                                                              .any((item) =>
+                                                                  item[
+                                                                      'product_id'] ==
+                                                                  product.id)
+                                                          ? sandDuneColor
+                                                          : Colors.red,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        vertical: 12,
+                                                      ),
                                                     ),
                                                     onPressed: !product
                                                                 .manageStock ||
@@ -204,7 +211,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                                 product.id,
                                                                 qty,
                                                               );
-                                                              context.pop();
                                                               customModalBottomSheet(
                                                                 context,
                                                                 isDismissible:
@@ -213,7 +219,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                                     AddedToCartMessageScreen(),
                                                               );
                                                             } catch (e) {
-                                                              context.pop();
                                                               context.go(
                                                                   '/$logInScreenRoute');
                                                             }
@@ -235,6 +240,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                         : RequestStockDialog(
                                             productId: product.id,
                                           ),
+                                    const SizedBox(height: defaultPadding / 2),
+                                    CachedNetworkImage(
+                                      imageUrl:
+                                          'https://nichegallerie.com/wp-content/uploads/2023/03/tabby-tammarah-1536x295.webp',
+                                      height: 50,
+                                      width: 200,
+                                    )
                                   ],
                                 ),
                               ),
@@ -329,7 +341,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                       );
                                     } else {
                                       return SizedBox(
-                                        height: 250,
+                                        height: 320,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           itemCount: snapshot.data!.length,
@@ -339,13 +351,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
-                                              child: ProductCard(
-                                                press: () {
-                                                  log('Navigating to product:/$productScreenRoute/${relatedProduct.slug}');
-                                                  context.push(
-                                                      '/$productScreenRoute/${relatedProduct.slug}');
-                                                },
-                                                product: relatedProduct,
+                                              child: SizedBox(
+                                                width: 200,
+                                                child: ProductCard(
+                                                  press: () {
+                                                    log('Navigating to product:/$productScreenRoute/${relatedProduct.slug}');
+                                                    context.push(
+                                                        '/$productScreenRoute/${relatedProduct.slug}');
+                                                  },
+                                                  product: relatedProduct,
+                                                ),
                                               ),
                                             );
                                           },
