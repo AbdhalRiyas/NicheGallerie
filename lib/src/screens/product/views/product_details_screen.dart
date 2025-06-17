@@ -2,31 +2,28 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
-import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/models/product.dart';
-import 'package:shop/src/providers/wishlist_provider.dart';
+import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/repositories/product_repository.dart';
 import 'package:shop/src/route/route_constants.dart';
-import 'package:shop/src/screens/product/views/components/accords_bottom_sheet.dart';
-import 'package:shop/src/screens/product/views/components/notes_bottom_sheet.dart';
+import 'package:shop/src/screens/custom_appbar.dart';
+import 'package:shop/src/screens/product/views/added_to_cart_message_screen.dart';
+import 'package:shop/src/screens/product/views/components/custom_tabs.dart';
 import 'package:shop/src/screens/product/views/components/product_detail_skeleton.dart';
+import 'package:shop/src/screens/product/views/components/product_quantity.dart';
+import 'package:shop/src/screens/product/views/components/unit_price.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import 'components/request_stock_dialog.dart';
 import 'components/product_images.dart';
-import 'components/product_info.dart';
-import 'components/product_list_tile.dart';
-import 'product_buy_now_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({
@@ -40,8 +37,10 @@ class ProductDetailsScreen extends StatefulWidget {
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
-class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+class _ProductDetailsScreenState extends State<ProductDetailsScreen>
+    with SingleTickerProviderStateMixin {
   final ValueNotifier<Product?> _product = ValueNotifier(null);
+  late TabController _tabController;
 
   void getProduct() async {
     final res = await ApiService().get(
@@ -62,84 +61,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   void initState() {
     super.initState();
     getProduct();
+    _tabController = TabController(length: 2, vsync: this);
   }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  int qty = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: ValueListenableBuilder(
-        builder: (context, Product? product, ch) {
-          return product == null
-              ? SizedBox()
-              : product.stockStatus == 'instock'
-                  ? CartButton(
-                      price: product.price,
-                      press: () {
-                        customModalBottomSheet(
-                          context,
-                          height: MediaQuery.sizeOf(context).height * 0.92,
-                          child: ProductBuyNowScreen(
-                            product: product,
-                          ),
-                        );
-                      },
-                    )
-                  : RequestStockDialog(
-                      productId: product.id,
-                    );
-        },
-        valueListenable: _product,
-      ),
+      appBar: CustomAppbar(),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              floating: true,
-              actions: [
-                ValueListenableBuilder(
-                  valueListenable: _product,
-                  builder: (BuildContext context, value, Widget? child) =>
-                      Consumer<WishlistProvider>(
-                    builder: (context, wishlistProvider, child) {
-                      bool isInWishlist =
-                          wishlistProvider.wishlistItems.contains(value?.id);
-                      return _product.value == null
-                          ? const SizedBox.shrink()
-                          : IconButton(
-                              onPressed: () {
-                                if (isInWishlist) {
-                                  wishlistProvider
-                                      .removeItem(_product.value!.id);
-                                  ScaffoldMessenger.of(context)
-                                      .hideCurrentSnackBar();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    customSnackBar('Removed from wishlist'),
-                                  );
-                                } else {
-                                  wishlistProvider.addItem(_product.value!.id);
-                                  ScaffoldMessenger.of(context)
-                                      .hideCurrentSnackBar();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    customSnackBar('Added to wishlist'),
-                                  );
-                                }
-                              },
-                              icon: SvgPicture.asset(
-                                isInWishlist
-                                    ? "assets/icons/Heart-Filled.svg"
-                                    : "assets/icons/Heart.svg",
-                                colorFilter: isInWishlist
-                                    ? const ColorFilter.mode(
-                                        Colors.red, BlendMode.srcIn)
-                                    : null,
-                              ),
-                            );
-                    },
-                  ),
-                ),
-              ],
-            ),
             SliverToBoxAdapter(
               child: ValueListenableBuilder(
                 valueListenable: _product,
@@ -149,45 +88,173 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ? ProductDetailsSkeleton()
                         : Column(
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.all(defaultPadding),
+                                child: Text(
+                                  product.name.toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                      ),
+                                ),
+                              ),
                               ProductImages(
                                 images: product.images,
+                                productId: product.id,
                               ),
-                              ProductInfo(
-                                title: product.name,
-                                isAvailable: product.stockStatus == 'instock',
-                                description: product.shortDescription,
-                                rating: 4.4,
-                                numOfReviews: 126,
-                              ),
-                              ProductListTile(
-                                svgSrc: "assets/icons/Layers.svg",
-                                title: "Main Accords",
-                                press: () {
-                                  customModalBottomSheet(
-                                    context,
-                                    child: AccordsBottomSheet(
-                                        accordsList:
-                                            product.metadata?['accords_lists']),
-                                  );
-                                },
-                              ),
-                              ProductListTile(
-                                svgSrc: "assets/icons/Drop.svg",
-                                title: "Notes",
-                                press: () {
-                                  customModalBottomSheet(
-                                    context,
-                                    child: NotesBottomSheet(
-                                      topNotes: product.metadata?['top_notes'],
-                                      middleNotes:
-                                          product.metadata?['middle_notes'],
-                                      baseNotes:
-                                          product.metadata?['base_notes'],
+                              Center(
+                                child: Column(
+                                  children: [
+                                    UnitPrice(
+                                      price: product.regularPrice,
+                                      priceAfterDiscount: product.price,
                                     ),
-                                  );
-                                },
+                                    if (product.regularPrice >
+                                        product.price) ...[
+                                      const SizedBox(
+                                          height: defaultPadding / 2),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Discount: ',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!
+                                                  .copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  '${((product.regularPrice - product.price) / product.regularPrice * 100).toStringAsFixed(0)}% OFF',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!
+                                                  .copyWith(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                    const SizedBox(height: defaultPadding),
+                                    product.stockStatus == 'instock'
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              ProductQuantity(
+                                                showLabel: false,
+                                                numOfItem: qty,
+                                                onIncrement: !product
+                                                            .manageStock ||
+                                                        qty <
+                                                            product
+                                                                .stockQuantity
+                                                    ? () {
+                                                        setState(() {
+                                                          qty++;
+                                                        });
+                                                      }
+                                                    : null,
+                                                onDecrement: qty > 1
+                                                    ? () {
+                                                        if (qty > 1) {
+                                                          setState(() {
+                                                            qty--;
+                                                          });
+                                                        }
+                                                      }
+                                                    : null,
+                                              ),
+                                              const SizedBox(
+                                                  width: defaultPadding),
+                                              Consumer<CartProvider>(
+                                                builder: (context, cartProvider,
+                                                    child) {
+                                                  return ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      minimumSize:
+                                                          const Size(150, 40),
+                                                      backgroundColor:
+                                                          sandDuneColor,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                    ),
+                                                    onPressed: !product
+                                                                .manageStock ||
+                                                            qty <=
+                                                                product
+                                                                    .stockQuantity
+                                                        ? () {
+                                                            try {
+                                                              cartProvider
+                                                                  .addItem(
+                                                                product.id,
+                                                                qty,
+                                                              );
+                                                              context.pop();
+                                                              customModalBottomSheet(
+                                                                context,
+                                                                isDismissible:
+                                                                    false,
+                                                                child:
+                                                                    AddedToCartMessageScreen(),
+                                                              );
+                                                            } catch (e) {
+                                                              context.pop();
+                                                              context.go(
+                                                                  '/$logInScreenRoute');
+                                                            }
+                                                          }
+                                                        : null,
+                                                    child: Text(
+                                                      'Add to Cart'
+                                                          .toUpperCase(),
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                            ],
+                                          )
+                                        : RequestStockDialog(
+                                            productId: product.id,
+                                          ),
+                                  ],
+                                ),
                               ),
-                              //brand image
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: defaultPadding,
+                                  vertical: defaultPadding,
+                                ),
+                                child: Divider(
+                                  color: Colors.grey.withAlpha(150),
+                                  height: defaultPadding,
+                                ),
+                              ),
+                              // Tabs for Accords and Notes
+                              Padding(
+                                padding: const EdgeInsets.all(defaultPadding),
+                                child: CustomTabSwitcher(
+                                    metadata: product.metadata),
+                              ),
+                              // Brand image
                               Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(defaultPadding),
@@ -225,10 +292,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(defaultPadding),
-                                child: Text(
-                                  "You may also like",
-                                  style:
-                                      Theme.of(context).textTheme.titleSmall!,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Perfumes You May Like",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18,
+                                        ),
+                                  ),
                                 ),
                               ),
                               if (product.relatedIds.isNotEmpty)
@@ -266,12 +341,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                   const EdgeInsets.all(8.0),
                                               child: ProductCard(
                                                 press: () {
-                                                  log(
-                                                    'Navigating to product:/$productScreenRoute/${relatedProduct.slug}',
-                                                  );
+                                                  log('Navigating to product:/$productScreenRoute/${relatedProduct.slug}');
                                                   context.push(
-                                                    '/$productScreenRoute/${relatedProduct.slug}',
-                                                  );
+                                                      '/$productScreenRoute/${relatedProduct.slug}');
                                                 },
                                                 product: relatedProduct,
                                               ),

@@ -21,8 +21,8 @@ class ProductsSkelton extends StatelessWidget {
         ),
         child: GridView.builder(
           shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 200.0,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
             mainAxisSpacing: defaultPadding,
             crossAxisSpacing: defaultPadding,
             childAspectRatio: 0.66,

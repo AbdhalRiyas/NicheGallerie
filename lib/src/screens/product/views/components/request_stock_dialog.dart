@@ -30,14 +30,22 @@ class RequestStockDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text("Out of stock!", style: Theme.of(context).textTheme.bodyLarge),
-          const SizedBox(width: defaultPadding),
-          Flexible(
-            child: ElevatedButton(
-              onPressed: () => _showWhatsappDialog(context),
-              child: const Text('Request Stock'),
+          const SizedBox(height: defaultPadding / 2),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(300, 50),
+              padding: const EdgeInsets.all(0),
+            ),
+            onPressed: () => _showWhatsappDialog(context),
+            child: const Text(
+              'Request Stock',
+              style: TextStyle(
+                fontSize: 16,
+              ),
             ),
           ),
         ],

@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 
-class NotesBottomSheet extends StatelessWidget {
+class NotesContainer extends StatelessWidget {
   final List<dynamic> topNotes;
   final List<dynamic> middleNotes;
   final List<dynamic> baseNotes;
 
-  const NotesBottomSheet({
+  const NotesContainer({
     super.key,
     required this.topNotes,
     required this.middleNotes,

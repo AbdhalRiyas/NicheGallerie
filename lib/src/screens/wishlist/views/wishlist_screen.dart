@@ -45,8 +45,8 @@ class WishlistScreen extends StatelessWidget {
                             vertical: defaultPadding),
                         sliver: SliverGrid(
                           gridDelegate:
-                              const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200.0,
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
                             mainAxisSpacing: defaultPadding,
                             crossAxisSpacing: defaultPadding,
                             childAspectRatio: 0.66,

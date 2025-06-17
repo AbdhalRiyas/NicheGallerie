@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/product/views/components/accord_progress_bar.dart';
 
-class AccordsBottomSheet extends StatelessWidget {
-  const AccordsBottomSheet({
+class AccordsContainer extends StatelessWidget {
+  const AccordsContainer({
     super.key,
     required this.accordsList,
   });
@@ -17,16 +17,20 @@ class AccordsBottomSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(defaultPadding),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'MAIN ACCORDS',
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
           ),
           const SizedBox(height: defaultPadding),
           Flexible(
             child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: accordsList.length,
               itemBuilder: (context, index) {
