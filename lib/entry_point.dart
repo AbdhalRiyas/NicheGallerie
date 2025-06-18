@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:animations/animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -65,12 +66,12 @@ class _EntryPointState extends State<EntryPoint> {
       leading: const SizedBox(),
       leadingWidth: 0,
       centerTitle: false,
-      title: SvgPicture.asset(
-        "assets/logo/logo.svg",
-        colorFilter: ColorFilter.mode(
-            Theme.of(context).iconTheme.color!, BlendMode.srcIn),
-        height: 30,
-        width: 100,
+      title: CachedNetworkImage(
+        imageUrl:
+            "https://nichegallerie.com/wp-content/uploads/2023/02/NicheGallerie.com-Main-Logo-niche-gallery-buy-best-perfume-fragrance-nichegallerie.png",
+        height: 100,
+        width: 180,
+        fit: BoxFit.contain,
       ),
       actions: [
         IconButton(
@@ -150,7 +151,7 @@ class _EntryPointState extends State<EntryPoint> {
                 clipBehavior: Clip.none,
                 children: [
                   svgIcon(
-                    "assets/icons/Bag.svg",
+                    "assets/icons/cart.svg",
                     color: _currentIndex == 3
                         ? primaryColor
                         : Theme.of(context).iconTheme.color,
@@ -187,7 +188,7 @@ class _EntryPointState extends State<EntryPoint> {
                 clipBehavior: Clip.none,
                 children: [
                   svgIcon(
-                    "assets/icons/Bag.svg",
+                    "assets/icons/cart.svg",
                     color: primaryColor,
                   ),
                   if (provider.cartItems.isNotEmpty)

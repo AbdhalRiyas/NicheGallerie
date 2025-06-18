@@ -51,72 +51,80 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: SearchForm(
-          autofocus: true,
-          hintText: 'Search for products...',
-          onChanged: (query) {
-            Provider.of<ProductSearchProvider>(context, listen: false).search(
-              query!,
-              category: widget.category ?? '',
-              taxanomy: widget.taxanomy ?? {},
-            );
-          },
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: SearchForm(
+            autofocus: true,
+            hintText: 'Search for products...',
+            onChanged: (query) {
+              Provider.of<ProductSearchProvider>(context, listen: false).search(
+                query!,
+                category: widget.category ?? '',
+                taxanomy: widget.taxanomy ?? {},
+              );
+            },
+          ),
         ),
-      ),
-      body: Consumer<ProductSearchProvider>(
-        builder: (context, provider, child) {
-          if (provider.isLoading && provider.products.isEmpty) {
-            return const ProductsSkelton(
-              isGrid: true,
-              gridCount: 4,
-            );
-          } else if (provider.products.isEmpty) {
-            return EmptyHandleWidget(
-              iconSrc: "assets/icons/Search.svg",
-              title: provider.productSearchMsg,
-            );
-          } else {
-            return CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: defaultPadding, vertical: defaultPadding),
-                  sliver: SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200.0,
-                      mainAxisSpacing: defaultPadding,
-                      crossAxisSpacing: defaultPadding,
-                      childAspectRatio: 0.66,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return ProductCard(
-                          product: provider.products[index],
-                          press: () {
-                            context.go(
-                                '/$productScreenRoute/${provider.products[index].slug}');
-                          },
-                        );
-                      },
-                      childCount: provider.products.length,
+        body: Consumer<ProductSearchProvider>(
+          builder: (context, provider, child) {
+            if (provider.isLoading && provider.products.isEmpty) {
+              return const ProductsSkelton(
+                isGrid: true,
+                gridCount: 4,
+              );
+            } else if (provider.products.isEmpty) {
+              return EmptyHandleWidget(
+                iconSrc: "assets/icons/Search.svg",
+                title: provider.productSearchMsg,
+              );
+            } else {
+              return CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: defaultPadding, vertical: defaultPadding),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200.0,
+                        mainAxisSpacing: defaultPadding,
+                        crossAxisSpacing: defaultPadding,
+                        childAspectRatio: 0.66,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return ProductCard(
+                            product: provider.products[index],
+                            press: () {
+                              context.go(
+                                  '/$productScreenRoute/${provider.products[index].slug}');
+                            },
+                          );
+                        },
+                        childCount: provider.products.length,
+                      ),
                     ),
                   ),
-                ),
-                if (provider.isLoading)
-                  SliverToBoxAdapter(
-                    child: ProductsSkelton(
-                      isGrid: true,
-                      gridCount: 4, // Adjust as needed
-                    ),
-                  )
-              ],
-            );
-          }
-        },
+                  if (provider.isLoading)
+                    SliverToBoxAdapter(
+                      child: ProductsSkelton(
+                        isGrid: true,
+                        gridCount: 4, // Adjust as needed
+                      ),
+                    )
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }

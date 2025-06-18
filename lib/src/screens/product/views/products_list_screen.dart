@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -200,7 +201,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title.toUpperCase()),
+        centerTitle: true,
+        title: CachedNetworkImage(
+          imageUrl:
+              "https://nichegallerie.com/wp-content/uploads/2023/02/NicheGallerie.com-Main-Logo-niche-gallery-buy-best-perfume-fragrance-nichegallerie.png",
+          height: 100,
+          width: 180,
+          fit: BoxFit.contain,
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -266,53 +274,91 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: defaultPadding, vertical: defaultPadding),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: defaultPadding,
-                        crossAxisSpacing: defaultPadding,
-                        childAspectRatio: 0.66,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          return ProductCard(
-                            product: _products[index],
-                            press: () {
-                              context.go(
-                                  '/$productScreenRoute/${_products[index].slug}');
-                            },
-                          );
-                        },
-                        childCount: _products.length,
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 200,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl:
+                          'https://nichegallerie.com/wp-content/uploads/2023/03/hero-background.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            primaryColor.withAlpha(150),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  if (_isLoadingMore)
-                    const SliverToBoxAdapter(
-                      child: ProductsSkelton(
-                        isGrid: true,
-                        gridCount: 6, // Adjust as needed
+                    Center(
+                      child: Text(
+                        widget.title.toUpperCase(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 1),
+                              blurRadius: 3,
+                              color: Colors.black.withAlpha(150),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  if (_products.isEmpty && !_isLoadingMore)
-                    const SliverToBoxAdapter(
-                      child: Center(
-                        child: Text("No products found"),
-                      ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: defaultPadding, vertical: defaultPadding),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: defaultPadding,
+                  crossAxisSpacing: defaultPadding,
+                  childAspectRatio: 0.66,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return ProductCard(
+                      product: _products[index],
+                      press: () {
+                        context.go(
+                            '/$productScreenRoute/${_products[index].slug}');
+                      },
+                    );
+                  },
+                  childCount: _products.length,
+                ),
+              ),
+            ),
+            if (_isLoadingMore)
+              const SliverToBoxAdapter(
+                child: ProductsSkelton(
+                  isGrid: true,
+                  gridCount: 6, // Adjust as needed
+                ),
+              ),
+            if (_products.isEmpty && !_isLoadingMore)
+              const SliverToBoxAdapter(
+                child: Center(
+                  child: Text("No products found"),
+                ),
+              ),
           ],
         ),
       ),
