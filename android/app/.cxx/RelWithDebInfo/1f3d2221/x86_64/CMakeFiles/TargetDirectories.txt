@@ -1,0 +1,2 @@
+C:/Users/abdha/Documents/GitHub/NicheGallerie/android/app/.cxx/RelWithDebInfo/1f3d2221/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/abdha/Documents/GitHub/NicheGallerie/android/app/.cxx/RelWithDebInfo/1f3d2221/x86_64/CMakeFiles/rebuild_cache.dir

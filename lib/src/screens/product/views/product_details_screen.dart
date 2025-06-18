@@ -341,7 +341,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                       );
                                     } else {
                                       return SizedBox(
-                                        height: 320,
+                                        height: 300,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           itemCount: snapshot.data!.length,
@@ -352,7 +352,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: SizedBox(
-                                                width: 200,
+                                                width: 180,
                                                 child: ProductCard(
                                                   press: () {
                                                     log('Navigating to product:/$productScreenRoute/${relatedProduct.slug}');

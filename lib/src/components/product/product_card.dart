@@ -123,6 +123,7 @@ class ProductCard extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: defaultPadding / 2,
+                                  vertical: defaultPadding / 4,
                                 ),
                                 minimumSize: const Size(40, 20),
                               ),

@@ -279,26 +279,24 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                 ),
         ),
         const SizedBox(height: defaultPadding),
-        SizedBox(
-          width: 150,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(0),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ExploreByScreen(
-                    taxanomy: _getActiveTaxonomy(), // Fixed typo
-                  ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            minimumSize: const Size(180, 40),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ExploreByScreen(
+                  taxanomy: _getActiveTaxonomy(), // Fixed typo
                 ),
-              );
-            },
-            child: Text(
-              'View All ${_getActiveTabTitle().split(' ').last}'.toUpperCase(),
-              textAlign: TextAlign.center,
-            ),
+              ),
+            );
+          },
+          child: Text(
+            'View All ${_getActiveTabTitle().split(' ').last}'.toUpperCase(),
+            textAlign: TextAlign.center,
           ),
         ),
       ],

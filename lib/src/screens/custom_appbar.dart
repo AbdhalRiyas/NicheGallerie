@@ -52,8 +52,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                   child: Container(
                     width: 14,
                     height: 14,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
                       shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,

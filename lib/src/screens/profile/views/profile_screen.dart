@@ -507,11 +507,15 @@ class ProfileScreen extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: blackColor,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
                               vertical: 16,
                             ),
                           ),
-                          child: Text("Subscribe"),
+                          child: Text(
+                            "Subscribe",
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
                       ),
                     ],
