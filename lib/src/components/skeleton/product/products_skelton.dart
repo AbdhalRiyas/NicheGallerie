@@ -33,19 +33,65 @@ class ProductsSkelton extends StatelessWidget {
       );
     }
     // Default horizontal skeleton
-    return SizedBox(
-      height: 220,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 5,
-        itemBuilder: (context, index) => Padding(
-          padding: EdgeInsets.only(
-            left: defaultPadding,
-            right: index == 4 ? defaultPadding : 0,
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 3,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: defaultPadding / 2),
+          child: Container(
+            height: 110,
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                // Image skeleton
+                Container(
+                  width: 100,
+                  height: 100,
+                  margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                // Text skeletons
+                Expanded(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 120,
+                          color: Colors.grey[200],
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          height: 14,
+                          width: 80,
+                          color: Colors.grey[200],
+                        ),
+                        const Spacer(),
+                        Container(
+                          height: 18,
+                          width: 60,
+                          color: Colors.grey[200],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: const ProductCardSkelton(),
-        ),
-      ),
+        );
+      },
     );
   }
 }

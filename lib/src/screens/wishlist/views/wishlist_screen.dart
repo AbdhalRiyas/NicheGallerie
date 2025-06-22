@@ -27,9 +27,9 @@ class WishlistScreen extends StatelessWidget {
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Product>?> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return ProductsSkelton(
-                      isGrid: true,
-                      gridCount: 2,
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ProductsSkelton(),
                     );
                   }
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -37,36 +37,24 @@ class WishlistScreen extends StatelessWidget {
                       child: Text("No products in your wishlist"),
                     );
                   }
-                  return CustomScrollView(
-                    slivers: [
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: defaultPadding,
-                            vertical: defaultPadding),
-                        sliver: SliverGrid(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: defaultPadding,
-                            crossAxisSpacing: defaultPadding,
-                            childAspectRatio: 0.66,
-                          ),
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              return ProductCard(
-                                product: snapshot.data![index],
-                                press: () {
-                                  context.go(
-                                    '/$productScreenRoute/${snapshot.data![index].slug}',
-                                  );
-                                },
-                              );
-                            },
-                            childCount: snapshot.data?.length,
-                          ),
+                  final products = snapshot.data!;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: defaultPadding / 2),
+                        child: ProductCard(
+                          product: products[index],
+                          press: () {
+                            context.go(
+                                '/$productScreenRoute/${products[index].slug}');
+                          },
+                          isListview: true, // Pass to ProductCard
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   );
                 },
               );

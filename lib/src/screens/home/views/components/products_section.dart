@@ -92,10 +92,12 @@ class _ProductsSectionState extends State<ProductsSection> {
                 future: _getProducts(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const ProductsSkelton(
-                      gridCount: 4,
-                      isGrid: true,
-                    );
+                    return widget.isListView
+                        ? ProductsSkelton()
+                        : ProductsSkelton(
+                            gridCount: 4,
+                            isGrid: true,
+                          );
                   }
                   if (snapshot.hasError) {
                     return const Text('Error loading products');

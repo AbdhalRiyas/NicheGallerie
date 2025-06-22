@@ -304,9 +304,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                     Center(
                       child: Text(
                         widget.title.toUpperCase(),
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 48,
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           shadows: [
                             Shadow(

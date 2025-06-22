@@ -1,11 +1,11 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=C:\Users\abdha\flutter"
-export "FLUTTER_APPLICATION_PATH=C:\Users\abdha\Documents\GitHub\Witcommerce-Flutter-1"
+export "FLUTTER_APPLICATION_PATH=C:\Users\abdha\Documents\GitHub\NicheGallerie"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
-export "FLUTTER_BUILD_NUMBER=6"
+export "FLUTTER_BUILD_NUMBER=7"
 export "DART_OBFUSCATION=false"
 export "TRACK_WIDGET_CREATION=true"
 export "TREE_SHAKE_ICONS=false"
