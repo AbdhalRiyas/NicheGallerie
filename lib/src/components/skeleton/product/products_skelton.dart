@@ -43,7 +43,10 @@ class ProductsSkelton extends StatelessWidget {
           child: Container(
             height: 110,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: Theme.of(context)
+                  .iconTheme
+                  .color!
+                  .withValues(alpha: 0.04 * 1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -54,7 +57,10 @@ class ProductsSkelton extends StatelessWidget {
                   height: 100,
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Theme.of(context)
+                        .iconTheme
+                        .color!
+                        .withValues(alpha: 0.04 * 2),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -69,19 +75,28 @@ class ProductsSkelton extends StatelessWidget {
                         Container(
                           height: 16,
                           width: 120,
-                          color: Colors.grey[200],
+                          color: Theme.of(context)
+                              .iconTheme
+                              .color!
+                              .withValues(alpha: 0.04 * 2),
                         ),
                         const SizedBox(height: 8),
                         Container(
                           height: 14,
                           width: 80,
-                          color: Colors.grey[200],
+                          color: Theme.of(context)
+                              .iconTheme
+                              .color!
+                              .withValues(alpha: 0.04 * 2),
                         ),
                         const Spacer(),
                         Container(
                           height: 18,
                           width: 60,
-                          color: Colors.grey[200],
+                          color: Theme.of(context)
+                              .iconTheme
+                              .color!
+                              .withValues(alpha: 0.04 * 2),
                         ),
                       ],
                     ),

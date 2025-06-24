@@ -22,7 +22,10 @@ class HomeSkeleton extends StatelessWidget {
         SizedBox(
           height: 40,
         ),
-        ProductsSkelton(),
+        ProductsSkelton(
+          isGrid: true,
+          gridCount: 4,
+        ),
         SizedBox(
           height: 20,
         ),

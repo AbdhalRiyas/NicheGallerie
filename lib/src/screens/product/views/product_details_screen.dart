@@ -324,7 +324,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return ProductsSkelton();
+                                      return ProductsSkelton(
+                                        isGrid: true,
+                                        gridCount: 2,
+                                      );
                                     } else if (snapshot.hasError) {
                                       return Center(
                                         child: Text(
@@ -341,7 +344,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                       );
                                     } else {
                                       return SizedBox(
-                                        height: 300,
+                                        height: 280,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           itemCount: snapshot.data!.length,
@@ -352,7 +355,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: SizedBox(
-                                                width: 180,
+                                                width: 160,
                                                 child: ProductCard(
                                                   press: () {
                                                     log('Navigating to product:/$productScreenRoute/${relatedProduct.slug}');
