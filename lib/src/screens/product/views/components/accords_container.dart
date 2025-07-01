@@ -40,6 +40,7 @@ class AccordsContainer extends StatelessWidget {
                   name: accord['accord_name']!,
                   percentage: double.parse(accord['accord_percentage']!),
                   imageUrl: accord['image_url']!,
+                  link: accord['accord_link'] ?? '',
                 );
               },
             ),

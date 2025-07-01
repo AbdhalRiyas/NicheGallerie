@@ -301,23 +301,30 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         ),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        widget.title.toUpperCase(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0, 1),
-                              blurRadius: 3,
-                              color: Colors.black.withAlpha(150),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        // Adjust min/max font size as needed
+                        double fontSize =
+                            (constraints.maxWidth / 10).clamp(24.0, 48.0);
+                        return Center(
+                          child: Text(
+                            widget.title.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(0, 1),
+                                  blurRadius: 3,
+                                  color: Colors.black.withAlpha(150),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -338,7 +345,8 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                     return ProductCard(
                       product: _products[index],
                       press: () {
-                        context.go(
+                        print('Product Slug: ${_products[index].slug}');
+                        context.push(
                             '/$productScreenRoute/${_products[index].slug}');
                       },
                     );

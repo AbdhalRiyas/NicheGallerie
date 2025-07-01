@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shop/src/config/api_contants.dart';
 import 'package:shop/src/constants.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 class NotesContainer extends StatelessWidget {
   final List<dynamic> topNotes;
@@ -86,38 +88,65 @@ class NotesContainer extends StatelessWidget {
                       ? note['image_url']!
                       : 'https://via.placeholder.com/50';
 
-                  return SizedBox(
-                    width: 80,
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
+                  String noteLink = note.containsKey('top_note_link')
+                      ? note['top_note_link']!
+                      : note.containsKey('middle_note_link')
+                          ? note['middle_note_link']!
+                          : note['base_note_link']!;
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductsListScreen(
+                            title: noteName,
+                            apiEndPoint: ApiContants().products,
+                            taxanomy: {
+                              "notes": noteLink.split('/').length >= 2
+                                  ? noteLink
+                                      .split('/')
+                                      .sublist(noteLink.split('/').length - 2)
+                                      .first
+                                  : noteLink
+                            },
                           ),
-                          clipBehavior: Clip.antiAlias,
-                          child: CachedNetworkImage(
-                            imageUrl: noteImage,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => const Center(
-                              child: CircularProgressIndicator.adaptive(),
+                        ),
+                      );
+                    },
+                    child: SizedBox(
+                      width: 100,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                            clipBehavior: Clip.antiAlias,
+                            child: CachedNetworkImage(
+                              imageUrl: noteImage,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          noteName.toUpperCase(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: blackColor,
-                            fontWeight: FontWeight.w500,
+                          const SizedBox(height: 8),
+                          Text(
+                            noteName.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: blackColor,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),

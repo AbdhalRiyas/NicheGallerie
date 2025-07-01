@@ -20,6 +20,7 @@ import 'package:shop/src/screens/product/views/components/custom_tabs.dart';
 import 'package:shop/src/screens/product/views/components/product_detail_skeleton.dart';
 import 'package:shop/src/screens/product/views/components/product_quantity.dart';
 import 'package:shop/src/screens/product/views/components/unit_price.dart';
+import 'package:shop/src/screens/product/views/products_list_screen.dart';
 import 'package:shop/src/services/api_service.dart';
 
 import 'components/request_stock_dialog.dart';
@@ -269,33 +270,60 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                               // Brand image
                               Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(defaultPadding),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: defaultPadding,
+                                  ),
                                   child: product.brand != null
-                                      ? Row(
+                                      ? Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                  width: 0.5,
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProductsListScreen(
+                                                      title:
+                                                          product.brand!.name,
+                                                      apiEndPoint: ApiContants()
+                                                          .products,
+                                                      taxanomy: {
+                                                        "brands":
+                                                            product.brand!.slug,
+                                                      },
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    width: 0.5,
+                                                  ),
+                                                ),
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      product.brand!.imageUrl,
+                                                  height: 80,
+                                                  width: 80,
                                                 ),
                                               ),
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    product.brand!.imageUrl,
-                                                height: 80,
-                                                width: 80,
-                                              ),
                                             ),
-                                            const SizedBox(width: 10),
+                                            const SizedBox(height: 10),
                                             Text(
-                                              product.brand!.name,
+                                              product.shortDescription,
+                                              maxLines: 5,
+                                              overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .titleMedium,
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    color: Colors.black54,
+                                                  ),
                                             ),
                                           ],
                                         )
