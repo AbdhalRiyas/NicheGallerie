@@ -46,7 +46,7 @@ class AppRouter {
               path: cartScreenRoute,
               name: cartScreenRoute,
               // Redirect is handled here
-              redirect: (context, state) => _authCheck(context, state),
+              // redirect: (context, state) => _authCheck(context, state),
               pageBuilder: (context, state) {
                 return const MaterialPage(
                     child: CartScreen(navigatedViaRoute: true));

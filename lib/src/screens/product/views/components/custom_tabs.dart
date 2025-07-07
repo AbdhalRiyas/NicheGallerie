@@ -14,68 +14,46 @@ class CustomTabSwitcher extends StatefulWidget {
 class _CustomTabSwitcherState extends State<CustomTabSwitcher> {
   int selectedTab = 0;
 
+  final List<String> _tabs = ['ACCORDS', 'NOTES'];
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
+        Padding(
           padding: const EdgeInsets.all(4),
           child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedTab == 0
-                        ? Theme.of(context).primaryColor
-                        : Colors.transparent,
-                    foregroundColor:
-                        selectedTab == 0 ? Colors.white : Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
+            children: List.generate(_tabs.length, (index) {
+              final isSelected = selectedTab == index;
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: index == 0 ? 8 : 0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isSelected
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey[400],
+                      foregroundColor: isSelected ? Colors.white : Colors.black,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
                     ),
-                  ),
-                  onPressed: () => setState(() => selectedTab = 0),
-                  child: const Text(
-                    'ACCORDS',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8), // Spacing between buttons
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedTab == 1
-                        ? Theme.of(context).primaryColor
-                        : Colors.transparent,
-                    foregroundColor:
-                        selectedTab == 1 ? Colors.white : Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
-                    ),
-                  ),
-                  onPressed: () => setState(() => selectedTab = 1),
-                  child: const Text(
-                    'NOTES',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    onPressed: () => setState(() => selectedTab = index),
+                    child: Text(
+                      _tabs[index],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              );
+            }),
           ),
         ),
-
         const SizedBox(height: 12),
-
-        // Dynamic content (auto-sized)
         if (selectedTab == 0)
           AccordsContainer(
             accordsList: widget.metadata?['accords_lists'],

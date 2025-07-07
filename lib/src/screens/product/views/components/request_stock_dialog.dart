@@ -126,13 +126,12 @@ class _WhatsappDialogContentState extends State<_WhatsappDialogContent> {
             child: CountryCodePicker(
               padding: EdgeInsets.zero,
               onChanged: (value) {
-                widget.countryCodeController.text = value.dialCode ?? '+974';
+                widget.countryCodeController.text = value.dialCode ?? '+966';
               },
               showFlagDialog: true,
               showFlagMain: true,
-              favorite: ['+974', 'UAE'],
               showFlag: true,
-              initialSelection: 'QA',
+              initialSelection: 'SA',
               showCountryOnly: false,
               showOnlyCountryWhenClosed: false,
               alignLeft: true,

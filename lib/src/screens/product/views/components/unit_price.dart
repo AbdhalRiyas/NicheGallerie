@@ -16,43 +16,40 @@ class UnitPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency =
+        Currency.fromJson(context.read<AppConfig>().preferredCurrency);
+    final theme = Theme.of(context).textTheme;
+
+    final String mainPrice = formatCurrency(
+      priceAfterDiscount ?? price,
+      currency,
+    );
+
+    final String? oldPrice = priceAfterDiscount != null
+        ? formatCurrency(price, currency, false)
+        : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   "Price",
-        //   style: Theme.of(context).textTheme.titleSmall,
-        // ),
-        // const SizedBox(height: defaultPadding / 1),
-        Text.rich(
-          TextSpan(
-            text: priceAfterDiscount == null
-                ? formatCurrency(
-                    price,
-                    Currency.fromJson(
-                      context.read<AppConfig>().preferredCurrency,
-                    ),
-                  )
-                : formatCurrency(
-                    priceAfterDiscount!,
-                    Currency.fromJson(
-                      context.read<AppConfig>().preferredCurrency,
-                    ),
-                  ),
-            style: Theme.of(context).textTheme.titleLarge,
-            children: [
-              if (priceAfterDiscount != null) ...[
-                TextSpan(
-                  text:
-                      '  ${formatCurrency(price, Currency.fromJson(context.read<AppConfig>().preferredCurrency), false)}',
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: Theme.of(context).textTheme.bodyMedium!.color,
-                      decoration: TextDecoration.lineThrough),
+        Text.rich(TextSpan(
+          children: [
+            if (oldPrice != null) ...[
+              TextSpan(
+                text: oldPrice,
+                style: theme.titleSmall?.copyWith(
+                  color: Colors.grey[700],
+                  decoration: TextDecoration.lineThrough,
                 ),
-              ]
+              ),
+              const TextSpan(text: '    '),
             ],
-          ),
-        )
+            TextSpan(
+              text: mainPrice,
+              style: theme.titleLarge,
+            ),
+          ],
+        )),
       ],
     );
   }

@@ -157,7 +157,7 @@ class _CartScreenState extends State<CartScreen> {
                                   'productsMap': cartProvider.cartItems,
                                 });
                               },
-                        child: Text('Checkout'),
+                        child: Text('Checkout'.toUpperCase()),
                       ),
                     ),
                     isOutOfStock

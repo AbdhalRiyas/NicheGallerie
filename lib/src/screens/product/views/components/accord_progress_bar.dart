@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/src/config/api_contants.dart';
+import 'package:shop/src/constants.dart';
 import 'package:shop/src/screens/product/views/products_list_screen.dart';
 
 class AccordProgressBar extends StatelessWidget {
@@ -20,7 +21,7 @@ class AccordProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.only(bottom: 4),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -68,7 +69,7 @@ class AccordProgressBar extends StatelessWidget {
                     child: Container(
                       height: 30,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFD2BA8B),
+                        color: sandDuneColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),

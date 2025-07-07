@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
+import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/components/product/product_card.dart';
 import 'package:shop/src/components/skeleton/product/products_skelton.dart';
 import 'package:shop/src/config/api_contants.dart';
@@ -182,7 +184,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                               Consumer<CartProvider>(
                                                 builder: (context, cartProvider,
                                                     child) {
-                                                  return ElevatedButton(
+                                                  return ElevatedButton.icon(
                                                     style: ElevatedButton
                                                         .styleFrom(
                                                       minimumSize:
@@ -197,7 +199,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                           : Colors.red,
                                                       padding: const EdgeInsets
                                                           .symmetric(
-                                                        vertical: 12,
+                                                        vertical: 6,
+                                                        horizontal: 16,
                                                       ),
                                                     ),
                                                     onPressed: !product
@@ -212,12 +215,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                                 product.id,
                                                                 qty,
                                                               );
-                                                              customModalBottomSheet(
-                                                                context,
-                                                                isDismissible:
-                                                                    false,
-                                                                child:
-                                                                    AddedToCartMessageScreen(),
+                                                              ScaffoldMessenger
+                                                                      .of(context)
+                                                                  .showSnackBar(
+                                                                customSnackBar(
+                                                                  'Added to cart',
+                                                                  action:
+                                                                      SnackBarAction(
+                                                                    label:
+                                                                        'View Cart',
+                                                                    onPressed:
+                                                                        () {
+                                                                      context.go(
+                                                                          '/$cartScreenRoute');
+                                                                    },
+                                                                  ),
+                                                                ),
                                                               );
                                                             } catch (e) {
                                                               context.go(
@@ -225,7 +238,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                             }
                                                           }
                                                         : null,
-                                                    child: Text(
+                                                    label: Text(
                                                       'Add to Cart'
                                                           .toUpperCase(),
                                                       style: TextStyle(
@@ -233,6 +246,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                             FontWeight.bold,
                                                       ),
                                                     ),
+                                                    icon: SvgPicture.asset(
+                                                      "assets/icons/cart.svg",
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                        Colors.white,
+                                                        BlendMode.srcIn,
+                                                      ),
+                                                    ),
+                                                    iconAlignment:
+                                                        IconAlignment.end,
                                                   );
                                                 },
                                               )

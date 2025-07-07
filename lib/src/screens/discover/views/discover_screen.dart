@@ -131,7 +131,7 @@ class CategoryTile extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  title,
+                  title.toUpperCase(),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(),
                   overflow: TextOverflow.ellipsis,
                   semanticsLabel: title,

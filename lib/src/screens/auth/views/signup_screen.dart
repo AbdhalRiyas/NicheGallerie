@@ -93,7 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                       }
                     },
-                    child: const Text("Continue"),
+                    child: Text("Continue".toUpperCase()),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

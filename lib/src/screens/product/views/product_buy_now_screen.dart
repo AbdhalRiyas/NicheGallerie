@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/cart_button.dart';
 import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
+import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/components/network_image_with_loader.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
@@ -46,10 +47,16 @@ class _ProductBuyNowScreenState extends State<ProductBuyNowScreen> {
                         qty,
                       );
                       context.pop();
-                      customModalBottomSheet(
-                        context,
-                        isDismissible: false,
-                        child: const AddedToCartMessageScreen(),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        customSnackBar(
+                          'Added to cart',
+                          action: SnackBarAction(
+                            label: 'View Cart',
+                            onPressed: () {
+                              context.go('/$cartScreenRoute');
+                            },
+                          ),
+                        ),
                       );
                     } catch (e) {
                       context.pop();

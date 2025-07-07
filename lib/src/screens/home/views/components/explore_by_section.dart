@@ -235,6 +235,7 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                               width: 60,
                               height: 60,
                               decoration: BoxDecoration(
+                                color: Colors.white,
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: Theme.of(context).dividerColor,
@@ -242,6 +243,7 @@ class _ExploreBySectionState extends State<ExploreBySection> {
                                 ),
                               ),
                               child: CircleAvatar(
+                                backgroundColor: Colors.transparent,
                                 child: CachedNetworkImage(
                                   imageUrl: imageUrl,
                                   fit: BoxFit.cover,

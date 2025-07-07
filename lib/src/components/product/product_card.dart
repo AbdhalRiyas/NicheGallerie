@@ -109,11 +109,17 @@ class ProductCard extends StatelessWidget {
                                         Provider.of<CartProvider>(context,
                                                 listen: false)
                                             .addItem(product.id, 1);
-                                        customModalBottomSheet(
-                                          context,
-                                          isDismissible: false,
-                                          child:
-                                              const AddedToCartMessageScreen(),
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          customSnackBar(
+                                            'Added to cart',
+                                            action: SnackBarAction(
+                                              label: 'View Cart',
+                                              onPressed: () {
+                                                context.go('/$cartScreenRoute');
+                                              },
+                                            ),
+                                          ),
                                         );
                                       } catch (e) {
                                         context.go('/$logInScreenRoute');
@@ -338,10 +344,16 @@ class ProductCard extends StatelessWidget {
                             final provider = Provider.of<CartProvider>(context,
                                 listen: false);
                             provider.addItem(product.id, 1);
-                            customModalBottomSheet(
-                              context,
-                              isDismissible: false,
-                              child: const AddedToCartMessageScreen(),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              customSnackBar(
+                                'Added to cart',
+                                action: SnackBarAction(
+                                  label: 'View Cart',
+                                  onPressed: () {
+                                    context.go('/$cartScreenRoute');
+                                  },
+                                ),
+                              ),
                             );
                           } catch (e) {
                             context.go('/$logInScreenRoute');
@@ -360,7 +372,7 @@ class ProductCard extends StatelessWidget {
                     child: Text(
                       product.stockStatus == 'instock'
                           ? "Add to Cart".toUpperCase()
-                          : "Out of Stock".toUpperCase(),
+                          : "Request Stock".toUpperCase(),
                       style: TextStyle(fontSize: 12),
                     ),
                   ),

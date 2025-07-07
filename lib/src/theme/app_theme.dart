@@ -26,9 +26,9 @@ class AppTheme {
       scaffoldBackgroundColor: Colors.white,
       canvasColor: Colors.white,
       iconTheme: const IconThemeData(color: sandDuneColor),
-      textTheme: const TextTheme(
-        bodyMedium: TextStyle(color: blackColor40),
-      ),
+      // textTheme: const TextTheme(
+      //   bodyMedium: TextStyle(color: blackColor40),
+      // ),
       elevatedButtonTheme: elevatedButtonThemeData,
       textButtonTheme: textButtonThemeData,
       outlinedButtonTheme: outlinedButtonTheme(),
