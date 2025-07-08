@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/src/components/cart_button.dart';
-import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/components/network_image_with_loader.dart';
 import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
-import 'package:shop/src/screens/product/views/added_to_cart_message_screen.dart';
 
 import '../../../constants.dart';
 import '../../../route/route_constants.dart';

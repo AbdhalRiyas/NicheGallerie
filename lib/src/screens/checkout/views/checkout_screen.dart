@@ -219,6 +219,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             emailController: _emailController,
             validateForm: _validateForm,
             errors: _errors,
+            showCompanyName: false,
           ),
         ),
         actions: [

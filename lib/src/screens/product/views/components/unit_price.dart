@@ -20,10 +20,38 @@ class UnitPrice extends StatelessWidget {
         Currency.fromJson(context.read<AppConfig>().preferredCurrency);
     final theme = Theme.of(context).textTheme;
 
-    final String mainPrice = formatCurrency(
-      priceAfterDiscount ?? price,
-      currency,
-    );
+    final double displayPrice = priceAfterDiscount ?? price;
+
+    // Get formatted amount and symbol separately
+    final String formattedAmount =
+        formatCurrency(displayPrice, currency, false);
+    final String symbol = currency.symbol;
+
+    // Determine symbol position
+    String pos = currency.pos;
+    List<InlineSpan> mainPriceSpans = [];
+    TextStyle? symbolStyle = theme.titleLarge
+        ?.copyWith(fontSize: (theme.titleLarge?.fontSize ?? 20) * 0.7);
+
+    if (pos == 'left' || pos == 'left_space') {
+      mainPriceSpans.add(TextSpan(
+        text: symbol + (pos == 'left_space' ? ' ' : ''),
+        style: symbolStyle,
+      ));
+      mainPriceSpans.add(TextSpan(
+        text: formattedAmount,
+        style: theme.titleLarge,
+      ));
+    } else {
+      mainPriceSpans.add(TextSpan(
+        text: formattedAmount,
+        style: theme.titleLarge,
+      ));
+      mainPriceSpans.add(TextSpan(
+        text: (pos == 'right_space' ? ' ' : '') + symbol,
+        style: symbolStyle,
+      ));
+    }
 
     final String? oldPrice = priceAfterDiscount != null
         ? formatCurrency(price, currency, false)
@@ -44,10 +72,7 @@ class UnitPrice extends StatelessWidget {
               ),
               const TextSpan(text: '    '),
             ],
-            TextSpan(
-              text: mainPrice,
-              style: theme.titleLarge,
-            ),
+            ...mainPriceSpans,
           ],
         )),
       ],

@@ -465,7 +465,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               Icon(Icons.payment, size: 20),
               SizedBox(width: 8),
               Text(
-                "Complete Payment",
+                "Complete Payment".toUpperCase(),
               ),
             ],
           ),

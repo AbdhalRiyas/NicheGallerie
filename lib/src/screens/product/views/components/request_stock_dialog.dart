@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/repositories/product_repository.dart';
+import 'package:quickalert/quickalert.dart';
 
 class RequestStockDialog extends StatelessWidget {
   const RequestStockDialog({
@@ -78,8 +79,13 @@ class _WhatsappDialogContentState extends State<_WhatsappDialogContent> {
 
     if (widget.phoneController.text.isEmpty ||
         widget.countryCodeController.text.isEmpty) {
-      toast(
-        'Please enter your WhatsApp number with country code.',
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Invalid Input',
+        text: 'Please enter your WhatsApp number with country code.',
+        borderRadius: 0,
+        confirmBtnColor: Theme.of(context).colorScheme.primary,
       );
       return;
     }
@@ -92,16 +98,27 @@ class _WhatsappDialogContentState extends State<_WhatsappDialogContent> {
 
     if (result.isSuccess) {
       log('Stock request sent successfully: ${result.data}');
-      toast(
-        "${result.message} will be notified via WhatsApp.",
-        length: Toast.LENGTH_LONG,
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        title: 'Request Sent',
+        borderRadius: 0,
+        text: "${result.message} will be notified via WhatsApp.",
+        confirmBtnColor: Theme.of(context).colorScheme.primary,
+        onConfirmBtnTap: () {
+          Navigator.of(context).pop(); // Close alert
+          Navigator.of(context).pop(); // Close dialog
+        },
       );
-      Navigator.of(context).pop();
     } else {
       log('Error sending stock request: ${result.message}');
-      toast(
-        "${result.message}, you may have already requested this product.",
-        length: Toast.LENGTH_LONG,
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        borderRadius: 0,
+        title: 'Request Failed',
+        text: "${result.message}, you may have already requested this product.",
+        confirmBtnColor: Theme.of(context).colorScheme.primary,
       );
     }
   }
@@ -118,7 +135,7 @@ class _WhatsappDialogContentState extends State<_WhatsappDialogContent> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 110,
+            width: 120,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(defaultBorderRadius),
               color: Colors.grey.withAlpha(50),

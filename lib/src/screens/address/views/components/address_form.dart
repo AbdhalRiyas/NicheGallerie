@@ -23,6 +23,7 @@ class AddressForm extends StatefulWidget {
   final TextEditingController countryController;
   final VoidCallback validateForm;
   final Map<String, dynamic>? errors;
+  final bool showCompanyName;
 
   const AddressForm({
     required this.formKey,
@@ -39,6 +40,7 @@ class AddressForm extends StatefulWidget {
     required this.emailController,
     required this.validateForm,
     this.errors,
+    this.showCompanyName = true,
     super.key,
   });
 
@@ -171,20 +173,21 @@ class _AddressFormState extends State<AddressForm> {
               ),
             ),
             const SizedBox(height: defaultPadding),
-            TextFormField(
-              controller: widget.companyNameController,
-              onSaved: (companyName) {},
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                hintText: "Company name (optional)",
-                errorText: getError('company_name'),
-                prefixIcon: FormFieldSvgIcon(
-                  iconPath: "assets/icons/Company.svg",
+            if (widget.showCompanyName)
+              TextFormField(
+                controller: widget.companyNameController,
+                onSaved: (companyName) {},
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  hintText: "Company name (optional)",
+                  errorText: getError('company_name'),
+                  prefixIcon: FormFieldSvgIcon(
+                    iconPath: "assets/icons/Company.svg",
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: defaultPadding),
+            if (widget.showCompanyName) const SizedBox(height: defaultPadding),
             Container(
               color: lightGreyColor,
               padding: const EdgeInsets.symmetric(horizontal: 12.0),

@@ -144,6 +144,7 @@ class _AddressDialogState extends State<AddressDialog> {
               emailController: _emailController,
               validateForm: _validateForm,
               errors: _errors,
+              showCompanyName: true,
             ),
           ),
         ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/src/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/src/components/custom_snackbar.dart';
 import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/models/currency.dart';
@@ -10,7 +9,6 @@ import 'package:shop/src/models/product.dart';
 import 'package:shop/src/providers/cart_provider.dart';
 import 'package:shop/src/providers/wishlist_provider.dart';
 import 'package:shop/src/route/screen_export.dart';
-import 'package:shop/src/screens/product/views/added_to_cart_message_screen.dart';
 import 'package:shop/src/utils/currency_formatter.dart';
 
 import '../../constants.dart';
@@ -125,7 +123,7 @@ class ProductCard extends StatelessWidget {
                                         context.go('/$logInScreenRoute');
                                       }
                                     }
-                                  : null,
+                                  : press,
                               style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: defaultPadding / 2,
@@ -136,7 +134,7 @@ class ProductCard extends StatelessWidget {
                               child: Text(
                                 product.stockStatus == 'instock'
                                     ? 'Add to Cart'.toUpperCase()
-                                    : 'Out Of Stock'.toUpperCase(),
+                                    : 'Request Stock'.toUpperCase(),
                                 style: const TextStyle(fontSize: 12),
                               ),
                             ),
@@ -359,7 +357,7 @@ class ProductCard extends StatelessWidget {
                             context.go('/$logInScreenRoute');
                           }
                         }
-                      : null,
+                      : press,
                   style: ElevatedButton.styleFrom(
                     padding:
                         EdgeInsets.all(0), // Adjust vertical padding for height
