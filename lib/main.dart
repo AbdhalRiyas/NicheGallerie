@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,7 @@ import 'package:shop/src/config/global_key_constants.dart';
 import 'package:shop/src/providers.dart';
 import 'package:shop/src/services/hive_service.dart';
 import 'package:shop/src/theme/app_theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'src/route/routes.dart';
 
@@ -71,6 +73,11 @@ class MyApp extends StatelessWidget {
         return FractionallySizedBox(
           widthFactor: constraints.maxWidth > 1024 ? .5 : 1,
           child: MaterialApp.router(
+            localizationsDelegates: [
+              CountryLocalizations.getDelegate(enableLocalization: false),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
             debugShowCheckedModeBanner: false,
             title: AppContants().appName,
             theme: AppTheme.lightTheme(context),
