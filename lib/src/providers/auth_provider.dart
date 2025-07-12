@@ -111,6 +111,60 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<Result> forgotPassword(String email) async {
+    try {
+      final res = await ApiService().post(ApiContants().forgotPassword, payload: {
+        'email': email,
+      });
+      return Result(message: res['message'], data: res['data']);
+    } catch (e) {
+      if (e is AppException) {
+        return Result(message: e.message.toString());
+      } else {
+        return Result(message: 'An unknown error occurred');
+      }
+    }
+  }
+
+  Future<Result> verifyOtp(String email, String otp) async {
+    try {
+      final res = await ApiService().post(ApiContants().verifyOtp, payload: {
+        'email': email,
+        'otp': otp,
+      });
+      return Result(message: res['message'], data: res['data']);
+    } catch (e) {
+      if (e is AppException) {
+        return Result(message: e.message.toString());
+      } else {
+        return Result(message: 'An unknown error occurred');
+      }
+    }
+  }
+
+  Future<Result> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      final res = await ApiService().post(ApiContants().resetPassword, payload: {
+        'email': email,
+        'token': token,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      });
+      return Result(message: res['message'], data: res['data']);
+    } catch (e) {
+      if (e is AppException) {
+        return Result(message: e.message.toString());
+      } else {
+        return Result(message: 'An unknown error occurred');
+      }
+    }
+  }
+
   void logout() {
     _token = null;
     _isLoggedIn = false;

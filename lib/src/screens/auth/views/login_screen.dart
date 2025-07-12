@@ -6,7 +6,6 @@ import 'package:shop/src/config/app_config.dart';
 import 'package:shop/src/constants.dart';
 import 'package:shop/src/providers/auth_provider.dart';
 import 'package:shop/src/screens/auth/views/forgot_password_screen.dart';
-import 'package:shop/src/screens/auth/views/otp_verification_screen.dart';
 import 'package:shop/src/utils/result.dart';
 import 'package:shop/src/utils/show_loader.dart';
 

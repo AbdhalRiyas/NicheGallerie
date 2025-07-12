@@ -21,6 +21,9 @@ class ApiContants {
   final String brands = '/products/brands';
   final String accords = '/products/accords';
   final String notes = '/products/notes';
+  final String forgotPassword = '/auth/forgot-password';
+  final String verifyOtp = '/auth/verify-otp';
+  final String resetPassword = '/auth/reset-password';
 
   final String billingAddress = '/users/billing-address';
   final String countries = '/countries';

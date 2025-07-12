@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
-// TODO: Update this import to the actual path of your OTP screen
-// import 'package:shop/src/screens/auth/views/otp_verification_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/src/providers/auth_provider.dart';
+import 'package:shop/src/utils/result.dart';
+import 'package:shop/src/screens/auth/views/otp_verification_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -22,23 +23,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement email submission logic.
-      // For example, call an API to send a reset link or OTP.
-      // After success, navigate to the OTP screen.
-      /*
-      Navigator.of(context).pushNamed(
-        OtpVerificationScreen.routeName,
-        arguments: _emailController.text,
-      );
-      */
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text('Password reset OTP sent to ${_emailController.text}')),
-      );
-      debugPrint('Navigate to OTP screen with email: ${_emailController.text}');
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final Result result = await authProvider.forgotPassword(_emailController.text);
+      if (result.isSuccess && context.mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => OtpVerificationScreen(email: _emailController.text),
+          ),
+        );
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result.message)),
+          );
+        }
+      }
     }
   }
 

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/src/providers/auth_provider.dart';
+import 'package:shop/src/utils/result.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  const ResetPasswordScreen(
+      {super.key, required this.email, required this.token});
 
   static const String routeName = '/reset-password';
+
+  final String email;
+  final String token;
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -23,19 +30,29 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     super.dispose();
   }
 
-  void _resetPassword() {
+  void _resetPassword() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement password reset logic.
-      // Call an API to update the password.
-      // On success, navigate to the login screen or home screen.
-      /*
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      Navigator.of(context).pushReplacementNamed('/login');
-      */
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password has been reset successfully!')),
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final Result result = await authProvider.resetPassword(
+        email: widget.email,
+        token: widget.token,
+        password: _passwordController.text,
+        passwordConfirmation: _confirmPasswordController.text,
       );
-      debugPrint('Password reset successfully. Navigate to login.');
+      if (result.isSuccess && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Password has been reset successfully!')),
+        );
+        // Navigate to login screen
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result.message)),
+          );
+        }
+      }
     }
   }
 

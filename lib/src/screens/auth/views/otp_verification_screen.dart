@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
-// TODO: Update this import to the actual path of your reset password screen
-// import 'package:shop/src/screens/auth/views/reset_password_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/src/providers/auth_provider.dart';
+import 'package:shop/src/utils/result.dart';
+import 'package:shop/src/screens/auth/views/reset_password_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({super.key, this.email});
@@ -25,16 +26,25 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     super.dispose();
   }
 
-  void _verifyOtp() {
+  void _verifyOtp() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement OTP verification logic.
-      // Call an API to verify the OTP.
-      // On success, navigate to the reset password screen.
-      // Navigator.of(context).pushNamed(ResetPasswordScreen.routeName);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('OTP Verified: ${_otpController.text}')),
-      );
-      debugPrint('Navigate to reset password screen.');
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final Result result = await authProvider.verifyOtp(widget.email ?? '', _otpController.text);
+      if (result.isSuccess && context.mounted) {
+        // Assuming the API returns a token for password reset in result.data['token']
+        final token = result.data != null && result.data['token'] != null ? result.data['token'] : _otpController.text;
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ResetPasswordScreen(email: widget.email ?? '', token: token),
+          ),
+        );
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result.message)),
+          );
+        }
+      }
     }
   }
 
