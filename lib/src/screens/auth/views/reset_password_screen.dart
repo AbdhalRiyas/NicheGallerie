@@ -22,6 +22,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _isPasswordObscured = true;
   bool _isConfirmPasswordObscured = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -32,6 +33,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   void _resetPassword() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final Result result = await authProvider.resetPassword(
         email: widget.email,
@@ -39,12 +43,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         password: _passwordController.text,
         passwordConfirmation: _confirmPasswordController.text,
       );
+      setState(() {
+        _isLoading = false;
+      });
       if (result.isSuccess && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Password has been reset successfully!')),
+              content: Text(
+                  'Password has been reset successfully! You can now log in.')),
         );
-        // Navigate to login screen
         Navigator.of(context).popUntil((route) => route.isFirst);
       } else {
         if (context.mounted) {
@@ -133,11 +140,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _resetPassword,
+                  onPressed: _isLoading ? null : _resetPassword,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Reset Password'),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('Reset Password'),
                 ),
               ],
             ),

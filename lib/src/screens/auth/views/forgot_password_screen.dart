@@ -16,6 +16,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -25,12 +26,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final Result result = await authProvider.forgotPassword(_emailController.text);
+      final Result result =
+          await authProvider.forgotPassword(_emailController.text);
+      setState(() {
+        _isLoading = false;
+      });
       if (result.isSuccess && context.mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => OtpVerificationScreen(email: _emailController.text),
+            builder: (context) =>
+                OtpVerificationScreen(email: _emailController.text),
           ),
         );
       } else {
@@ -83,11 +92,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _submit,
+                  onPressed: _isLoading ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Send Code'),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('Send Code'),
                 ),
               ],
             ),

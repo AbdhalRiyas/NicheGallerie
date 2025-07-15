@@ -9,7 +9,6 @@ class OtpVerificationScreen extends StatefulWidget {
 
   static const String routeName = '/otp-verification';
 
-  // The email is passed from the previous screen to show it to the user.
   final String? email;
 
   @override
@@ -19,6 +18,7 @@ class OtpVerificationScreen extends StatefulWidget {
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,14 +28,23 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _verifyOtp() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final Result result = await authProvider.verifyOtp(widget.email ?? '', _otpController.text);
+      final Result result =
+          await authProvider.verifyOtp(widget.email ?? '', _otpController.text);
+      setState(() {
+        _isLoading = false;
+      });
       if (result.isSuccess && context.mounted) {
-        // Assuming the API returns a token for password reset in result.data['token']
-        final token = result.data != null && result.data['token'] != null ? result.data['token'] : _otpController.text;
+        final token = result.data != null && result.data['token'] != null
+            ? result.data['token']
+            : _otpController.text;
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ResetPasswordScreen(email: widget.email ?? '', token: token),
+            builder: (context) =>
+                ResetPasswordScreen(email: widget.email ?? '', token: token),
           ),
         );
       } else {
@@ -48,18 +57,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     }
   }
 
-  void _resendOtp() {
-    // TODO: Implement resend OTP logic.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('New OTP sent to ${widget.email}')),
-    );
-  }
+  // void _resendOtp() {
+  //   // TODO: Implement resend OTP logic.
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(content: Text('New OTP sent to ${widget.email}')),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    // In a real app, you would get the email from route arguments
-    // final email = ModalRoute.of(context)!.settings.arguments as String;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Enter OTP'),
@@ -98,17 +104,27 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _verifyOtp,
+                  onPressed: _isLoading ? null : _verifyOtp,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Verify'),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('Verify'),
                 ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: _resendOtp,
-                  child: const Text('Didn\'t receive the code? Resend'),
-                )
+                // const SizedBox(height: 16),
+                // TextButton(
+                //   onPressed: _isLoading ? null : _resendOtp,
+                //   child: const Text('Didn\'t receive the code? Resend'),
+                // )
               ],
             ),
           ),

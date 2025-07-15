@@ -113,7 +113,8 @@ class AuthProvider extends ChangeNotifier {
 
   Future<Result> forgotPassword(String email) async {
     try {
-      final res = await ApiService().post(ApiContants().forgotPassword, payload: {
+      final res =
+          await ApiService().post(ApiContants().forgotPassword, payload: {
         'email': email,
       });
       return Result(message: res['message'], data: res['data']);
@@ -149,7 +150,8 @@ class AuthProvider extends ChangeNotifier {
     required String passwordConfirmation,
   }) async {
     try {
-      final res = await ApiService().post(ApiContants().resetPassword, payload: {
+      final res =
+          await ApiService().post(ApiContants().resetPassword, payload: {
         'email': email,
         'token': token,
         'password': password,
